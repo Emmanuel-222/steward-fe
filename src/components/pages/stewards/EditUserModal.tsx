@@ -1,15 +1,71 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { isAxiosError } from 'axios'
 import { ChevronDown, X } from 'lucide-react'
-import type { Steward } from './StewardsTableSection'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { stewardRoleOptions, updateStewardSchema } from '../../../features/stewards/schema'
+import type { Steward, CreateStewardValues, UpdateStewardValues } from '../../../features/stewards/types'
 
 type EditUserModalProps = {
   steward: Steward | null
   open: boolean
   onClose: () => void
+  onSubmit: (values: UpdateStewardValues) => Promise<void>
+  isSubmitting: boolean
 }
 
-function EditUserModal({ steward, open, onClose }: EditUserModalProps) {
+function EditUserModal({
+  steward,
+  open,
+  onClose,
+  onSubmit,
+  isSubmitting,
+}: EditUserModalProps) {
+  const [serverError, setServerError] = useState('')
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UpdateStewardValues>({
+    resolver: zodResolver(updateStewardSchema),
+  })
+
+  useEffect(() => {
+    if (!steward) {
+      return
+    }
+
+    reset({
+      name: steward.name,
+      email: steward.email,
+      phone: steward.phone === 'N/A' ? '' : steward.phone,
+      department: steward.department as CreateStewardValues['department'],
+      role: steward.role as CreateStewardValues['role'],
+    })
+  }, [reset, steward])
+
   if (!open || !steward) {
     return null
+  }
+
+  const handleFormSubmit = async (
+    values: UpdateStewardValues,
+  ) => {
+    try {
+      setServerError('')
+      await onSubmit(values)
+      onClose()
+    } catch (error) {
+      if (isAxiosError<{ message?: string }>(error)) {
+        setServerError(
+          error.response?.data?.message ?? 'Unable to update user right now.',
+        )
+        return
+      }
+
+      setServerError('Unable to update user right now.')
+    }
   }
 
   return (
@@ -59,22 +115,25 @@ function EditUserModal({ steward, open, onClose }: EditUserModalProps) {
           </div>
         </div>
 
-        <form
-          className="mt-6 space-y-4"
-          onSubmit={(event) => {
-            event.preventDefault()
-            onClose()
-          }}
-        >
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit(handleFormSubmit)}>
+          {serverError ? (
+            <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              {serverError}
+            </p>
+          ) : null}
+
           <label className="block space-y-2">
             <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
               Full Name
             </span>
             <input
               type="text"
-              defaultValue={steward.name}
               className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+              {...register('name')}
             />
+            {errors.name ? (
+              <p className="text-sm text-rose-600">{errors.name.message}</p>
+            ) : null}
           </label>
 
           <label className="block space-y-2">
@@ -83,9 +142,12 @@ function EditUserModal({ steward, open, onClose }: EditUserModalProps) {
             </span>
             <input
               type="email"
-              defaultValue={steward.email}
               className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+              {...register('email')}
             />
+            {errors.email ? (
+              <p className="text-sm text-rose-600">{errors.email.message}</p>
+            ) : null}
           </label>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -95,27 +157,26 @@ function EditUserModal({ steward, open, onClose }: EditUserModalProps) {
               </span>
               <input
                 type="tel"
-                defaultValue={steward.phone}
                 className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                {...register('phone')}
               />
+              {errors.phone ? (
+                <p className="text-sm text-rose-600">{errors.phone.message}</p>
+              ) : null}
             </label>
 
             <label className="block space-y-2">
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Department
               </span>
-              <div className="relative">
-                <select
-                  defaultValue={steward.department}
-                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
-                >
-                  <option>Hospitality</option>
-                  <option>Logistics</option>
-                  <option>Ushering</option>
-                  <option>Pastoral Care</option>
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              </div>
+              <input
+                type="text"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                {...register('department')}
+              />
+              {errors.department ? (
+                <p className="text-sm text-rose-600">{errors.department.message}</p>
+              ) : null}
             </label>
           </div>
 
@@ -125,16 +186,20 @@ function EditUserModal({ steward, open, onClose }: EditUserModalProps) {
             </span>
             <div className="relative">
               <select
-                defaultValue={steward.role}
                 className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                {...register('role')}
               >
-                <option>Steward</option>
-                <option>Leader</option>
-                <option>Pastor</option>
-                <option>Admin</option>
+                {stewardRoleOptions.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
               </select>
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             </div>
+            {errors.role ? (
+              <p className="text-sm text-rose-600">{errors.role.message}</p>
+            ) : null}
           </label>
 
           <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-end">
@@ -147,9 +212,10 @@ function EditUserModal({ steward, open, onClose }: EditUserModalProps) {
             </button>
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#0f2d52] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#173c67] sm:w-auto"
+              disabled={isSubmitting}
+              className="w-full rounded-xl bg-[#0f2d52] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#173c67] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
             >
-              Save Changes
+              {isSubmitting ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>

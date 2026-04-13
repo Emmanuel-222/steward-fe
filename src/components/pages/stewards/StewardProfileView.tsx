@@ -10,8 +10,8 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import type { Steward } from '../../../features/stewards/types'
 import AttendanceFilterModal from './AttendanceFilterModal'
-import type { Steward } from './StewardsTableSection'
 
 type StewardProfileViewProps = {
   steward: Steward

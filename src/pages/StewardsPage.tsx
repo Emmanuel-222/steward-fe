@@ -6,64 +6,49 @@ import DirectoryFooter from '../components/pages/stewards/DirectoryFooter'
 import EditUserModal from '../components/pages/stewards/EditUserModal'
 import StewardProfileView from '../components/pages/stewards/StewardProfileView'
 import StewardsTableSection from '../components/pages/stewards/StewardsTableSection'
-import type { Steward } from '../components/pages/stewards/StewardsTableSection'
 import StewardsToolbar from '../components/pages/stewards/StewardsToolbar'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
-
-const stewardStats = {
-  total: '1,284',
-  growth: '+12%',
-}
-
-const stewards = [
-  {
-    initials: 'JD',
-    name: 'Johnathan Doe',
-    email: 'john.doe@registry.org',
-    department: 'Hospitality',
-    role: 'Steward',
-    roleTone: 'bg-emerald-100 text-emerald-700',
-    phone: '+1 (555) 012-3456',
-    dateAdded: 'Oct 12, 2023',
-  },
-  {
-    initials: 'SA',
-    name: 'Sarah Al-Farsi',
-    email: 'sarah.a@registry.org',
-    department: 'Logistics',
-    role: 'Leader',
-    roleTone: 'bg-blue-100 text-blue-700',
-    phone: '+1 (555) 987-6543',
-    dateAdded: 'Jan 05, 2024',
-  },
-  {
-    initials: 'MR',
-    name: 'Michael Rodriguez',
-    email: 'm.rodriguez@registry.org',
-    department: 'Pastoral Care',
-    role: 'Pastor',
-    roleTone: 'bg-rose-100 text-rose-700',
-    phone: '+1 (555) 221-4433',
-    dateAdded: 'Feb 28, 2024',
-  },
-  {
-    initials: 'EW',
-    name: 'Emma Wilson',
-    email: 'e.wilson@registry.org',
-    department: 'Ushering',
-    role: 'Steward',
-    roleTone: 'bg-emerald-100 text-emerald-700',
-    phone: '+1 (555) 777-8899',
-    dateAdded: 'Mar 15, 2024',
-  },
-]
+import useCreateStewardMutation from '../features/stewards/hooks/useCreateStewardMutation'
+import useDeleteStewardMutation from '../features/stewards/hooks/useDeleteStewardMutation'
+import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
+import useUpdateStewardMutation from '../features/stewards/hooks/useUpdateStewardMutation'
+import type {
+  CreateStewardValues,
+  Steward,
+  UpdateStewardValues,
+} from '../features/stewards/types'
 
 function StewardsPage() {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+  const [selectedRole, setSelectedRole] = useState('All Roles')
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false)
-  const [profileSteward, setProfileSteward] = useState<Steward | null>(null)
-  const [modalSteward, setModalSteward] = useState<Steward | null>(null)
+  const [profileStewardId, setProfileStewardId] = useState<string | null>(null)
+  const [modalStewardId, setModalStewardId] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const stewardsQuery = useStewardsQuery(debouncedSearchTerm)
+  const createStewardMutation = useCreateStewardMutation()
+  const updateStewardMutation = useUpdateStewardMutation()
+  const deleteStewardMutation = useDeleteStewardMutation()
+  const stewards = stewardsQuery.data ?? []
+  const roles = Array.from(new Set(stewards.map((steward) => steward.role)))
+  const filteredStewards =
+    selectedRole === 'All Roles'
+      ? stewards
+      : stewards.filter((steward) => steward.role === selectedRole)
+  const profileSteward =
+    stewards.find((steward) => steward.id === profileStewardId) ?? null
+  const modalSteward =
+    stewards.find((steward) => steward.id === modalStewardId) ?? null
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 400)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [searchTerm])
 
   useEffect(() => {
     if (!isAddUserModalOpen && !isEditModalOpen && !isDeleteModalOpen) {
@@ -75,7 +60,7 @@ function StewardsPage() {
         setIsAddUserModalOpen(false)
         setIsEditModalOpen(false)
         setIsDeleteModalOpen(false)
-        setModalSteward(null)
+        setModalStewardId(null)
       }
     }
 
@@ -85,17 +70,45 @@ function StewardsPage() {
   }, [isAddUserModalOpen, isDeleteModalOpen, isEditModalOpen])
 
   const handleViewSteward = (steward: Steward) => {
-    setProfileSteward(steward)
+    setProfileStewardId(steward.id)
   }
 
   const handleEditSteward = (steward: Steward) => {
-    setModalSteward(steward)
+    setModalStewardId(steward.id)
     setIsEditModalOpen(true)
   }
 
   const handleDeleteSteward = (steward: Steward) => {
-    setModalSteward(steward)
+    setModalStewardId(steward.id)
     setIsDeleteModalOpen(true)
+  }
+
+  const handleCreateSteward = async (values: CreateStewardValues) => {
+    await createStewardMutation.mutateAsync(values)
+  }
+
+  const handleUpdateSteward = async (values: UpdateStewardValues) => {
+    if (!modalSteward) {
+      return
+    }
+
+    await updateStewardMutation.mutateAsync({
+      id: modalSteward.id,
+      payload: values,
+    })
+  }
+
+  const handleDeleteConfirmed = async () => {
+    if (!modalSteward) {
+      return
+    }
+
+    await deleteStewardMutation.mutateAsync(modalSteward.id)
+    if (profileStewardId === modalSteward.id) {
+      setProfileStewardId(null)
+    }
+    setIsDeleteModalOpen(false)
+    setModalStewardId(null)
   }
 
   return (
@@ -104,7 +117,7 @@ function StewardsPage() {
         {profileSteward ? (
           <StewardProfileView
             steward={profileSteward}
-            onBack={() => setProfileSteward(null)}
+            onBack={() => setProfileStewardId(null)}
             onEdit={handleEditSteward}
           />
         ) : (
@@ -125,14 +138,25 @@ function StewardsPage() {
             />
 
             <StewardsToolbar
-              total={stewardStats.total}
-              growth={stewardStats.growth}
+              total={filteredStewards.length}
+              growth={searchTerm.trim() ? 'filtered' : 'live'}
+              searchValue={searchTerm}
+              onSearchChange={setSearchTerm}
+              roleValue={selectedRole}
+              onRoleChange={setSelectedRole}
+              roles={roles}
             />
             <StewardsTableSection
-              stewards={stewards}
+              stewards={filteredStewards}
               onView={handleViewSteward}
               onEdit={handleEditSteward}
               onDelete={handleDeleteSteward}
+              isLoading={stewardsQuery.isLoading}
+              errorMessage={
+                stewardsQuery.isError
+                  ? 'Unable to load stewards right now.'
+                  : undefined
+              }
             />
             <DirectoryFooter />
           </>
@@ -142,21 +166,27 @@ function StewardsPage() {
       <AddUserModal
         open={isAddUserModalOpen}
         onClose={() => setIsAddUserModalOpen(false)}
+        onSubmit={handleCreateSteward}
+        isSubmitting={createStewardMutation.isPending}
       />
       <EditUserModal
         steward={modalSteward}
         open={isEditModalOpen}
+        onSubmit={handleUpdateSteward}
+        isSubmitting={updateStewardMutation.isPending}
         onClose={() => {
           setIsEditModalOpen(false)
-          setModalSteward(null)
+          setModalStewardId(null)
         }}
       />
       <DeleteUserModal
         steward={modalSteward}
         open={isDeleteModalOpen}
+        onConfirm={handleDeleteConfirmed}
+        isSubmitting={deleteStewardMutation.isPending}
         onClose={() => {
           setIsDeleteModalOpen(false)
-          setModalSteward(null)
+          setModalStewardId(null)
         }}
       />
     </>

@@ -1,13 +1,21 @@
 import { AlertTriangle } from 'lucide-react'
-import type { Steward } from './StewardsTableSection'
+import type { Steward } from '../../../features/stewards/types'
 
 type DeleteUserModalProps = {
   steward: Steward | null
   open: boolean
   onClose: () => void
+  onConfirm: () => Promise<void>
+  isSubmitting: boolean
 }
 
-function DeleteUserModal({ steward, open, onClose }: DeleteUserModalProps) {
+function DeleteUserModal({
+  steward,
+  open,
+  onClose,
+  onConfirm,
+  isSubmitting,
+}: DeleteUserModalProps) {
   if (!open || !steward) {
     return null
   }
@@ -51,10 +59,11 @@ function DeleteUserModal({ steward, open, onClose }: DeleteUserModalProps) {
           </button>
           <button
             type="button"
-            onClick={onClose}
+            onClick={onConfirm}
+            disabled={isSubmitting}
             className="rounded-xl bg-[#d92d20] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#b42318]"
           >
-            Delete Permanently
+            {isSubmitting ? 'Deleting...' : 'Delete Permanently'}
           </button>
         </div>
 
