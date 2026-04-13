@@ -6,82 +6,70 @@ import MeetingsTabs from '../components/pages/meetings/MeetingsTabs'
 import ScheduleMeetingModal from '../components/pages/meetings/ScheduleMeetingModal'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import FloatingActionButton from '../components/shared/FloatingActionButton'
+import useCreateMeetingMutation from '../features/meetings/hooks/useCreateMeetingMutation'
+import useDeleteMeetingMutation from '../features/meetings/hooks/useDeleteMeetingMutation'
+import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
+import useUpdateMeetingMutation from '../features/meetings/hooks/useUpdateMeetingMutation'
+import type { CreateMeetingValues, Meeting, UpdateMeetingValues } from '../features/meetings/types'
 
 const tabs = ['All Meetings', 'Upcoming', 'Completed', 'Archived']
 
-const meetings = [
-  {
-    status: 'Active',
-    statusTone: 'bg-emerald-100 text-emerald-700',
-    title: 'Sunday Morning Service',
-    subtitle: 'Central Assembly Ledger',
-    date: 'Oct 27, 2024',
-    time: '08:00 AM - 11:30 AM',
-    location: 'Custodial, 050 AM',
-    present: 142,
-    absent: 12,
-    primaryAction: 'View Attendance',
-    secondaryAction: 'Edit',
-  },
-  {
-    status: 'Completed',
-    statusTone: 'bg-rose-100 text-rose-700',
-    title: 'Mid-Week Vigil',
-    subtitle: 'Spirit & Development',
-    date: 'Oct 23, 2024',
-    time: '11:00 PM - 02:00 AM',
-    location: 'Custodial, 11:45 PM',
-    present: 85,
-    absent: 69,
-    primaryAction: 'Review Report',
-    secondaryAction: 'Logs',
-  },
-  {
-    status: 'Upcoming',
-    statusTone: 'bg-sky-100 text-sky-700',
-    title: 'Monthly Steward Meeting',
-    subtitle: 'Administrative Briefing',
-    date: 'Nov 03, 2024',
-    time: '04:00 PM - 06:00 PM',
-    location: 'Custodial, 01:15 PM',
-    present: null,
-    absent: null,
-    primaryAction: 'Prepare Check-in',
-    secondaryAction: 'Edit Details',
-  },
-  {
-    status: 'Completed',
-    statusTone: 'bg-rose-100 text-rose-700',
-    title: 'Choir Rehearsal',
-    subtitle: 'Arts & Music Dept.',
-    date: 'Oct 17, 2024',
-    time: '05:30 PM - 08:45 PM',
-    location: 'Custodial, 07:00 PM',
-    present: 32,
-    absent: 4,
-    primaryAction: 'View Attendance',
-    secondaryAction: 'Edit',
-  },
-]
-
 function MeetingsPage() {
+  const [activeTab, setActiveTab] = useState('All Meetings')
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
+  const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null)
+  const [deletingMeeting, setDeletingMeeting] = useState<Meeting | null>(null)
+  const meetingsQuery = useMeetingsQuery()
+  const createMeetingMutation = useCreateMeetingMutation()
+  const updateMeetingMutation = useUpdateMeetingMutation()
+  const deleteMeetingMutation = useDeleteMeetingMutation()
+  const meetings = meetingsQuery.data ?? []
+  const filteredMeetings =
+    activeTab === 'All Meetings'
+      ? meetings
+      : meetings.filter((meeting) => meeting.status === activeTab.replace('All ', ''))
 
   useEffect(() => {
-    if (!isScheduleModalOpen) {
+    if (!isScheduleModalOpen && !deletingMeeting) {
       return undefined
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsScheduleModalOpen(false)
+        setEditingMeeting(null)
+        setDeletingMeeting(null)
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
 
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isScheduleModalOpen])
+  }, [deletingMeeting, isScheduleModalOpen])
+
+  const handleCreateMeeting = async (values: CreateMeetingValues) => {
+    await createMeetingMutation.mutateAsync(values)
+  }
+
+  const handleUpdateMeeting = async (values: UpdateMeetingValues) => {
+    if (!editingMeeting) {
+      return
+    }
+
+    await updateMeetingMutation.mutateAsync({
+      id: editingMeeting.id,
+      payload: values,
+    })
+  }
+
+  const handleDeleteMeeting = async () => {
+    if (!deletingMeeting) {
+      return
+    }
+
+    await deleteMeetingMutation.mutateAsync(deletingMeeting.id)
+    setDeletingMeeting(null)
+  }
 
   return (
     <>
@@ -102,18 +90,64 @@ function MeetingsPage() {
         />
 
         <section className="space-y-4">
-          <MeetingsTabs tabs={tabs} />
+          <MeetingsTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
 
-          <div className="grid gap-5 xl:grid-cols-3">
-            {meetings.slice(0, 3).map((meeting) => (
-              <MeetingCard key={meeting.title} meeting={meeting} />
-            ))}
-          </div>
+          {meetingsQuery.isLoading ? (
+            <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+              Loading meetings...
+            </div>
+          ) : meetingsQuery.isError ? (
+            <div className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-10 text-center text-sm text-rose-600 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+              Unable to load meetings right now.
+            </div>
+          ) : filteredMeetings.length === 0 ? (
+            <div className="grid gap-5 xl:grid-cols-3">
+              <div className="xl:col-span-2 rounded-[28px] border border-slate-200 bg-white px-6 py-10 text-center shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+                <p className="text-lg font-semibold text-[#0f2d52]">
+                  No meetings found for {activeTab.toLowerCase()}.
+                </p>
+                <p className="mt-2 text-sm text-slate-500">
+                  Create your first meeting to start tracking attendance.
+                </p>
+              </div>
+              <MeetingScheduleCard onClick={() => setIsScheduleModalOpen(true)} />
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-5 xl:grid-cols-3">
+                {filteredMeetings.slice(0, 3).map((meeting) => (
+                  <MeetingCard
+                    key={meeting.id}
+                    meeting={meeting}
+                    onEdit={(selectedMeeting) => {
+                      setEditingMeeting(selectedMeeting)
+                      setIsScheduleModalOpen(true)
+                    }}
+                    onDelete={setDeletingMeeting}
+                  />
+                ))}
+              </div>
 
-          <div className="grid gap-5 xl:grid-cols-3">
-            <MeetingCard meeting={meetings[3]} />
-            <MeetingScheduleCard onClick={() => setIsScheduleModalOpen(true)} />
-          </div>
+              <div className="grid gap-5 xl:grid-cols-3">
+                {filteredMeetings.slice(3).map((meeting) => (
+                  <MeetingCard
+                    key={meeting.id}
+                    meeting={meeting}
+                    onEdit={(selectedMeeting) => {
+                      setEditingMeeting(selectedMeeting)
+                      setIsScheduleModalOpen(true)
+                    }}
+                    onDelete={setDeletingMeeting}
+                  />
+                ))}
+                <MeetingScheduleCard onClick={() => setIsScheduleModalOpen(true)} />
+              </div>
+            </>
+          )}
         </section>
 
         <FloatingActionButton
@@ -125,8 +159,66 @@ function MeetingsPage() {
 
       <ScheduleMeetingModal
         open={isScheduleModalOpen}
-        onClose={() => setIsScheduleModalOpen(false)}
+        onClose={() => {
+          setIsScheduleModalOpen(false)
+          setEditingMeeting(null)
+        }}
+        onSubmit={editingMeeting ? handleUpdateMeeting : handleCreateMeeting}
+        isSubmitting={
+          editingMeeting
+            ? updateMeetingMutation.isPending
+            : createMeetingMutation.isPending
+        }
+        mode={editingMeeting ? 'edit' : 'create'}
+        meeting={editingMeeting}
       />
+
+      {deletingMeeting ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4 py-6 backdrop-blur-[2px]"
+          onClick={() => setDeletingMeeting(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-5 text-center shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:p-6"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-meeting-title"
+          >
+            <h3
+              id="delete-meeting-title"
+              className="text-2xl font-semibold text-slate-900"
+            >
+              Delete Meeting
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-500">
+              Are you sure you want to delete{' '}
+              <span className="font-semibold text-slate-700">
+                {deletingMeeting.title}
+              </span>
+              ? This action cannot be undone.
+            </p>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => setDeletingMeeting(null)}
+                className="rounded-xl bg-[#eef3ff] px-4 py-3 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteMeeting}
+                disabled={deleteMeetingMutation.isPending}
+                className="rounded-xl bg-[#d92d20] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#b42318] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {deleteMeetingMutation.isPending ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   )
 }

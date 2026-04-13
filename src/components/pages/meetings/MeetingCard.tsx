@@ -1,31 +1,21 @@
 import {
   CalendarDays,
   Clock3,
+  Pencil,
   Eye,
-  FileText,
   Search,
   Settings2,
+  Trash2,
 } from 'lucide-react'
-
-type Meeting = {
-  status: string
-  statusTone: string
-  title: string
-  subtitle: string
-  date: string
-  time: string
-  location: string
-  present: number | null
-  absent: number | null
-  primaryAction: string
-  secondaryAction: string
-}
+import type { Meeting } from '../../../features/meetings/types'
 
 type MeetingCardProps = {
   meeting: Meeting
+  onEdit: (meeting: Meeting) => void
+  onDelete: (meeting: Meeting) => void
 }
 
-function MeetingCard({ meeting }: MeetingCardProps) {
+function MeetingCard({ meeting, onEdit, onDelete }: MeetingCardProps) {
   return (
     <article className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
       <div className="flex items-start justify-between gap-4">
@@ -99,10 +89,19 @@ function MeetingCard({ meeting }: MeetingCardProps) {
         </button>
         <button
           type="button"
+          onClick={() => onEdit(meeting)}
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
         >
-          <FileText className="h-4 w-4" />
+          <Pencil className="h-4 w-4" />
           {meeting.secondaryAction}
+        </button>
+        <button
+          type="button"
+          onClick={() => onDelete(meeting)}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-100"
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete
         </button>
       </div>
     </article>
