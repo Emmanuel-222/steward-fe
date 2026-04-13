@@ -11,59 +11,43 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { Steward } from '../../../features/stewards/types'
+import { useStewardAttendanceQuery, useStewardDetailQuery } from '../../../features/stewards/hooks/useStewardsQuery'
 import AttendanceFilterModal from './AttendanceFilterModal'
 
 type StewardProfileViewProps = {
-  steward: Steward
+  stewardId: string
+  initialSteward: Steward
   onBack: () => void
   onEdit: (steward: Steward) => void
 }
-
-const attendanceHistory = [
-  {
-    date: 'Oct 24, 2023',
-    meeting: 'Sunday Service',
-    status: 'Present',
-    time: '07:45 AM',
-  },
-  {
-    date: 'Oct 20, 2023',
-    meeting: 'Mid-week Service',
-    status: 'Absent',
-    time: '-',
-  },
-  {
-    date: 'Oct 17, 2023',
-    meeting: 'Sunday Service',
-    status: 'Present',
-    time: '07:52 AM',
-  },
-  {
-    date: 'Oct 13, 2023',
-    meeting: 'Mid-week Service',
-    status: 'Excused',
-    time: 'Prior Notice',
-  },
-  {
-    date: 'Oct 10, 2023',
-    meeting: 'Sunday Service',
-    status: 'Present',
-    time: '08:03 AM',
-  },
-]
 
 const statusToneMap: Record<string, string> = {
   Present: 'bg-emerald-100 text-emerald-700',
   Absent: 'bg-rose-100 text-rose-700',
   Excused: 'bg-slate-100 text-slate-600',
+  Unknown: 'bg-slate-100 text-slate-600',
 }
 
 function StewardProfileView({
-  steward,
+  stewardId,
+  initialSteward,
   onBack,
   onEdit,
 }: StewardProfileViewProps) {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
+  const detailQuery = useStewardDetailQuery(stewardId)
+  const attendanceQuery = useStewardAttendanceQuery(stewardId)
+  const steward = detailQuery.data ?? initialSteward
+  const attendanceSummary = attendanceQuery.data?.summary ?? {
+    total: 0,
+    present: 0,
+    absent: 0,
+  }
+  const attendanceHistory = attendanceQuery.data?.records ?? []
+  const attendanceRate =
+    attendanceSummary.total > 0
+      ? Math.round((attendanceSummary.present / attendanceSummary.total) * 100)
+      : 0
 
   useEffect(() => {
     if (!isFilterModalOpen) {
@@ -129,9 +113,9 @@ function StewardProfileView({
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={() => onEdit(steward)}
+          <button
+            type="button"
+            onClick={() => onEdit(steward)}
               className="inline-flex w-full items-center justify-center rounded-xl bg-[#22c55e] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16a34a] md:w-auto"
             >
               Edit
@@ -168,7 +152,9 @@ function StewardProfileView({
               Total Year
             </span>
           </div>
-          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">48</p>
+          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">
+            {attendanceSummary.total}
+          </p>
           <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
             Total Meetings
           </p>
@@ -179,9 +165,13 @@ function StewardProfileView({
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <span className="text-sm font-semibold text-emerald-600">92%</span>
+            <span className="text-sm font-semibold text-emerald-600">
+              {attendanceRate}%
+            </span>
           </div>
-          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">44</p>
+          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">
+            {attendanceSummary.present}
+          </p>
           <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
             Present
           </p>
@@ -192,9 +182,13 @@ function StewardProfileView({
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
               <Clock3 className="h-5 w-5" />
             </div>
-            <span className="text-sm font-semibold text-rose-600">8%</span>
+            <span className="text-sm font-semibold text-rose-600">
+              {attendanceSummary.total > 0 ? 100 - attendanceRate : 0}%
+            </span>
           </div>
-          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">4</p>
+          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">
+            {attendanceSummary.absent}
+          </p>
           <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
             Absent
           </p>
@@ -225,62 +219,78 @@ function StewardProfileView({
           </div>
         </div>
 
-        <div className="space-y-3 p-4 sm:hidden">
-          {attendanceHistory.map((entry) => (
-            <article
-              key={`${entry.date}-${entry.meeting}-mobile`}
-              className="rounded-2xl border border-slate-100 bg-[#fcfdff] p-4"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="font-semibold text-slate-800">{entry.meeting}</p>
-                  <p className="mt-1 text-sm text-slate-500">{entry.date}</p>
-                </div>
-                <span
-                  className={`inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${statusToneMap[entry.status]}`}
-                >
-                  {entry.status}
-                </span>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-4 text-sm text-slate-500">
-                <span className="font-medium text-slate-400">Marked At</span>
-                <span>{entry.time}</span>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="hidden overflow-x-auto sm:block">
-          <div className="min-w-[680px]">
-            <div className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 bg-[#f8fbff] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:px-6">
-              <p>Date</p>
-              <p>Meeting Type</p>
-              <p>Status</p>
-              <p>Marked At</p>
-            </div>
-
-            <div className="divide-y divide-slate-100">
+        {attendanceQuery.isLoading ? (
+          <div className="px-4 py-10 text-center text-sm text-slate-500 sm:px-6">
+            Loading attendance history...
+          </div>
+        ) : attendanceQuery.isError ? (
+          <div className="px-4 py-10 text-center text-sm text-rose-600 sm:px-6">
+            Unable to load attendance history right now.
+          </div>
+        ) : attendanceHistory.length === 0 ? (
+          <div className="px-4 py-10 text-center text-sm text-slate-500 sm:px-6">
+            No attendance records found for this steward yet.
+          </div>
+        ) : (
+          <>
+            <div className="space-y-3 p-4 sm:hidden">
               {attendanceHistory.map((entry) => (
-                <div
-                  key={`${entry.date}-${entry.meeting}`}
-                  className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 px-4 py-4 text-sm text-slate-600 sm:px-6"
+                <article
+                  key={entry.id}
+                  className="rounded-2xl border border-slate-100 bg-[#fcfdff] p-4"
                 >
-                  <p>{entry.date}</p>
-                  <p>{entry.meeting}</p>
-                  <p>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-slate-800">{entry.meeting}</p>
+                      <p className="mt-1 text-sm text-slate-500">{entry.date}</p>
+                    </div>
                     <span
-                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusToneMap[entry.status]}`}
+                      className={`inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${statusToneMap[entry.status] ?? statusToneMap.Unknown}`}
                     >
                       {entry.status}
                     </span>
-                  </p>
-                  <p>{entry.time}</p>
-                </div>
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between gap-4 text-sm text-slate-500">
+                    <span className="font-medium text-slate-400">Marked At</span>
+                    <span>{entry.time}</span>
+                  </div>
+                </article>
               ))}
             </div>
-          </div>
-        </div>
+
+            <div className="hidden overflow-x-auto sm:block">
+              <div className="min-w-[680px]">
+                <div className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 bg-[#f8fbff] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:px-6">
+                  <p>Date</p>
+                  <p>Meeting Type</p>
+                  <p>Status</p>
+                  <p>Marked At</p>
+                </div>
+
+                <div className="divide-y divide-slate-100">
+                  {attendanceHistory.map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 px-4 py-4 text-sm text-slate-600 sm:px-6"
+                    >
+                      <p>{entry.date}</p>
+                      <p>{entry.meeting}</p>
+                      <p>
+                        <span
+                          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusToneMap[entry.status] ?? statusToneMap.Unknown}`}
+                        >
+                          {entry.status}
+                        </span>
+                      </p>
+                      <p>{entry.time}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
         </section>
       </div>
 

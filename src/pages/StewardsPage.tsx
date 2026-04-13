@@ -116,7 +116,8 @@ function StewardsPage() {
       <div className="space-y-8">
         {profileSteward ? (
           <StewardProfileView
-            steward={profileSteward}
+            stewardId={profileSteward.id}
+            initialSteward={profileSteward}
             onBack={() => setProfileStewardId(null)}
             onEdit={handleEditSteward}
           />

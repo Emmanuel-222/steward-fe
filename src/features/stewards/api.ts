@@ -2,6 +2,9 @@ import api from '../../services/axios'
 import type {
   CreateStewardValues,
   Steward,
+  StewardAttendanceRecord,
+  StewardAttendanceReport,
+  StewardAttendanceSummary,
   StewardsResponse,
   UpdateStewardValues,
 } from './types'
@@ -102,6 +105,58 @@ function extractStewardArray(payload: unknown) {
   return []
 }
 
+function normalizeAttendanceStatus(value: unknown) {
+  return toTitleCase(String(value ?? 'Unknown'))
+}
+
+function formatAttendanceTime(value: unknown) {
+  if (!value || typeof value !== 'string') {
+    return '-'
+  }
+
+  const parsed = new Date(value)
+
+  if (Number.isNaN(parsed.getTime())) {
+    return value
+  }
+
+  return parsed.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+function normalizeAttendanceRecord(
+  rawRecord: Record<string, unknown>,
+): StewardAttendanceRecord {
+  const createdAt =
+    rawRecord.createdAt ?? rawRecord.timestamp ?? rawRecord.date ?? rawRecord.markedAt
+  const meeting =
+    rawRecord.meetingName ??
+    rawRecord.meetingType ??
+    rawRecord.meetingTitle ??
+    rawRecord.meeting?.toString() ??
+    'Meeting'
+
+  return {
+    id: String(rawRecord.id ?? rawRecord._id ?? crypto.randomUUID()),
+    date: formatDate(createdAt),
+    meeting: String(meeting),
+    status: normalizeAttendanceStatus(rawRecord.status),
+    time: formatAttendanceTime(createdAt),
+  }
+}
+
+function normalizeAttendanceSummary(
+  rawSummary: Record<string, unknown> | undefined,
+): StewardAttendanceSummary {
+  return {
+    total: Number(rawSummary?.total ?? 0),
+    present: Number(rawSummary?.present ?? 0),
+    absent: Number(rawSummary?.absent ?? 0),
+  }
+}
+
 export async function getStewards(search?: string) {
   const normalizedSearch = search?.trim()
   const endpoint =
@@ -114,6 +169,30 @@ export async function getStewards(search?: string) {
   return extractStewardArray(data).map((steward) =>
     normalizeSteward(steward as Record<string, unknown>),
   )
+}
+
+export async function getStewardById(id: string) {
+  const { data } = await api.get(`/users/${id}`)
+  return normalizeSteward(data as Record<string, unknown>)
+}
+
+export async function getStewardAttendanceReport(id: string) {
+  const { data } = await api.get(`/attendance/user/${id}`)
+  const payload = data as {
+    user?: Record<string, unknown>
+    summary?: Record<string, unknown>
+    records?: Record<string, unknown>[]
+  }
+
+  return {
+    user: normalizeSteward((payload.user ?? {}) as Record<string, unknown>),
+    summary: normalizeAttendanceSummary(payload.summary),
+    records: Array.isArray(payload.records)
+      ? payload.records.map((record) =>
+          normalizeAttendanceRecord(record as Record<string, unknown>),
+        )
+      : [],
+  } satisfies StewardAttendanceReport
 }
 
 export async function createSteward(payload: CreateStewardValues) {

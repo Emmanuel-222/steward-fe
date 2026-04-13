@@ -12,6 +12,26 @@ export type Steward = {
   dateAdded: string
 }
 
+export type StewardAttendanceSummary = {
+  total: number
+  present: number
+  absent: number
+}
+
+export type StewardAttendanceRecord = {
+  id: string
+  date: string
+  meeting: string
+  status: string
+  time: string
+}
+
+export type StewardAttendanceReport = {
+  user: Steward
+  summary: StewardAttendanceSummary
+  records: StewardAttendanceRecord[]
+}
+
 export type CreateStewardValues = {
   name: string
   email: string
