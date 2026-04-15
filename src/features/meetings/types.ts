@@ -14,11 +14,12 @@ export type Meeting = {
 }
 
 export type CreateMeetingValues = {
-  title: string
-  date: string
-  startTime: string
-  cutoffTime: string
-  location: string
-}
+  title: string;
+  date: string;
+  startTime: string;
+  cutoffTime: string;
+  endTime: string; 
+  location: string;
+};
 
-export type UpdateMeetingValues = CreateMeetingValues
+export type UpdateMeetingValues = Partial<CreateMeetingValues>

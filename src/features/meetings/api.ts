@@ -44,23 +44,39 @@ function formatTime(value: unknown) {
 }
 
 function normalizeStatus(rawMeeting: Record<string, unknown>) {
-  const explicitStatus = String(rawMeeting.status ?? '').trim()
+  const explicitStatus = String(rawMeeting.status ?? "").trim();
+
   if (explicitStatus) {
-    const normalized =
-      explicitStatus.charAt(0).toUpperCase() + explicitStatus.slice(1).toLowerCase()
-    return normalized
+    return (
+      explicitStatus.charAt(0).toUpperCase() +
+      explicitStatus.slice(1).toLowerCase()
+    );
   }
 
-  const meetingDate = rawMeeting.date ?? rawMeeting.meetingDate ?? rawMeeting.createdAt
-  if (typeof meetingDate === 'string') {
-    const parsed = new Date(meetingDate)
-    const now = new Date()
-    if (!Number.isNaN(parsed.getTime())) {
-      if (parsed > now) return 'Upcoming'
+  const date = rawMeeting.date;
+  const startTime = rawMeeting.startTime;
+  const endTime = rawMeeting.endTime;
+
+  if (
+    typeof date === "string" &&
+    typeof startTime === "string" &&
+    typeof endTime === "string"
+  ) {
+    const start = new Date(`${date} ${startTime}`);
+    const end = new Date(`${date} ${endTime}`);
+    const now = new Date();
+
+    if (
+      !Number.isNaN(start.getTime()) &&
+      !Number.isNaN(end.getTime())
+    ) {
+      if (now < start) return "Upcoming";
+      if (now >= start && now <= end) return "Ongoing";
+      if (now > end) return "Completed";
     }
   }
 
-  return 'Completed'
+  return "Completed";
 }
 
 function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {

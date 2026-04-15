@@ -5,5 +5,6 @@ export const meetingSchema = z.object({
   date: z.string().min(1, 'Meeting date is required'),
   startTime: z.string().min(1, 'Start time is required'),
   cutoffTime: z.string().min(1, 'Cutoff time is required'),
+  endTime: z.string().min(1, 'End time is required'),
   location: z.string().min(2, 'Location must be at least 2 characters long'),
 })

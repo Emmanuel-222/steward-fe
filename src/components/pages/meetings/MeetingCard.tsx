@@ -3,9 +3,9 @@ import {
   Clock3,
   Pencil,
   Eye,
-  Search,
   Settings2,
   Trash2,
+  MapPinHouse,
 } from 'lucide-react'
 import type { Meeting } from '../../../features/meetings/types'
 
@@ -44,7 +44,7 @@ function MeetingCard({ meeting, onEdit, onDelete }: MeetingCardProps) {
           <span>{meeting.time}</span>
         </div>
         <div className="flex items-center gap-3">
-          <Search className="h-4 w-4 text-slate-400" />
+          <MapPinHouse className="h-4 w-4 text-slate-400" />
           <span>{meeting.location}</span>
         </div>
       </div>

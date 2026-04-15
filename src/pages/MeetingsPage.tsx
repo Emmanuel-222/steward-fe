@@ -1,75 +1,81 @@
-import { CalendarDays, Plus } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import MeetingCard from '../components/pages/meetings/MeetingCard'
-import MeetingScheduleCard from '../components/pages/meetings/MeetingScheduleCard'
-import MeetingsTabs from '../components/pages/meetings/MeetingsTabs'
-import ScheduleMeetingModal from '../components/pages/meetings/ScheduleMeetingModal'
-import DashboardPageHeader from '../components/shared/DashboardPageHeader'
-import FloatingActionButton from '../components/shared/FloatingActionButton'
-import useCreateMeetingMutation from '../features/meetings/hooks/useCreateMeetingMutation'
-import useDeleteMeetingMutation from '../features/meetings/hooks/useDeleteMeetingMutation'
-import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
-import useUpdateMeetingMutation from '../features/meetings/hooks/useUpdateMeetingMutation'
-import type { CreateMeetingValues, Meeting, UpdateMeetingValues } from '../features/meetings/types'
+import { CalendarDays, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import MeetingCard from "../components/pages/meetings/MeetingCard";
+import MeetingScheduleCard from "../components/pages/meetings/MeetingScheduleCard";
+import MeetingsTabs from "../components/pages/meetings/MeetingsTabs";
+import ScheduleMeetingModal from "../components/pages/meetings/ScheduleMeetingModal";
+import DashboardPageHeader from "../components/shared/DashboardPageHeader";
+import FloatingActionButton from "../components/shared/FloatingActionButton";
+import useCreateMeetingMutation from "../features/meetings/hooks/useCreateMeetingMutation";
+import useDeleteMeetingMutation from "../features/meetings/hooks/useDeleteMeetingMutation";
+import useMeetingsQuery from "../features/meetings/hooks/useMeetingsQuery";
+import useUpdateMeetingMutation from "../features/meetings/hooks/useUpdateMeetingMutation";
+import type {
+  CreateMeetingValues,
+  Meeting,
+  UpdateMeetingValues,
+} from "../features/meetings/types";
 
-const tabs = ['All Meetings', 'Upcoming', 'Completed', 'Archived']
+const tabs = ["All Meetings", "Upcoming", "Completed", "Archived"];
 
 function MeetingsPage() {
-  const [activeTab, setActiveTab] = useState('All Meetings')
-  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
-  const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null)
-  const [deletingMeeting, setDeletingMeeting] = useState<Meeting | null>(null)
-  const meetingsQuery = useMeetingsQuery()
-  const createMeetingMutation = useCreateMeetingMutation()
-  const updateMeetingMutation = useUpdateMeetingMutation()
-  const deleteMeetingMutation = useDeleteMeetingMutation()
-  const meetings = meetingsQuery.data ?? []
+  const [activeTab, setActiveTab] = useState("All Meetings");
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
+  const [deletingMeeting, setDeletingMeeting] = useState<Meeting | null>(null);
+  const meetingsQuery = useMeetingsQuery();
+  const createMeetingMutation = useCreateMeetingMutation();
+  const updateMeetingMutation = useUpdateMeetingMutation();
+  const deleteMeetingMutation = useDeleteMeetingMutation();
+  const meetings = meetingsQuery.data ?? [];
   const filteredMeetings =
-    activeTab === 'All Meetings'
+    activeTab === "All Meetings"
       ? meetings
-      : meetings.filter((meeting) => meeting.status === activeTab.replace('All ', ''))
+      : meetings.filter(
+          (meeting) => meeting.status === activeTab.replace("All ", ""),
+        );
 
   useEffect(() => {
     if (!isScheduleModalOpen && !deletingMeeting) {
-      return undefined
+      return undefined;
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsScheduleModalOpen(false)
-        setEditingMeeting(null)
-        setDeletingMeeting(null)
+      if (event.key === "Escape") {
+        setIsScheduleModalOpen(false);
+        setEditingMeeting(null);
+        setDeletingMeeting(null);
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown);
 
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [deletingMeeting, isScheduleModalOpen])
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [deletingMeeting, isScheduleModalOpen]);
 
   const handleCreateMeeting = async (values: CreateMeetingValues) => {
-    await createMeetingMutation.mutateAsync(values)
-  }
+    await createMeetingMutation.mutateAsync(values);
+  };
 
   const handleUpdateMeeting = async (values: UpdateMeetingValues) => {
     if (!editingMeeting) {
-      return
+      return;
     }
 
     await updateMeetingMutation.mutateAsync({
       id: editingMeeting.id,
       payload: values,
-    })
-  }
+    });
+  };
 
   const handleDeleteMeeting = async () => {
     if (!deletingMeeting) {
-      return
+      return;
     }
 
-    await deleteMeetingMutation.mutateAsync(deletingMeeting.id)
-    setDeletingMeeting(null)
-  }
+    await deleteMeetingMutation.mutateAsync(deletingMeeting.id);
+    setDeletingMeeting(null);
+  };
 
   return (
     <>
@@ -114,7 +120,9 @@ function MeetingsPage() {
                   Create your first meeting to start tracking attendance.
                 </p>
               </div>
-              <MeetingScheduleCard onClick={() => setIsScheduleModalOpen(true)} />
+              <MeetingScheduleCard
+                onClick={() => setIsScheduleModalOpen(true)}
+              />
             </div>
           ) : (
             <>
@@ -124,8 +132,8 @@ function MeetingsPage() {
                     key={meeting.id}
                     meeting={meeting}
                     onEdit={(selectedMeeting) => {
-                      setEditingMeeting(selectedMeeting)
-                      setIsScheduleModalOpen(true)
+                      setEditingMeeting(selectedMeeting);
+                      setIsScheduleModalOpen(true);
                     }}
                     onDelete={setDeletingMeeting}
                   />
@@ -138,13 +146,15 @@ function MeetingsPage() {
                     key={meeting.id}
                     meeting={meeting}
                     onEdit={(selectedMeeting) => {
-                      setEditingMeeting(selectedMeeting)
-                      setIsScheduleModalOpen(true)
+                      setEditingMeeting(selectedMeeting);
+                      setIsScheduleModalOpen(true);
                     }}
                     onDelete={setDeletingMeeting}
                   />
                 ))}
-                <MeetingScheduleCard onClick={() => setIsScheduleModalOpen(true)} />
+                <MeetingScheduleCard
+                  onClick={() => setIsScheduleModalOpen(true)}
+                />
               </div>
             </>
           )}
@@ -157,21 +167,31 @@ function MeetingsPage() {
         />
       </div>
 
-      <ScheduleMeetingModal
-        open={isScheduleModalOpen}
-        onClose={() => {
-          setIsScheduleModalOpen(false)
-          setEditingMeeting(null)
-        }}
-        onSubmit={editingMeeting ? handleUpdateMeeting : handleCreateMeeting}
-        isSubmitting={
-          editingMeeting
-            ? updateMeetingMutation.isPending
-            : createMeetingMutation.isPending
-        }
-        mode={editingMeeting ? 'edit' : 'create'}
-        meeting={editingMeeting}
-      />
+      {editingMeeting ? (
+        <ScheduleMeetingModal
+          open={isScheduleModalOpen}
+          onClose={() => {
+            setIsScheduleModalOpen(false);
+            setEditingMeeting(null);
+          }}
+          onSubmit={handleUpdateMeeting}
+          isSubmitting={updateMeetingMutation.isPending}
+          mode="edit"
+          meeting={editingMeeting}
+        />
+      ) : (
+        <ScheduleMeetingModal
+          open={isScheduleModalOpen}
+          onClose={() => {
+            setIsScheduleModalOpen(false);
+            setEditingMeeting(null);
+          }}
+          onSubmit={handleCreateMeeting}
+          isSubmitting={createMeetingMutation.isPending}
+          mode="create"
+          meeting={null}
+        />
+      )}
 
       {deletingMeeting ? (
         <div
@@ -192,7 +212,7 @@ function MeetingsPage() {
               Delete Meeting
             </h3>
             <p className="mt-3 text-sm leading-6 text-slate-500">
-              Are you sure you want to delete{' '}
+              Are you sure you want to delete{" "}
               <span className="font-semibold text-slate-700">
                 {deletingMeeting.title}
               </span>
@@ -213,14 +233,14 @@ function MeetingsPage() {
                 disabled={deleteMeetingMutation.isPending}
                 className="rounded-xl bg-[#d92d20] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#b42318] disabled:cursor-not-allowed disabled:opacity-70"
               >
-                {deleteMeetingMutation.isPending ? 'Deleting...' : 'Delete'}
+                {deleteMeetingMutation.isPending ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
         </div>
       ) : null}
     </>
-  )
+  );
 }
 
-export default MeetingsPage
+export default MeetingsPage;
