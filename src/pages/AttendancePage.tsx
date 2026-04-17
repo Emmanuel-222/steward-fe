@@ -1,8 +1,10 @@
 import { Check, TimerReset, X } from 'lucide-react'
+import AttendanceEmptyState from '../components/pages/attendance/AttendanceEmptyState'
 import AttendanceHero from '../components/pages/attendance/AttendanceHero'
 import AttendanceInsightBanner from '../components/pages/attendance/AttendanceInsightBanner'
 import AttendanceRegistrySection from '../components/pages/attendance/AttendanceRegistrySection'
 import AttendanceStatsSection from '../components/pages/attendance/AttendanceStatsSection'
+import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
 
 const stats = [
   {
@@ -85,9 +87,38 @@ const attendanceRows = [
 ]
 
 function AttendancePage() {
+  const meetingsQuery = useMeetingsQuery()
+  const meetings = meetingsQuery.data ?? []
+  const activeMeeting =
+    meetings.find((meeting) => meeting.status === 'Ongoing') ?? null
+
+  if (meetingsQuery.isLoading) {
+    return (
+      <div className="rounded-[30px] border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
+        Checking active meeting...
+      </div>
+    )
+  }
+
+  if (meetingsQuery.isError) {
+    return (
+      <div className="rounded-[30px] border border-rose-200 bg-rose-50 px-6 py-10 text-center text-sm text-rose-600 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
+        Unable to load attendance right now.
+      </div>
+    )
+  }
+
+  if (!activeMeeting) {
+    return (
+      <div className="space-y-8">
+        <AttendanceEmptyState />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8">
-      <AttendanceHero />
+      <AttendanceHero meeting={activeMeeting} />
       <AttendanceStatsSection stats={stats} />
       <AttendanceRegistrySection filters={filters} rows={attendanceRows} />
       <AttendanceInsightBanner />

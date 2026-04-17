@@ -1,20 +1,25 @@
 import { CalendarDays, Check, ChevronDown, Clock3, Shield } from 'lucide-react'
+import type { Meeting } from '../../../features/meetings/types'
 
-function AttendanceHero() {
+type AttendanceHeroProps = {
+  meeting: Meeting
+}
+
+function AttendanceHero({ meeting }: AttendanceHeroProps) {
   return (
     <section className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
       <div className="space-y-3">
         <h2 className="text-3xl font-semibold tracking-tight text-[#0f2d52] sm:text-4xl">
-          Sunday Morning Service
+          {meeting.title}
         </h2>
         <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
           <span className="inline-flex items-center gap-2">
             <CalendarDays className="h-4 w-4" />
-            October 22, 2023
+            {meeting.date}
           </span>
           <span className="inline-flex items-center gap-2">
             <Clock3 className="h-4 w-4" />
-            08:30 AM
+            {meeting.time}
           </span>
         </div>
       </div>
@@ -32,7 +37,7 @@ function AttendanceHero() {
               Active Meeting
             </p>
             <p className="truncate text-sm font-semibold text-slate-800">
-              Main Sanctuary Steward Shift
+              {meeting.title}
             </p>
           </div>
           <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />

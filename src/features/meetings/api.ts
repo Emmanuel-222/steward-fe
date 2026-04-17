@@ -2,8 +2,8 @@ import api from '../../services/axios'
 import type { CreateMeetingValues, Meeting, UpdateMeetingValues } from './types'
 
 const statusToneMap: Record<string, string> = {
-  Active: 'bg-emerald-100 text-emerald-700',
   Upcoming: 'bg-sky-100 text-sky-700',
+  Ongoing: 'bg-emerald-100 text-emerald-700',
   Completed: 'bg-rose-100 text-rose-700',
   Archived: 'bg-slate-200 text-slate-700',
 }
@@ -31,7 +31,13 @@ function formatTime(value: unknown) {
     return ''
   }
 
-  const parsed = new Date(`1970-01-01T${value}`)
+  const normalizedTime = normalizeTimeValue(value)
+
+  if (!normalizedTime) {
+    return value
+  }
+
+  const parsed = new Date(`1970-01-01T${normalizedTime}`)
 
   if (Number.isNaN(parsed.getTime())) {
     return value
@@ -43,40 +49,138 @@ function formatTime(value: unknown) {
   })
 }
 
-function normalizeStatus(rawMeeting: Record<string, unknown>) {
-  const explicitStatus = String(rawMeeting.status ?? "").trim();
-
-  if (explicitStatus) {
-    return (
-      explicitStatus.charAt(0).toUpperCase() +
-      explicitStatus.slice(1).toLowerCase()
-    );
+function getRawDate(rawMeeting: Record<string, unknown>) {
+  const dateValue = rawMeeting.date ?? rawMeeting.meetingDate
+  if (typeof dateValue !== 'string') {
+    return ''
   }
 
-  const date = rawMeeting.date;
-  const startTime = rawMeeting.startTime;
-  const endTime = rawMeeting.endTime;
+  const trimmed = dateValue.trim()
 
-  if (
-    typeof date === "string" &&
-    typeof startTime === "string" &&
-    typeof endTime === "string"
-  ) {
-    const start = new Date(`${date} ${startTime}`);
-    const end = new Date(`${date} ${endTime}`);
-    const now = new Date();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    return trimmed
+  }
 
-    if (
-      !Number.isNaN(start.getTime()) &&
-      !Number.isNaN(end.getTime())
-    ) {
-      if (now < start) return "Upcoming";
-      if (now >= start && now <= end) return "Ongoing";
-      if (now > end) return "Completed";
+  const isoDateMatch = trimmed.match(/^(\d{4}-\d{2}-\d{2})/)
+  if (isoDateMatch) {
+    return isoDateMatch[1]
+  }
+
+  const parsed = new Date(trimmed)
+
+  if (Number.isNaN(parsed.getTime())) {
+    return trimmed
+  }
+
+  const year = parsed.getFullYear()
+  const month = String(parsed.getMonth() + 1).padStart(2, '0')
+  const day = String(parsed.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+function normalizeTimeValue(value: unknown) {
+  if (typeof value !== 'string') {
+    return ''
+  }
+
+  const trimmed = value.trim().toUpperCase()
+
+  if (!trimmed) {
+    return ''
+  }
+
+  const twentyFourHourMatch = trimmed.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/)
+  if (twentyFourHourMatch) {
+    const [, hours, minutes, seconds = '00'] = twentyFourHourMatch
+    return `${hours.padStart(2, '0')}:${minutes}:${seconds}`
+  }
+
+  const meridiemMatch = trimmed.match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/)
+  if (!meridiemMatch) {
+    return ''
+  }
+
+  const [hours, minutes, meridiem] = meridiemMatch
+  let numericHours = Number(hours)
+
+  if (meridiem === 'AM') {
+    if (numericHours === 12) {
+      numericHours = 0
+    }
+  } else if (numericHours !== 12) {
+    numericHours += 12
+  }
+
+  return `${String(numericHours).padStart(2, '0')}:${minutes}:00`
+}
+
+function getRawTime(...values: unknown[]) {
+  const firstMatch = values.find(
+    (value) => typeof value === 'string' && value.trim().length > 0,
+  )
+
+  if (typeof firstMatch !== 'string') {
+    return ''
+  }
+
+  const normalized = normalizeTimeValue(firstMatch)
+  return normalized ? normalized.slice(0, 5) : firstMatch.trim()
+}
+
+function normalizeExplicitStatus(value: unknown) {
+  const normalized = String(value ?? '').trim().toLowerCase()
+
+  if (!normalized) {
+    return ''
+  }
+
+  if (normalized === 'ongoing' || normalized === 'ungoing') {
+    return 'Ongoing'
+  }
+
+  if (normalized === 'upcoming') {
+    return 'Upcoming'
+  }
+
+  if (normalized === 'completed') {
+    return 'Completed'
+  }
+
+  if (normalized === 'archived') {
+    return 'Archived'
+  }
+
+  return (
+    normalized.charAt(0).toUpperCase() +
+    normalized.slice(1)
+  )
+}
+
+function normalizeStatus(rawMeeting: Record<string, unknown>) {
+  const date = getRawDate(rawMeeting)
+  const startTime = getRawTime(rawMeeting.startTime, rawMeeting.time, rawMeeting.start)
+  const endTime = getRawTime(
+    rawMeeting.endTime,
+    rawMeeting.cutoffTime,
+    rawMeeting.end,
+  )
+
+  if (date && startTime && endTime) {
+    const start = new Date(`${date}T${startTime}`)
+    const end = new Date(`${date}T${endTime}`)
+    const now = new Date()
+
+    if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+      if (now < start) return 'Upcoming'
+      if (now >= start && now <= end) return 'Ongoing'
+      if (now > end) return 'Completed'
     }
   }
 
-  return "Completed";
+  const explicitStatus = normalizeExplicitStatus(rawMeeting.status)
+
+  return explicitStatus || 'Completed'
 }
 
 function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
@@ -97,11 +201,20 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
     rawMeeting.subtitle ?? rawMeeting.description ?? 'Registry meeting session',
   )
   const status = normalizeStatus(rawMeeting)
-  const startTime =
-    formatTime(rawMeeting.startTime ?? rawMeeting.time ?? rawMeeting.start)
-  const cutoffTime = formatTime(
-    rawMeeting.cutoffTime ?? rawMeeting.endTime ?? rawMeeting.cutoff,
+  const rawDate = getRawDate(rawMeeting)
+  const rawStartTime = getRawTime(
+    rawMeeting.startTime,
+    rawMeeting.time,
+    rawMeeting.start,
   )
+  const rawCutoffTime = getRawTime(rawMeeting.cutoffTime, rawMeeting.cutoff)
+  const rawEndTime = getRawTime(
+    rawMeeting.endTime,
+    rawMeeting.end,
+    rawMeeting.cutoffTime,
+  )
+  const startTime = formatTime(rawStartTime)
+  const endTime = formatTime(rawEndTime)
   const present = rawMeeting.presentCount ?? rawMeeting.present
   const absent = rawMeeting.absentCount ?? rawMeeting.absent
 
@@ -111,11 +224,11 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
     statusTone: statusToneMap[status] ?? 'bg-slate-100 text-slate-700',
     title,
     subtitle,
-    date: formatDate(rawMeeting.date ?? rawMeeting.meetingDate ?? rawMeeting.createdAt),
+    date: formatDate(rawDate || rawMeeting.createdAt),
     time:
-      startTime && cutoffTime
-        ? `${startTime} - ${cutoffTime}`
-        : startTime || cutoffTime || 'Time not set',
+      startTime && endTime
+        ? `${startTime} - ${endTime}`
+        : startTime || endTime || 'Time not set',
     location: String(rawMeeting.location ?? rawMeeting.venue ?? 'Location not set'),
     present: typeof present === 'number' ? present : null,
     absent: typeof absent === 'number' ? absent : null,
@@ -123,6 +236,10 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
       ? 'View Attendance'
       : 'Prepare Check-in',
     secondaryAction: 'Edit',
+    rawDate,
+    rawStartTime,
+    rawCutoffTime,
+    rawEndTime,
   }
 }
 

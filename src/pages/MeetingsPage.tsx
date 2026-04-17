@@ -16,7 +16,7 @@ import type {
   UpdateMeetingValues,
 } from "../features/meetings/types";
 
-const tabs = ["All Meetings", "Upcoming", "Completed", "Archived"];
+const tabs = ["All Meetings", "Upcoming", "Ongoing", "Completed", "Archived"];
 
 function MeetingsPage() {
   const [activeTab, setActiveTab] = useState("All Meetings");
