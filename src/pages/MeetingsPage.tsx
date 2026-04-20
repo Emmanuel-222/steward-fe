@@ -10,6 +10,7 @@ import useCreateMeetingMutation from "../features/meetings/hooks/useCreateMeetin
 import useDeleteMeetingMutation from "../features/meetings/hooks/useDeleteMeetingMutation";
 import useMeetingsQuery from "../features/meetings/hooks/useMeetingsQuery";
 import useUpdateMeetingMutation from "../features/meetings/hooks/useUpdateMeetingMutation";
+import { useToast } from "../hooks/useToast";
 import type {
   CreateMeetingValues,
   Meeting,
@@ -19,6 +20,7 @@ import type {
 const tabs = ["All Meetings", "Upcoming", "Ongoing", "Completed", "Archived"];
 
 function MeetingsPage() {
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState("All Meetings");
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
@@ -54,27 +56,41 @@ function MeetingsPage() {
   }, [deletingMeeting, isScheduleModalOpen]);
 
   const handleCreateMeeting = async (values: CreateMeetingValues) => {
-    await createMeetingMutation.mutateAsync(values);
+    try {
+      await createMeetingMutation.mutateAsync(values);
+      showToast("Meeting scheduled successfully", "success");
+      setIsScheduleModalOpen(false);
+    } catch (error) {
+      showToast("Failed to schedule meeting", "error");
+    }
   };
 
   const handleUpdateMeeting = async (values: UpdateMeetingValues) => {
-    if (!editingMeeting) {
-      return;
-    }
+    if (!editingMeeting) return;
 
-    await updateMeetingMutation.mutateAsync({
-      id: editingMeeting.id,
-      payload: values,
-    });
+    try {
+      await updateMeetingMutation.mutateAsync({
+        id: editingMeeting.id,
+        payload: values,
+      });
+      showToast("Meeting details updated", "success");
+      setIsScheduleModalOpen(false);
+      setEditingMeeting(null);
+    } catch (error) {
+      showToast("Failed to update meeting", "error");
+    }
   };
 
   const handleDeleteMeeting = async () => {
-    if (!deletingMeeting) {
-      return;
-    }
+    if (!deletingMeeting) return;
 
-    await deleteMeetingMutation.mutateAsync(deletingMeeting.id);
-    setDeletingMeeting(null);
+    try {
+      await deleteMeetingMutation.mutateAsync(deletingMeeting.id);
+      showToast("Meeting session deleted", "success");
+      setDeletingMeeting(null);
+    } catch (error) {
+      showToast("Failed to delete meeting", "error");
+    }
   };
 
   return (

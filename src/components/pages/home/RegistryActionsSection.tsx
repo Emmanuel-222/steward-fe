@@ -5,6 +5,7 @@ type QuickAction = {
   label: string
   icon: LucideIcon
   emphasized?: boolean
+  onClick?: () => void
 }
 
 type RegistryActionsSectionProps = {
@@ -24,6 +25,7 @@ function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
             <button
               key={action.label}
               type="button"
+              onClick={action.onClick}
               className={[
                 'flex w-full items-center justify-between rounded-2xl border px-5 py-4 text-left transition',
                 action.emphasized

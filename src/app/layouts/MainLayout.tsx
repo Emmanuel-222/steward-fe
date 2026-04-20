@@ -68,10 +68,10 @@ function MainLayout() {
             onClick={closeMobileNav}
             className={({ isActive }) =>
               [
-                'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition',
+                'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200',
                 isActive
-                  ? 'bg-white text-[#0f2d52] shadow-sm'
-                  : 'text-slate-500 hover:bg-white/70 hover:text-slate-800',
+                  ? 'bg-[#0f2d52] text-white shadow-[0_12px_24px_rgba(15,45,82,0.2)]'
+                  : 'text-slate-500 hover:bg-white/80 hover:text-[#0f2d52]',
               ].join(' ')
             }
           >
@@ -119,7 +119,7 @@ function MainLayout() {
       </div>
 
       <div className="grid min-h-screen lg:grid-cols-[260px_1fr]">
-        <aside className="hidden min-h-screen flex-col border-r border-slate-200 bg-[#eef3f9] lg:flex">
+        <aside className="hidden min-h-screen flex-col border-r border-slate-200 bg-[#eef3f9] lg:flex text-[#0f2d52]">
           {sidebarContent}
         </aside>
 
@@ -131,19 +131,22 @@ function MainLayout() {
         </div>
       </div>
 
-      {isMobileNavOpen ? (
-        <div className="fixed inset-0 z-40 bg-slate-950/30 lg:hidden">
-          <aside className="flex h-full w-[86%] max-w-[320px] flex-col bg-[#eef3f9] shadow-[0_24px_60px_rgba(15,23,42,0.24)]">
-            {sidebarContent}
-          </aside>
-          <button
-            type="button"
-            onClick={closeMobileNav}
-            className="absolute inset-0 -z-10"
-            aria-label="Close navigation overlay"
-          />
-        </div>
-      ) : null}
+      {/* Mobile Drawer */}
+      <div 
+        className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ${
+          isMobileNavOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px]" onClick={closeMobileNav} />
+        
+        <aside 
+          className={`relative flex h-full w-[86%] max-w-[320px] flex-col bg-[#eef3f9] shadow-[0_24px_60px_rgba(15,23,42,0.24)] transition-transform duration-300 ease-out ${
+            isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {sidebarContent}
+        </aside>
+      </div>
     </div>
   )
 }

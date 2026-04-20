@@ -12,6 +12,7 @@ import useCreateStewardMutation from '../features/stewards/hooks/useCreateStewar
 import useDeleteStewardMutation from '../features/stewards/hooks/useDeleteStewardMutation'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import useUpdateStewardMutation from '../features/stewards/hooks/useUpdateStewardMutation'
+import { useToast } from '../hooks/useToast'
 import type {
   CreateStewardValues,
   Steward,
@@ -19,6 +20,7 @@ import type {
 } from '../features/stewards/types'
 
 function StewardsPage() {
+  const { showToast } = useToast()
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState('All Roles')
@@ -84,31 +86,45 @@ function StewardsPage() {
   }
 
   const handleCreateSteward = async (values: CreateStewardValues) => {
-    await createStewardMutation.mutateAsync(values)
+    try {
+      await createStewardMutation.mutateAsync(values)
+      showToast('Steward added successfully', 'success')
+      setIsAddUserModalOpen(false)
+    } catch (error) {
+      showToast('Failed to add steward', 'error')
+    }
   }
 
   const handleUpdateSteward = async (values: UpdateStewardValues) => {
-    if (!modalSteward) {
-      return
-    }
+    if (!modalSteward) return
 
-    await updateStewardMutation.mutateAsync({
-      id: modalSteward.id,
-      payload: values,
-    })
+    try {
+      await updateStewardMutation.mutateAsync({
+        id: modalSteward.id,
+        payload: values,
+      })
+      showToast('Steward updated successfully', 'success')
+      setIsEditModalOpen(false)
+      setModalStewardId(null)
+    } catch (error) {
+      showToast('Failed to update steward', 'error')
+    }
   }
 
   const handleDeleteConfirmed = async () => {
-    if (!modalSteward) {
-      return
-    }
+    if (!modalSteward) return
 
-    await deleteStewardMutation.mutateAsync(modalSteward.id)
-    if (profileStewardId === modalSteward.id) {
-      setProfileStewardId(null)
+    try {
+      await deleteStewardMutation.mutateAsync(modalSteward.id)
+      if (profileStewardId === modalSteward.id) {
+        setProfileStewardId(null)
+      }
+      showToast('Steward removed from registry', 'success')
+      setIsDeleteModalOpen(false)
+      setModalStewardId(null)
+    } catch (error) {
+      showToast('Failed to delete steward', 'error')
     }
-    setIsDeleteModalOpen(false)
-    setModalStewardId(null)
   }
 
   return (

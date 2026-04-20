@@ -1,13 +1,13 @@
 function AppHeader() {
   return (
-    <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 border-b border-slate-200/60 bg-white/80 px-4 py-4 backdrop-blur-md sm:px-6 lg:px-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
-            Steward Registry
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
+            System Console
           </p>
-          <h1 className="truncate text-lg font-semibold text-slate-900">
-            Registry Console
+          <h1 className="truncate text-xl font-bold tracking-tight text-slate-900">
+            Steward Registry
           </h1>
         </div>
 

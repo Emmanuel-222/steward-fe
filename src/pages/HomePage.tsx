@@ -1,119 +1,110 @@
 import {
-  CalendarDays,
   CirclePlus,
   ClipboardCheck,
-  ShieldCheck,
   UserPlus,
-  Users,
 } from 'lucide-react'
-import DashboardPageHeader from '../components/shared/DashboardPageHeader'
-import FloatingActionButton from '../components/shared/FloatingActionButton'
+import { useNavigate } from 'react-router-dom'
 import HomeStatsSection from '../components/pages/home/HomeStatsSection'
 import RecentMeetingsSection from '../components/pages/home/RecentMeetingsSection'
 import RegistryActionsSection from '../components/pages/home/RegistryActionsSection'
-
-const stats = [
-  {
-    label: 'Total Stewards',
-    value: '1,248',
-    detail: '+12%',
-    tone: 'text-emerald-600',
-  },
-  {
-    label: 'Total Meetings',
-    value: '84',
-    detail: '8 scheduled this week',
-    tone: 'text-slate-500',
-  },
-  {
-    label: "Today's Meeting",
-    value: '02',
-    detail: 'In Progress',
-    tone: 'text-emerald-600',
-  },
-  {
-    label: 'Attendance Rate',
-    value: '94.2%',
-    detail: 'Consistent since Sept',
-    tone: 'text-slate-500',
-  },
-]
-
-const recentMeetings = [
-  {
-    title: 'Monthly General Assembly',
-    meta: '22nd Oct 2023 · Auditorium A',
-    present: 312,
-    absent: 12,
-    status: 'Completed',
-    icon: CalendarDays,
-  },
-  {
-    title: 'Steward Onboarding Session',
-    meta: '20th Oct 2023 · Zoom Meeting',
-    present: 45,
-    absent: 3,
-    status: 'Completed',
-    icon: Users,
-  },
-  {
-    title: 'Regional Coordinators Sync',
-    meta: '18th Oct 2023 · Conference Room 2',
-    present: 28,
-    absent: 0,
-    status: 'Full Attendance',
-    icon: Users,
-  },
-  {
-    title: 'Safety Protocol Briefing',
-    meta: '15th Oct 2023 · Main Hall',
-    present: 198,
-    absent: 22,
-    status: 'Completed',
-    icon: ShieldCheck,
-  },
-  {
-    title: 'Drafting Committee Meet',
-    meta: '12th Oct 2023 · Office 12',
-    present: 15,
-    absent: 1,
-    status: 'Completed',
-    icon: ClipboardCheck,
-  },
-]
-
-const quickActions = [
-  {
-    label: 'Mark Attendance',
-    icon: ClipboardCheck,
-    emphasized: true,
-  },
-  {
-    label: 'Add New Steward',
-    icon: UserPlus,
-  },
-  {
-    label: 'Create Meeting',
-    icon: CirclePlus,
-  },
-]
+import DashboardPageHeader from '../components/shared/DashboardPageHeader'
+import FloatingActionButton from '../components/shared/FloatingActionButton'
+import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
+import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 
 function HomePage() {
+  const navigate = useNavigate()
+  const stewardsQuery = useStewardsQuery('')
+  const meetingsQuery = useMeetingsQuery()
+
+  const stewards = stewardsQuery.data ?? []
+  const meetings = meetingsQuery.data ?? []
+
+  const ongoingMeeting = meetings.find((m) => m.status === 'Ongoing')
+  
+  // Basic rate calculation: average of present rate across all completed meetings
+  const completedMeetings = meetings.filter((m) => m.status === 'Completed')
+  const totalCompleted = completedMeetings.length
+  const avgRate = totalCompleted > 0 
+    ? Math.round(completedMeetings.reduce((acc, m) => acc + (m.present ?? 0), 0) / (totalCompleted * (stewards.length || 1)) * 100)
+    : 0
+
+  const stats = [
+    {
+      label: 'Total Stewards',
+      value: stewards.length.toString(),
+      detail: 'Live count',
+      tone: 'text-emerald-600',
+    },
+    {
+      label: 'Total Meetings',
+      value: meetings.length.toString(),
+      detail: 'Historical total',
+      tone: 'text-slate-500',
+    },
+    {
+      label: "Active Session",
+      value: ongoingMeeting ? '01' : '00',
+      detail: ongoingMeeting ? 'In Progress' : 'No active meeting',
+      tone: ongoingMeeting ? 'text-emerald-600' : 'text-slate-400',
+    },
+    {
+      label: 'Engagement Rate',
+      value: `${avgRate}%`,
+      detail: 'Average present',
+      tone: 'text-slate-500',
+    },
+  ]
+
+  const quickActions = [
+    {
+      label: 'Mark Attendance',
+      icon: ClipboardCheck,
+      emphasized: true,
+      onClick: () => navigate('/dashboard/attendance'),
+    },
+    {
+      label: 'Add New Steward',
+      icon: UserPlus,
+      onClick: () => navigate('/dashboard/stewards'),
+    },
+    {
+      label: 'Create Meeting',
+      icon: CirclePlus,
+      onClick: () => navigate('/dashboard/meetings'),
+    },
+  ]
+
+  const recentMeetings = [...meetings]
+    .sort((a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime())
+    .slice(0, 5)
+
   return (
     <div className="space-y-8">
       <DashboardPageHeader
         title="Overview"
-        description="Monitoring registry activity for Monday, Oct 23rd."
+        description={`Monitoring registry activity for ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}.`}
       />
 
-      <HomeStatsSection stats={stats} />
+      <HomeStatsSection 
+        stats={stats} 
+        isLoading={stewardsQuery.isLoading || meetingsQuery.isLoading} 
+      />
 
       <section className="grid gap-6 xl:grid-cols-[1.5fr_0.9fr]">
-        <RecentMeetingsSection meetings={recentMeetings} />
+        <RecentMeetingsSection 
+          meetings={recentMeetings} 
+          isLoading={meetingsQuery.isLoading}
+          onViewAll={() => navigate('/dashboard/meetings')}
+        />
         <RegistryActionsSection actions={quickActions} />
       </section>
 
-      <FloatingActionButton icon={CirclePlus} label="Quick action" />
+      <FloatingActionButton 
+        icon={CirclePlus} 
+        label="Quick action" 
+        onClick={() => navigate('/dashboard/meetings')}
+      />
     </div>
   )
 }
