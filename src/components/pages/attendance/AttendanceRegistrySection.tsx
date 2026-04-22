@@ -10,6 +10,7 @@ type AttendanceRegistrySectionProps = {
   onFilterChange: (filter: string) => void
   onMarkPresent: (userId: string) => void
   markingUserId: string | null
+  isCutoffPassed?: boolean
 }
 
 function AttendanceRegistrySection({
@@ -19,6 +20,7 @@ function AttendanceRegistrySection({
   onFilterChange,
   onMarkPresent,
   markingUserId,
+  isCutoffPassed = false,
 }: AttendanceRegistrySectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -123,10 +125,12 @@ function AttendanceRegistrySection({
                     className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
                       isPresent
                         ? 'bg-emerald-100 text-emerald-700'
+                        : (entry.status === 'Absent' || (entry.status === 'Unmarked' && isCutoffPassed))
+                        ? 'bg-rose-100 text-rose-700'
                         : 'bg-slate-100 text-slate-600'
                     }`}
                   >
-                    {entry.status}
+                    {entry.status === 'Unmarked' && isCutoffPassed ? 'Absent' : entry.status}
                   </span>
                 </div>
 
@@ -134,6 +138,10 @@ function AttendanceRegistrySection({
                   {isPresent ? (
                     <span className="text-sm text-slate-400">
                       Checked in{entry.markedAt ? ` at ${entry.markedAt}` : ''}
+                    </span>
+                  ) : entry.status === 'Absent' || (entry.status === 'Unmarked' && isCutoffPassed) ? (
+                    <span className="text-sm font-medium text-rose-600">
+                      {entry.status === 'Absent' ? 'Marked Absent' : 'Cutoff Passed'}
                     </span>
                   ) : (
                     <button

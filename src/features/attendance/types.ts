@@ -13,7 +13,7 @@ export type AttendanceRecord = {
 /** A steward merged with their attendance status for a specific meeting */
 export type MeetingAttendanceEntry = {
   steward: Steward
-  status: 'Present' | 'Unmarked'
+  status: 'Present' | 'Unmarked' | 'Absent'
   markedAt: string | null
 }
 

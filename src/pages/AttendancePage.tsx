@@ -52,6 +52,11 @@ function AttendancePage() {
   const entries = attendanceData?.entries ?? []
   const statsData = attendanceData?.stats
 
+  const cutoffDate = activeMeeting?.rawDate && activeMeeting?.rawCutoffTime
+    ? new Date(`${activeMeeting.rawDate}T${activeMeeting.rawCutoffTime}`)
+    : null
+  const isCutoffPassed = cutoffDate ? new Date() > cutoffDate : false
+
   const filteredEntries = entries.filter((entry) => {
     if (activeFilter === 'Present Only') return entry.status === 'Present'
     if (activeFilter === 'Unmarked Only') return entry.status === 'Unmarked'
@@ -115,6 +120,7 @@ function AttendancePage() {
         onFilterChange={setActiveFilter}
         onMarkPresent={handleMarkPresent}
         markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
+        isCutoffPassed={isCutoffPassed}
       />
       
       <AttendanceInsightBanner 
