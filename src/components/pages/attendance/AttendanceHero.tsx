@@ -30,9 +30,9 @@ function AttendanceHero({
               {meeting.title}
             </h2>
             <div className="flex items-center gap-2 rounded-full bg-[#eff4fb] px-3 py-1.5 border border-[#dbe6f5]">
-               <div className={`h-2 w-2 rounded-full animate-pulse ${isFinalized ? 'bg-slate-400' : 'bg-emerald-500'}`} />
+               <div className={`h-2 w-2 rounded-full animate-pulse ${meeting.status === 'Ongoing' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0f2d52]">
-                  {isFinalized ? 'Session Finalized' : 'Live Session'}
+                  {meeting.status === 'Ongoing' ? 'Live Session' : meeting.status}
                </span>
             </div>
           </div>

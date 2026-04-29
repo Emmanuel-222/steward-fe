@@ -55,10 +55,11 @@ export async function getMeetingAttendance(meetingId: string) {
   return rawRecords.map((record) => normalizeRecord(record))
 }
 
-export async function markPresent(userId: string, meetingId: string) {
+export async function markPresent(userId: string, meetingId: string, status: string = 'present') {
   const { data } = await api.post('/attendance', {
     userId: Number(userId),
     meetingId: Number(meetingId),
+    status,
   })
 
   return data

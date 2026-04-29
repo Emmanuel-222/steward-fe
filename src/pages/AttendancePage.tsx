@@ -59,15 +59,25 @@ function AttendancePage() {
   const entries = attendanceData?.entries ?? []
   const statsData = attendanceData?.stats
 
-  const cutoffDate = activeMeeting?.rawDate && activeMeeting?.rawCutoffTime
-    ? new Date(`${activeMeeting.rawDate}T${activeMeeting.rawCutoffTime}`)
-    : null
-  const isCutoffPassed = cutoffDate ? new Date() > cutoffDate : false
+  const parseTime = (timeStr: string | undefined, dateStr: string | undefined) => {
+    if (!timeStr || !dateStr) return null
+    const [time, modifier] = timeStr.split(' ')
+    let [hours, minutes] = time.split(':').map(Number)
+    if (modifier === 'PM' && hours < 12) hours += 12
+    if (modifier === 'AM' && hours === 12) hours = 0
+    
+    const date = new Date(dateStr)
+    date.setHours(hours, minutes, 0, 0)
+    return date
+  }
+
+  const cutoffDate = parseTime(activeMeeting?.rawCutoffTime, activeMeeting?.rawDate)
 
   // Calculate throughput (check-ins per minute in the last 15 minutes)
   const recentCheckins = entries.filter(e => {
     if (e.status !== 'Present' || !e.markedAt) return false
-    const markedTime = new Date(`${activeMeeting?.rawDate}T${e.markedAt}`)
+    const markedTime = parseTime(e.markedAt, activeMeeting?.rawDate)
+    if (!markedTime) return false
     const diff = (new Date().getTime() - markedTime.getTime()) / (1000 * 60)
     return diff <= 15
   }).length
@@ -145,8 +155,22 @@ function AttendancePage() {
       await markPresentMutation.mutateAsync({
         userId,
         meetingId: activeMeeting.id,
+        status: 'present',
       })
       showToast('Steward marked as present', 'success')
+    } catch (error) {
+      showToast('Failed to mark attendance', 'error')
+    }
+  }
+
+  const handleMarkAbsent = async (userId: string) => {
+    try {
+      await markPresentMutation.mutateAsync({
+        userId,
+        meetingId: activeMeeting.id,
+        status: 'absent',
+      })
+      showToast('Steward marked as absent', 'success')
     } catch (error) {
       showToast('Failed to mark attendance', 'error')
     }
@@ -168,7 +192,7 @@ function AttendancePage() {
         meeting={activeMeeting} 
         onFinalize={handleFinalize}
         isFinalizing={finalizeMutation.isPending}
-        isFinalized={activeMeeting.status === 'Finalized'}
+        isFinalized={activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
       />
       
       <AttendanceStatsSection stats={stats} />
@@ -189,8 +213,9 @@ function AttendancePage() {
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
         onMarkPresent={handleMarkPresent}
+        onMarkAbsent={handleMarkAbsent}
         markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
-        isCutoffPassed={isCutoffPassed}
+        cutoffDate={cutoffDate}
         isRushMode={isRushMode}
       />
     </div>

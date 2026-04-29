@@ -8,8 +8,9 @@ type AttendanceRegistrySectionProps = {
   filters: string[]
   onFilterChange: (filter: string) => void
   onMarkPresent: (userId: string) => void
+  onMarkAbsent?: (userId: string) => void
   markingUserId: string | null
-  isCutoffPassed?: boolean
+  cutoffDate?: Date | null
   isRushMode?: boolean
 }
 
@@ -19,8 +20,9 @@ function AttendanceRegistrySection({
   filters,
   onFilterChange,
   onMarkPresent,
+  onMarkAbsent,
   markingUserId,
-  isCutoffPassed = false,
+  cutoffDate = null,
   isRushMode = false,
 }: AttendanceRegistrySectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -62,6 +64,8 @@ function AttendanceRegistrySection({
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isRushMode, searched, focusedIndex, markingUserId, onMarkPresent])
+
+  const isCutoffPassed = cutoffDate ? new Date() > cutoffDate : false
 
   return (
     <section className="space-y-6">
@@ -184,7 +188,17 @@ function AttendanceRegistrySection({
                             <span className="mt-1 text-[9px] font-bold text-slate-400 flex items-center gap-1">
                                <History className="h-3 w-3" />
                                {entry.markedAt ? `Checked in at ${entry.markedAt}` : 'Confirmed'}
-                               {entry.markedAt && isCutoffPassed && (
+                               {entry.markedAt && cutoffDate && (() => {
+                                  const [time, modifier] = entry.markedAt!.split(' ')
+                                  let [hours, minutes] = time.split(':').map(Number)
+                                  if (modifier === 'PM' && hours < 12) hours += 12
+                                  if (modifier === 'AM' && hours === 12) hours = 0
+                                  
+                                  const markedTime = new Date(cutoffDate)
+                                  markedTime.setHours(hours, minutes, 0, 0)
+                                  
+                                  return markedTime > cutoffDate
+                               })() && (
                                   <span className="ml-1 rounded bg-rose-50 px-1 py-0.5 text-[8px] font-black text-rose-600 border border-rose-100">LATE</span>
                                )}
                             </span>
@@ -226,7 +240,12 @@ function AttendanceRegistrySection({
                               )}
                               Mark Present
                             </button>
-                            <button className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition">
+                            <button 
+                              type="button"
+                              disabled={isMarking || isAbsent}
+                              onClick={() => onMarkAbsent?.(entry.steward.id)}
+                              className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
+                            >
                                <Check className="h-4 w-4 rotate-45" />
                             </button>
                          </>
