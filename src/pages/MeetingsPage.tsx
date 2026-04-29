@@ -1,5 +1,6 @@
 import { CalendarDays, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MeetingCard from "../components/pages/meetings/MeetingCard";
 import MeetingScheduleCard from "../components/pages/meetings/MeetingScheduleCard";
 import MeetingsTabs from "../components/pages/meetings/MeetingsTabs";
@@ -20,6 +21,7 @@ import type {
 const tabs = ["All Meetings", "Upcoming", "Ongoing", "Completed", "Archived"];
 
 function MeetingsPage() {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState("All Meetings");
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -29,7 +31,9 @@ function MeetingsPage() {
   const createMeetingMutation = useCreateMeetingMutation();
   const updateMeetingMutation = useUpdateMeetingMutation();
   const deleteMeetingMutation = useDeleteMeetingMutation();
-  const meetings = meetingsQuery.data ?? [];
+  const meetings = (meetingsQuery.data ?? []).sort(
+    (a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime(),
+  );
   const filteredMeetings =
     activeTab === "All Meetings"
       ? meetings
@@ -92,7 +96,9 @@ function MeetingsPage() {
       showToast("Failed to delete meeting", "error");
     }
   };
-
+  const handleAction = (meeting: Meeting) => {
+    navigate(`/dashboard/attendance/${meeting.id}`);
+  };
   return (
     <>
       <div className="space-y-8">
@@ -152,6 +158,7 @@ function MeetingsPage() {
                       setIsScheduleModalOpen(true);
                     }}
                     onDelete={setDeletingMeeting}
+                    onAction={handleAction}
                   />
                 ))}
               </div>
@@ -166,6 +173,7 @@ function MeetingsPage() {
                       setIsScheduleModalOpen(true);
                     }}
                     onDelete={setDeletingMeeting}
+                    onAction={handleAction}
                   />
                 ))}
                 <MeetingScheduleCard

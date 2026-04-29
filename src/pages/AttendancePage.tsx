@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import AttendanceEmptyState from '../components/pages/attendance/AttendanceEmptyState'
 import AttendanceHero from '../components/pages/attendance/AttendanceHero'
 import AttendanceInsightBanner from '../components/pages/attendance/AttendanceInsightBanner'
@@ -9,17 +10,19 @@ import useMeetingAttendanceQuery from '../features/attendance/hooks/useMeetingAt
 import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
 import { useToast } from '../hooks/useToast'
 
-const filters = ['All Stewards', 'Present Only', 'Unmarked Only']
+const filters = ['All Stewards', 'Present Only', 'Absent Only', 'Unmarked Only']
 
 function AttendancePage() {
+  const { meetingId } = useParams()
   const { showToast } = useToast()
   const [activeFilter, setActiveFilter] = useState('All Stewards')
   const meetingsQuery = useMeetingsQuery()
   const meetings = meetingsQuery.data ?? []
   
-  // Find the first ongoing meeting to track attendance for
-  const activeMeeting =
-    meetings.find((meeting) => meeting.status === 'Ongoing') ?? null
+  // Find the meeting to track attendance for
+  const activeMeeting = meetingId 
+    ? (meetings.find(m => m.id === meetingId) ?? null)
+    : (meetings.find((m) => m.status === 'Ongoing') ?? null)
 
   const attendanceQuery = useMeetingAttendanceQuery(activeMeeting?.id ?? null)
   const markPresentMutation = useMarkPresentMutation()
@@ -43,7 +46,7 @@ function AttendancePage() {
   if (!activeMeeting) {
     return (
       <div className="space-y-8">
-        <AttendanceEmptyState />
+        <AttendanceEmptyState meetings={meetings} />
       </div>
     )
   }
@@ -59,6 +62,7 @@ function AttendancePage() {
 
   const filteredEntries = entries.filter((entry) => {
     if (activeFilter === 'Present Only') return entry.status === 'Present'
+    if (activeFilter === 'Absent Only') return entry.status === 'Absent'
     if (activeFilter === 'Unmarked Only') return entry.status === 'Unmarked'
     return true
   })
@@ -77,6 +81,13 @@ function AttendancePage() {
       detail: `${statsData?.rate ?? '0%'} reached`,
       tone: 'text-emerald-600',
       border: 'border-emerald-100',
+    },
+    {
+      label: 'Absent',
+      value: String(statsData?.absent ?? 0),
+      detail: 'Auto-marked',
+      tone: 'text-rose-600',
+      border: 'border-rose-100',
     },
     {
       label: 'Unmarked',

@@ -70,8 +70,8 @@ function MainLayout() {
               [
                 'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200',
                 isActive
-                  ? 'bg-[#0f2d52] text-white shadow-[0_12px_24px_rgba(15,45,82,0.2)]'
-                  : 'text-slate-500 hover:bg-white/80 hover:text-[#0f2d52]',
+                  ? 'bg-white text-[#0f2d52] shadow-[0_10px_30px_rgba(15,45,82,0.08)]'
+                  : 'text-slate-500 hover:bg-white/50 hover:text-[#0f2d52]',
               ].join(' ')
             }
           >
@@ -95,8 +95,9 @@ function MainLayout() {
   )
 
   return (
-    <div className="min-h-screen bg-[#f3f6fb] text-slate-900">
-      <div className="border-b border-slate-200 bg-[#eef3f9] px-4 py-4 lg:hidden">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#f3f6fb] text-slate-900">
+      {/* Mobile Header */}
+      <header className="flex-none border-b border-slate-200 bg-[#eef3f9] px-4 py-4 lg:hidden">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold tracking-tight text-[#0f2d52]">
@@ -116,14 +117,14 @@ function MainLayout() {
             <Menu className="h-5 w-5" />
           </button>
         </div>
-      </div>
+      </header>
 
-      <div className="grid min-h-screen lg:grid-cols-[260px_1fr]">
-        <aside className="hidden min-h-screen flex-col border-r border-slate-200 bg-[#eef3f9] lg:flex text-[#0f2d52]">
+      <div className="flex flex-1 overflow-hidden lg:grid lg:grid-cols-[260px_1fr]">
+        <aside className="hidden flex-col border-r border-slate-200 bg-[#eef3f9] lg:flex text-[#0f2d52]">
           {sidebarContent}
         </aside>
 
-        <div className="flex min-h-screen flex-col">
+        <div className="flex flex-1 flex-col overflow-y-auto">
           <AppHeader />
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             <Outlet />

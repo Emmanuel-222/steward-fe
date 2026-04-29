@@ -29,6 +29,23 @@ function HomePage() {
     ? Math.round(completedMeetings.reduce((acc, m) => acc + (m.present ?? 0), 0) / (totalCompleted * (stewards.length || 1)) * 100)
     : 0
 
+  // Trend calculation
+  let engagementTrend = undefined
+  if (totalCompleted >= 2) {
+    const lastMeeting = completedMeetings[0]
+    const prevMeeting = completedMeetings[1]
+    const lastRate = (lastMeeting.present ?? 0) / (stewards.length || 1)
+    const prevRate = (prevMeeting.present ?? 0) / (stewards.length || 1)
+    const diff = Math.round((lastRate - prevRate) * 100)
+    
+    if (diff !== 0) {
+      engagementTrend = {
+        value: Math.abs(diff),
+        isUpward: diff > 0
+      }
+    }
+  }
+
   const stats = [
     {
       label: 'Total Stewards',
@@ -53,6 +70,7 @@ function HomePage() {
       value: `${avgRate}%`,
       detail: 'Average present',
       tone: 'text-slate-500',
+      trend: engagementTrend,
     },
   ]
 

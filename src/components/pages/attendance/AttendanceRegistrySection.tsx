@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Loader2 } from 'lucide-react'
+import { Check, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import type { MeetingAttendanceEntry } from '../../../features/attendance/types'
 import SearchField from '../../shared/SearchField'
@@ -62,14 +62,6 @@ function AttendanceRegistrySection({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-
-          <button
-            type="button"
-            className="inline-flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600"
-          >
-            <span>Sort by: Check-in Time</span>
-            <ChevronDown className="h-4 w-4 shrink-0" />
-          </button>
         </div>
       </div>
 

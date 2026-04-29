@@ -75,28 +75,32 @@ export async function getMeetingAttendanceWithStewards(
 
   const entries: MeetingAttendanceEntry[] = stewards.map((steward) => {
     const record = presentMap.get(String(steward.id))
+    
+    let status: 'Present' | 'Absent' | 'Unmarked' = 'Unmarked'
+    if (record) {
+      const recordStatus = String(record.status).toLowerCase()
+      status = recordStatus === 'present' ? 'Present' : 'Absent'
+    }
 
     return {
       steward,
-      status: record ? 'Present' : 'Unmarked',
+      status,
       markedAt: record ? formatCheckinTime(record.markedAt) : null,
     }
   })
 
-  // Sort: unmarked first (so they're actionable), then present
-  entries.sort((a, b) => {
-    if (a.status === 'Unmarked' && b.status === 'Present') return -1
-    if (a.status === 'Present' && b.status === 'Unmarked') return 1
-    return 0
-  })
+  // Sort: Unmarked -> Present -> Absent
+  const statusOrder = { Unmarked: 0, Present: 1, Absent: 2 }
+  entries.sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
 
   const present = entries.filter((entry) => entry.status === 'Present').length
+  const absent = entries.filter((entry) => entry.status === 'Absent').length
   const total = entries.length
-  const unmarked = total - present
+  const unmarked = entries.filter((entry) => entry.status === 'Unmarked').length
   const rate = total > 0 ? `${Math.round((present / total) * 100)}%` : '0%'
 
   return {
     entries,
-    stats: { total, present, unmarked, rate },
+    stats: { total, present, unmarked, absent, rate },
   }
 }

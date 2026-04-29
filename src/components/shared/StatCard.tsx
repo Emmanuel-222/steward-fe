@@ -1,8 +1,14 @@
+import { TrendingDown, TrendingUp } from 'lucide-react'
+
 type StatCardProps = {
   label: string
   value: string | number
   detail: string
   detailClassName?: string
+  trend?: {
+    value: number
+    isUpward: boolean
+  }
   className?: string
   isLoading?: boolean
 }
@@ -12,6 +18,7 @@ function StatCard({
   value,
   detail,
   detailClassName = 'text-slate-500',
+  trend,
   className = 'border-slate-200',
   isLoading = false,
 }: StatCardProps) {
@@ -30,9 +37,17 @@ function StatCard({
     <article
       className={`rounded-3xl border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] ${className}`}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
-        {label}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+          {label}
+        </p>
+        {trend && (
+          <div className={`flex items-center gap-1 text-[10px] font-bold ${trend.isUpward ? 'text-emerald-500' : 'text-rose-500'}`}>
+            {trend.isUpward ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            {trend.value}%
+          </div>
+        )}
+      </div>
       <div className="mt-4 flex items-end gap-2">
         <p className="text-3xl font-semibold tracking-tight text-[#0f2d52] sm:text-4xl">
           {value}

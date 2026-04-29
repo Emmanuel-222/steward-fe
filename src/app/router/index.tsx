@@ -6,6 +6,7 @@ import NotFoundPage from '../../pages/NotFoundPage'
 import AttendancePage from '../../pages/AttendancePage'
 import MeetingsPage from '../../pages/MeetingsPage'
 import StewardsPage from '../../pages/StewardsPage'
+import StewardDetailPage from '../../pages/StewardDetailPage'
 
 export const router = createBrowserRouter([
   {
@@ -26,11 +27,15 @@ export const router = createBrowserRouter([
         element: <StewardsPage />,
       },
       {
+        path: 'stewards/:id',
+        element: <StewardDetailPage />,
+      },
+      {
         path: 'meetings',
         element: <MeetingsPage />,
       },
       {
-        path: 'attendance',
+        path: 'attendance/:meetingId?',
         element: <AttendancePage />,
       },
     ],

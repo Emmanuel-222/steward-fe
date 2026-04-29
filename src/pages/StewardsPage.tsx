@@ -1,10 +1,10 @@
 import { UserPlus } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import AddUserModal from '../components/pages/stewards/AddUserModal'
 import DeleteUserModal from '../components/pages/stewards/DeleteUserModal'
 import DirectoryFooter from '../components/pages/stewards/DirectoryFooter'
 import EditUserModal from '../components/pages/stewards/EditUserModal'
-import StewardProfileView from '../components/pages/stewards/StewardProfileView'
 import StewardsTableSection from '../components/pages/stewards/StewardsTableSection'
 import StewardsToolbar from '../components/pages/stewards/StewardsToolbar'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
@@ -20,12 +20,12 @@ import type {
 } from '../features/stewards/types'
 
 function StewardsPage() {
+  const navigate = useNavigate()
   const { showToast } = useToast()
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState('All Roles')
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false)
-  const [profileStewardId, setProfileStewardId] = useState<string | null>(null)
   const [modalStewardId, setModalStewardId] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -39,8 +39,7 @@ function StewardsPage() {
     selectedRole === 'All Roles'
       ? stewards
       : stewards.filter((steward) => steward.role === selectedRole)
-  const profileSteward =
-    stewards.find((steward) => steward.id === profileStewardId) ?? null
+  
   const modalSteward =
     stewards.find((steward) => steward.id === modalStewardId) ?? null
 
@@ -72,7 +71,7 @@ function StewardsPage() {
   }, [isAddUserModalOpen, isDeleteModalOpen, isEditModalOpen])
 
   const handleViewSteward = (steward: Steward) => {
-    setProfileStewardId(steward.id)
+    navigate(`/dashboard/stewards/${steward.id}`)
   }
 
   const handleEditSteward = (steward: Steward) => {
@@ -116,9 +115,6 @@ function StewardsPage() {
 
     try {
       await deleteStewardMutation.mutateAsync(modalSteward.id)
-      if (profileStewardId === modalSteward.id) {
-        setProfileStewardId(null)
-      }
       showToast('Steward removed from registry', 'success')
       setIsDeleteModalOpen(false)
       setModalStewardId(null)
@@ -130,54 +126,43 @@ function StewardsPage() {
   return (
     <>
       <div className="space-y-8">
-        {profileSteward ? (
-          <StewardProfileView
-            stewardId={profileSteward.id}
-            initialSteward={profileSteward}
-            onBack={() => setProfileStewardId(null)}
-            onEdit={handleEditSteward}
-          />
-        ) : (
-          <>
-            <DashboardPageHeader
-              title="Registry Directory"
-              description="Manage personnel records, roles, and departmental assignments."
-              actions={
-                <button
-                  type="button"
-                  onClick={() => setIsAddUserModalOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#0f2d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
-                >
-                  <UserPlus className="h-4 w-4" />
-                  Add New User
-                </button>
-              }
-            />
+        <DashboardPageHeader
+          title="Registry Directory"
+          description="Manage personnel records, roles, and departmental assignments."
+          actions={
+            <button
+              type="button"
+              onClick={() => setIsAddUserModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#0f2d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
+            >
+              <UserPlus className="h-4 w-4" />
+              Add New User
+            </button>
+          }
+        />
 
-            <StewardsToolbar
-              total={filteredStewards.length}
-              growth={searchTerm.trim() ? 'filtered' : 'live'}
-              searchValue={searchTerm}
-              onSearchChange={setSearchTerm}
-              roleValue={selectedRole}
-              onRoleChange={setSelectedRole}
-              roles={roles}
-            />
-            <StewardsTableSection
-              stewards={filteredStewards}
-              onView={handleViewSteward}
-              onEdit={handleEditSteward}
-              onDelete={handleDeleteSteward}
-              isLoading={stewardsQuery.isLoading}
-              errorMessage={
-                stewardsQuery.isError
-                  ? 'Unable to load stewards right now.'
-                  : undefined
-              }
-            />
-            <DirectoryFooter />
-          </>
-        )}
+        <StewardsToolbar
+          total={filteredStewards.length}
+          growth={searchTerm.trim() ? 'filtered' : 'live'}
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          roleValue={selectedRole}
+          onRoleChange={setSelectedRole}
+          roles={roles}
+        />
+        <StewardsTableSection
+          stewards={filteredStewards}
+          onView={handleViewSteward}
+          onEdit={handleEditSteward}
+          onDelete={handleDeleteSteward}
+          isLoading={stewardsQuery.isLoading}
+          errorMessage={
+            stewardsQuery.isError
+              ? 'Unable to load stewards right now.'
+              : undefined
+          }
+        />
+        <DirectoryFooter />
       </div>
 
       <AddUserModal

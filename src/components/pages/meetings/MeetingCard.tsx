@@ -3,7 +3,6 @@ import {
   Clock3,
   Pencil,
   Eye,
-  Settings2,
   Trash2,
   MapPinHouse,
 } from 'lucide-react'
@@ -13,9 +12,10 @@ type MeetingCardProps = {
   meeting: Meeting
   onEdit: (meeting: Meeting) => void
   onDelete: (meeting: Meeting) => void
+  onAction: (meeting: Meeting) => void
 }
 
-function MeetingCard({ meeting, onEdit, onDelete }: MeetingCardProps) {
+function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) {
   return (
     <article className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
       <div className="flex items-start justify-between gap-4">
@@ -24,9 +24,6 @@ function MeetingCard({ meeting, onEdit, onDelete }: MeetingCardProps) {
         >
           {meeting.status}
         </span>
-        <button type="button" className="text-slate-400">
-          <Settings2 className="h-4 w-4" />
-        </button>
       </div>
 
       <div className="mt-5 space-y-2">
@@ -82,6 +79,7 @@ function MeetingCard({ meeting, onEdit, onDelete }: MeetingCardProps) {
       <div className="mt-6 space-y-3">
         <button
           type="button"
+          onClick={() => onAction(meeting)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0f2d52] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#173c67]"
         >
           <Eye className="h-4 w-4" />

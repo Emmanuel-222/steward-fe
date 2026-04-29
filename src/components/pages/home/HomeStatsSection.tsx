@@ -5,6 +5,10 @@ type HomeStat = {
   value: string
   detail: string
   tone: string
+  trend?: {
+    value: number
+    isUpward: boolean
+  }
 }
 
 type HomeStatsSectionProps = {
@@ -22,6 +26,7 @@ function HomeStatsSection({ stats, isLoading }: HomeStatsSectionProps) {
           value={stat.value}
           detail={stat.detail}
           detailClassName={stat.tone}
+          trend={stat.trend}
           isLoading={isLoading}
         />
       ))}

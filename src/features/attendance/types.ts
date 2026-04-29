@@ -21,6 +21,7 @@ export type MeetingAttendanceEntry = {
 export type MeetingAttendanceStats = {
   total: number
   present: number
+  absent: number
   unmarked: number
   rate: string
 }

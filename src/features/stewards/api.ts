@@ -130,12 +130,15 @@ function normalizeAttendanceRecord(
   rawRecord: Record<string, unknown>,
 ): StewardAttendanceRecord {
   const createdAt =
-    rawRecord.createdAt ?? rawRecord.timestamp ?? rawRecord.date ?? rawRecord.markedAt
+    rawRecord.markedAt ?? rawRecord.createdAt ?? rawRecord.timestamp ?? rawRecord.date
+  
+  const meetingData = rawRecord.meeting as Record<string, unknown> | undefined
   const meeting =
     rawRecord.meetingName ??
     rawRecord.meetingType ??
     rawRecord.meetingTitle ??
-    rawRecord.meeting?.toString() ??
+    meetingData?.type ??
+    meetingData?.name ??
     'Meeting'
 
   return {

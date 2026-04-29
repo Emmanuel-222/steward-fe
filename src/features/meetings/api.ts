@@ -215,8 +215,12 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
   )
   const startTime = formatTime(rawStartTime)
   const endTime = formatTime(rawEndTime)
-  const present = rawMeeting.presentCount ?? rawMeeting.present
-  const absent = rawMeeting.absentCount ?? rawMeeting.absent
+  
+  // Try all possible keys for attendance counts
+  // Important: distinguish between "not provided" (null) and "explicitly zero" (0)
+  const presentVal = rawMeeting.presentCount ?? rawMeeting.present ?? rawMeeting.totalPresent
+  const absentVal = rawMeeting.absentCount ?? rawMeeting.absent ?? rawMeeting.totalAbsent
+  const hasCounts = presentVal !== undefined || absentVal !== undefined
 
   return {
     id,
@@ -230,11 +234,9 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
         ? `${startTime} - ${endTime}`
         : startTime || endTime || 'Time not set',
     location: String(rawMeeting.location ?? rawMeeting.venue ?? 'Location not set'),
-    present: typeof present === 'number' ? present : null,
-    absent: typeof absent === 'number' ? absent : null,
-    primaryAction: present !== undefined || absent !== undefined
-      ? 'View Attendance'
-      : 'Prepare Check-in',
+    present: hasCounts ? (typeof presentVal === 'number' ? presentVal : 0) : null,
+    absent: hasCounts ? (typeof absentVal === 'number' ? absentVal : 0) : null,
+    primaryAction: status === 'Ongoing' ? 'Prepare Check-in' : 'View Attendance',
     secondaryAction: 'Edit',
     rawDate,
     rawStartTime,
