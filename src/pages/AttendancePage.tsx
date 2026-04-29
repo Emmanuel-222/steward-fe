@@ -1,31 +1,43 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import AttendanceEmptyState from '../components/pages/attendance/AttendanceEmptyState'
 import AttendanceHero from '../components/pages/attendance/AttendanceHero'
-import AttendanceInsightBanner from '../components/pages/attendance/AttendanceInsightBanner'
 import AttendanceRegistrySection from '../components/pages/attendance/AttendanceRegistrySection'
 import AttendanceStatsSection from '../components/pages/attendance/AttendanceStatsSection'
+import FinalizeSuccessPage from '../components/pages/attendance/FinalizeSuccessPage'
+import RushModeBanner from '../components/pages/attendance/RushModeBanner'
+import useFinalizeMeetingMutation from '../features/attendance/hooks/useFinalizeMeetingMutation'
 import useMarkPresentMutation from '../features/attendance/hooks/useMarkPresentMutation'
 import useMeetingAttendanceQuery from '../features/attendance/hooks/useMeetingAttendanceQuery'
 import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
 import { useToast } from '../hooks/useToast'
 
-const filters = ['All Stewards', 'Present Only', 'Absent Only', 'Unmarked Only']
+const filters = ['All Stewards', 'Present Only', 'Absent Only', 'Pending']
 
 function AttendancePage() {
   const { meetingId } = useParams()
+  const navigate = useNavigate()
   const { showToast } = useToast()
   const [activeFilter, setActiveFilter] = useState('All Stewards')
+  const [isRushMode, setIsRushMode] = useState(true)
+  const [finalizedData, setFinalizedData] = useState<{
+    total: number
+    present: number
+    absent: number
+    performance: number
+  } | null>(null)
+  const [showLateOnly, setShowLateOnly] = useState(false)
+
   const meetingsQuery = useMeetingsQuery()
   const meetings = meetingsQuery.data ?? []
   
-  // Find the meeting to track attendance for
   const activeMeeting = meetingId 
     ? (meetings.find(m => m.id === meetingId) ?? null)
     : (meetings.find((m) => m.status === 'Ongoing') ?? null)
 
   const attendanceQuery = useMeetingAttendanceQuery(activeMeeting?.id ?? null)
   const markPresentMutation = useMarkPresentMutation()
+  const finalizeMutation = useFinalizeMeetingMutation()
 
   if (meetingsQuery.isLoading || (activeMeeting && attendanceQuery.isLoading)) {
     return (
@@ -43,14 +55,6 @@ function AttendancePage() {
     )
   }
 
-  if (!activeMeeting) {
-    return (
-      <div className="space-y-8">
-        <AttendanceEmptyState meetings={meetings} />
-      </div>
-    )
-  }
-
   const attendanceData = attendanceQuery.data
   const entries = attendanceData?.entries ?? []
   const statsData = attendanceData?.stats
@@ -60,10 +64,48 @@ function AttendancePage() {
     : null
   const isCutoffPassed = cutoffDate ? new Date() > cutoffDate : false
 
+  // Calculate throughput (check-ins per minute in the last 15 minutes)
+  const recentCheckins = entries.filter(e => {
+    if (e.status !== 'Present' || !e.markedAt) return false
+    const markedTime = new Date(`${activeMeeting?.rawDate}T${e.markedAt}`)
+    const diff = (new Date().getTime() - markedTime.getTime()) / (1000 * 60)
+    return diff <= 15
+  }).length
+  const checkinSpeed = (recentCheckins / 15).toFixed(1)
+
+  if ((finalizedData || activeMeeting?.status === 'Finalized') && activeMeeting) {
+    const stats = finalizedData || {
+      total: statsData?.total ?? 0,
+      present: statsData?.present ?? 0,
+      absent: statsData?.absent ?? 0,
+      performance: parseInt(statsData?.rate ?? '0')
+    }
+
+    return (
+      <FinalizeSuccessPage 
+        meetingTitle={activeMeeting.title}
+        stats={stats}
+        onReturn={() => navigate('/dashboard')}
+      />
+    )
+  }
+
+  if (!activeMeeting) {
+    return (
+      <div className="space-y-8">
+        <AttendanceEmptyState meetings={meetings} />
+      </div>
+    )
+  }
   const filteredEntries = entries.filter((entry) => {
+    if (showLateOnly) {
+       if (entry.status !== 'Present' || !entry.markedAt || !cutoffDate) return false
+       const markedTime = new Date(`${activeMeeting?.rawDate}T${entry.markedAt}`)
+       return markedTime > cutoffDate
+    }
     if (activeFilter === 'Present Only') return entry.status === 'Present'
     if (activeFilter === 'Absent Only') return entry.status === 'Absent'
-    if (activeFilter === 'Unmarked Only') return entry.status === 'Unmarked'
+    if (activeFilter === 'Pending') return entry.status === 'Unmarked'
     return true
   })
 
@@ -80,28 +122,21 @@ function AttendancePage() {
       value: String(statsData?.present ?? 0),
       detail: `${statsData?.rate ?? '0%'} reached`,
       tone: 'text-emerald-600',
-      border: 'border-emerald-100',
+      border: 'border-emerald-200 bg-emerald-50/20',
     },
     {
       label: 'Absent',
       value: String(statsData?.absent ?? 0),
-      detail: 'Auto-marked',
+      detail: 'Excused: 0',
       tone: 'text-rose-600',
-      border: 'border-rose-100',
+      border: 'border-rose-100 bg-rose-50/20',
     },
     {
       label: 'Unmarked',
       value: String(statsData?.unmarked ?? 0),
       detail: 'Pending',
       tone: 'text-slate-400',
-      border: 'border-slate-100',
-    },
-    {
-      label: 'Attendance Rate',
-      value: statsData?.rate ?? '0%',
-      detail: 'Live update',
-      tone: 'text-blue-600',
-      border: 'border-blue-100',
+      border: 'border-slate-100 bg-slate-50/20',
     },
   ]
 
@@ -114,16 +149,40 @@ function AttendancePage() {
       showToast('Steward marked as present', 'success')
     } catch (error) {
       showToast('Failed to mark attendance', 'error')
-      console.error('Failed to mark attendance:', error)
+    }
+  }
+
+  const handleFinalize = async () => {
+    try {
+      const result = await finalizeMutation.mutateAsync(activeMeeting.id)
+      setFinalizedData(result.summary)
+      showToast('Session finalized successfully', 'success')
+    } catch (error) {
+      showToast('Failed to finalize session', 'error')
     }
   }
 
   return (
-    <div className="space-y-8">
-      <AttendanceHero meeting={activeMeeting} />
+    <div className="space-y-8 pb-20">
+      <AttendanceHero 
+        meeting={activeMeeting} 
+        onFinalize={handleFinalize}
+        isFinalizing={finalizeMutation.isPending}
+        isFinalized={activeMeeting.status === 'Finalized'}
+      />
       
       <AttendanceStatsSection stats={stats} />
       
+      <RushModeBanner 
+        isActive={isRushMode}
+        onToggle={() => setIsRushMode(prev => !prev)}
+        expectedArrivals={statsData?.unmarked ?? 0}
+        peakWindow="08:30 - 08:50 AM"
+        checkinSpeed={Number(checkinSpeed)}
+        onViewLateList={() => setShowLateOnly(prev => !prev)}
+        isShowingLateOnly={showLateOnly}
+      />
+
       <AttendanceRegistrySection
         entries={filteredEntries}
         filters={filters}
@@ -132,11 +191,7 @@ function AttendancePage() {
         onMarkPresent={handleMarkPresent}
         markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
         isCutoffPassed={isCutoffPassed}
-      />
-      
-      <AttendanceInsightBanner 
-        presentCount={statsData?.present ?? 0}
-        unmarkedCount={statsData?.unmarked ?? 0}
+        isRushMode={isRushMode}
       />
     </div>
   )

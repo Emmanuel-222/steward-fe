@@ -43,6 +43,11 @@ function extractRecords(payload: unknown): Record<string, unknown>[] {
   return []
 }
 
+export async function finalizeMeeting(meetingId: string) {
+  const { data } = await api.post(`/attendance/finalize/${meetingId}`)
+  return data
+}
+
 export async function getMeetingAttendance(meetingId: string) {
   const { data } = await api.get(`/attendance/meeting/${meetingId}`)
   const rawRecords = extractRecords(data)
@@ -73,8 +78,10 @@ export async function getMeetingAttendanceWithStewards(
     presentMap.set(String(record.userId), record)
   }
 
-  const entries: MeetingAttendanceEntry[] = stewards.map((steward) => {
-    const record = presentMap.get(String(steward.id))
+  const entries: MeetingAttendanceEntry[] = stewards
+    .filter((s) => s.role.toLowerCase() !== 'admin')
+    .map((steward) => {
+      const record = presentMap.get(String(steward.id))
     
     let status: 'Present' | 'Absent' | 'Unmarked' = 'Unmarked'
     if (record) {
