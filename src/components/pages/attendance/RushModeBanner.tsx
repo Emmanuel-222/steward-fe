@@ -8,6 +8,7 @@ type RushModeBannerProps = {
   checkinSpeed: number
   onViewLateList: () => void
   isShowingLateOnly: boolean
+  meetingTitle?: string
 }
 
 function RushModeBanner({
@@ -18,6 +19,7 @@ function RushModeBanner({
   checkinSpeed,
   onViewLateList,
   isShowingLateOnly,
+  meetingTitle = 'Meeting',
 }: RushModeBannerProps) {
   if (!isActive) return null
 
@@ -29,7 +31,7 @@ function RushModeBanner({
             <Bolt className="h-6 w-6 text-yellow-400 fill-yellow-400" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-bold tracking-tight">Sunday Rush Mode Active</h3>
+            <h3 className="text-xl font-bold tracking-tight">{meetingTitle} Rush Mode Active</h3>
             <p className="text-sm text-slate-300">
               Rapid check-in enabled. Peak arrival window: <span className="font-semibold text-white">{peakWindow}</span>.
             </p>

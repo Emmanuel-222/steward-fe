@@ -143,7 +143,7 @@ function normalizeExplicitStatus(value: unknown) {
     return 'Upcoming'
   }
 
-  if (normalized === 'completed') {
+  if (normalized === 'completed' || normalized === 'finalized') {
     return 'Completed'
   }
 
@@ -158,6 +158,7 @@ function normalizeExplicitStatus(value: unknown) {
 }
 
 function normalizeStatus(rawMeeting: Record<string, unknown>) {
+  const explicitStatus = normalizeExplicitStatus(rawMeeting.status)
   const date = getRawDate(rawMeeting)
   const startTime = getRawTime(rawMeeting.startTime, rawMeeting.time, rawMeeting.start)
   const endTime = getRawTime(
@@ -166,19 +167,30 @@ function normalizeStatus(rawMeeting: Record<string, unknown>) {
     rawMeeting.end,
   )
 
+  // 1. If the meeting is explicitly finalized in the backend, it's Completed
+  if (explicitStatus === 'Completed') {
+    return 'Completed'
+  }
+
+  // 2. If we have time data, let the clock decide if it's UPCOMING
   if (date && startTime && endTime) {
     const start = new Date(`${date}T${startTime}`)
     const end = new Date(`${date}T${endTime}`)
     const now = new Date()
 
     if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+      // Clock says it hasn't started yet
       if (now < start) return 'Upcoming'
+      
+      // 3. If it's already "Ongoing" in backend, keep it Live even if time passed
+      // This prevents the "auto-complete" bug you saw.
+      if (explicitStatus === 'Ongoing') return 'Ongoing'
+
+      // Fallback for sessions with no explicit backend status
       if (now >= start && now <= end) return 'Ongoing'
       if (now > end) return 'Completed'
     }
   }
-
-  const explicitStatus = normalizeExplicitStatus(rawMeeting.status)
 
   return explicitStatus || 'Completed'
 }

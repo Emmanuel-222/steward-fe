@@ -7,10 +7,11 @@ import {
   Users,
   X,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import AppHeader from '../../components/shared/AppHeader'
 import useAuth from '../../hooks/useAuth'
+import useMeQuery from '../../features/auth/hooks/useMeQuery'
 
 const navItems = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
@@ -21,8 +22,17 @@ const navItems = [
 
 function MainLayout() {
   const navigate = useNavigate()
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, logout, user } = useAuth()
+  const meQuery = useMeQuery(!user && isAuthenticated)
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+
+  const currentUser = user || meQuery.data
+
+  useEffect(() => {
+    if (meQuery.data && !user) {
+      localStorage.setItem('user', JSON.stringify(meQuery.data))
+    }
+  }, [meQuery.data, user])
 
   if (!isAuthenticated) {
     return <Navigate to="/" replace />
@@ -81,7 +91,18 @@ function MainLayout() {
         ))}
       </nav>
 
-      <div className="px-4 py-6">
+      <div className="px-4 py-6 space-y-2">
+        {/* Profile Info */}
+        <div className="flex items-center gap-3 px-4 py-2">
+          <div className="h-10 w-10 shrink-0 rounded-xl bg-orange-100 flex items-center justify-center text-lg font-bold text-orange-700 shadow-sm border border-orange-200/50 uppercase">
+             {currentUser?.name ? currentUser.name.charAt(0) : '👤'}
+          </div>
+          <div className="min-w-0">
+             <p className="text-sm font-bold text-[#0f2d52] truncate">{currentUser?.name || (meQuery.isLoading ? 'Fetching...' : 'Loading...')}</p>
+             <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{currentUser?.role || 'User'}</p>
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={handleLogout}

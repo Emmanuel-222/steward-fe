@@ -1,3 +1,4 @@
+import { CalendarDays as CalendarIcon, Clock3 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import AttendanceEmptyState from '../components/pages/attendance/AttendanceEmptyState'
@@ -100,6 +101,31 @@ function AttendancePage() {
     )
   }
 
+  if (activeMeeting?.status === 'Upcoming') {
+    return (
+      <div className="flex flex-col items-center justify-center space-y-6 rounded-[35px] border border-slate-200 bg-white px-6 py-24 text-center shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
+        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-sky-50 text-sky-500 shadow-sm border border-sky-100/50">
+          <CalendarIcon className="h-10 w-10" />
+        </div>
+        <div className="max-w-md space-y-2">
+          <h3 className="text-2xl font-bold tracking-tight text-[#0f2d52]">
+            {activeMeeting.title} is scheduled
+          </h3>
+          <p className="text-slate-500 font-medium">
+            This session is set for <span className="text-[#0f2d52] font-bold">{activeMeeting.date}</span> at <span className="text-[#0f2d52] font-bold">{activeMeeting.time}</span>. 
+            Attendance marking will be enabled once the session starts.
+          </p>
+        </div>
+        <button
+          onClick={() => navigate('/dashboard/meetings')}
+          className="inline-flex items-center justify-center rounded-2xl bg-[#0f2d52] px-8 py-4 text-sm font-bold text-white shadow-[0_15px_40px_rgba(15,45,82,0.2)] transition hover:bg-[#173c67]"
+        >
+          Return to Schedule
+        </button>
+      </div>
+    )
+  }
+
   if (!activeMeeting) {
     return (
       <div className="space-y-8">
@@ -137,7 +163,7 @@ function AttendancePage() {
     {
       label: 'Absent',
       value: String(statsData?.absent ?? 0),
-      detail: 'Excused: 0',
+      detail: 'Marked Absent',
       tone: 'text-rose-600',
       border: 'border-rose-100 bg-rose-50/20',
     },
@@ -201,10 +227,11 @@ function AttendancePage() {
         isActive={isRushMode}
         onToggle={() => setIsRushMode(prev => !prev)}
         expectedArrivals={statsData?.unmarked ?? 0}
-        peakWindow="08:30 - 08:50 AM"
+        peakWindow={`${activeMeeting.rawStartTime} - ${activeMeeting.rawCutoffTime}`}
         checkinSpeed={Number(checkinSpeed)}
         onViewLateList={() => setShowLateOnly(prev => !prev)}
         isShowingLateOnly={showLateOnly}
+        meetingTitle={activeMeeting.title}
       />
 
       <AttendanceRegistrySection
@@ -217,6 +244,7 @@ function AttendancePage() {
         markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
         cutoffDate={cutoffDate}
         isRushMode={isRushMode}
+        meetingTitle={activeMeeting.title}
       />
     </div>
   )

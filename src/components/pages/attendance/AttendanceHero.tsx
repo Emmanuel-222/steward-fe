@@ -58,7 +58,7 @@ function AttendanceHero({
                 Active Meeting
               </p>
               <p className="truncate text-sm font-bold text-slate-800">
-                Main Sanctuary Steward Shift
+                {meeting.subtitle || 'General Meeting'}
               </p>
             </div>
             <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />

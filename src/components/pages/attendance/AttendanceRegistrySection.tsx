@@ -12,6 +12,7 @@ type AttendanceRegistrySectionProps = {
   markingUserId: string | null
   cutoffDate?: Date | null
   isRushMode?: boolean
+  meetingTitle?: string
 }
 
 function AttendanceRegistrySection({
@@ -24,6 +25,7 @@ function AttendanceRegistrySection({
   markingUserId,
   cutoffDate = null,
   isRushMode = false,
+  meetingTitle = 'Meeting',
 }: AttendanceRegistrySectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [focusedIndex, setFocusedIndex] = useState(-1)
@@ -265,7 +267,7 @@ function AttendanceRegistrySection({
       
       <div className="pt-4 flex items-center justify-center">
          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-            End of Registry List for Sunday Morning Service
+            End of Registry List for {meetingTitle}
          </p>
       </div>
     </section>
