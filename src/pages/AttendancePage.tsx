@@ -110,8 +110,8 @@ function AttendancePage() {
   const filteredEntries = entries.filter((entry) => {
     if (showLateOnly) {
        if (entry.status !== 'Present' || !entry.markedAt || !cutoffDate) return false
-       const markedTime = new Date(`${activeMeeting?.rawDate}T${entry.markedAt}`)
-       return markedTime > cutoffDate
+       const markedTime = parseTime(entry.markedAt, activeMeeting?.rawDate)
+       return markedTime ? markedTime > cutoffDate : false
     }
     if (activeFilter === 'Present Only') return entry.status === 'Present'
     if (activeFilter === 'Absent Only') return entry.status === 'Absent'

@@ -65,7 +65,6 @@ function AttendanceRegistrySection({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isRushMode, searched, focusedIndex, markingUserId, onMarkPresent])
 
-  const isCutoffPassed = cutoffDate ? new Date() > cutoffDate : false
 
   return (
     <section className="space-y-6">
@@ -134,7 +133,7 @@ function AttendanceRegistrySection({
             ) : (
               searched.map((entry, index) => {
                 const isPresent = entry.status === 'Present'
-                const isAbsent = entry.status === 'Absent' || (entry.status === 'Unmarked' && isCutoffPassed)
+                const isAbsent = entry.status === 'Absent'
                 const isMarking = markingUserId === entry.steward.id
                 const isFocused = focusedIndex === index
 
@@ -189,17 +188,22 @@ function AttendanceRegistrySection({
                                <History className="h-3 w-3" />
                                {entry.markedAt ? `Checked in at ${entry.markedAt}` : 'Confirmed'}
                                {entry.markedAt && cutoffDate && (() => {
-                                  const [time, modifier] = entry.markedAt!.split(' ')
-                                  let [hours, minutes] = time.split(':').map(Number)
-                                  if (modifier === 'PM' && hours < 12) hours += 12
-                                  if (modifier === 'AM' && hours === 12) hours = 0
-                                  
-                                  const markedTime = new Date(cutoffDate)
-                                  markedTime.setHours(hours, minutes, 0, 0)
-                                  
-                                  return markedTime > cutoffDate
+                                  try {
+                                    const [time, modifier] = entry.markedAt!.split(' ')
+                                    let [hours, minutes] = time.split(':').map(Number)
+                                    if (modifier === 'PM' && hours < 12) hours += 12
+                                    if (modifier === 'AM' && hours === 12) hours = 0
+                                    
+                                    // Use the meeting date from the cutoffDate to ensure correct comparison
+                                    const markedTime = new Date(cutoffDate)
+                                    markedTime.setHours(hours, minutes, 0, 0)
+                                    
+                                    return markedTime > cutoffDate
+                                  } catch (e) {
+                                    return false
+                                  }
                                })() && (
-                                  <span className="ml-1 rounded bg-rose-50 px-1 py-0.5 text-[8px] font-black text-rose-600 border border-rose-100">LATE</span>
+                                  <span className="ml-1 rounded bg-rose-50 px-1.5 py-0.5 text-[8px] font-black text-rose-600 border border-rose-100 shadow-sm animate-pulse">LATE</span>
                                )}
                             </span>
                          </div>
