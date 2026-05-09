@@ -1,5 +1,6 @@
-import { CalendarDays, Check, ChevronDown, Clock3, Shield } from 'lucide-react'
+import { CalendarDays, Check, ChevronDown, Clock3, Shield, Lock } from 'lucide-react'
 import type { Meeting } from '../../../features/meetings/types'
+import useAuth from '../../../hooks/useAuth'
 
 type AttendanceHeroProps = {
   meeting: Meeting
@@ -14,6 +15,8 @@ function AttendanceHero({
   isFinalizing = false,
   isFinalized = false,
 }: AttendanceHeroProps) {
+  const { user } = useAuth()
+  const canFinalize = ['admin', 'pastor', 'leader'].includes(user?.role?.toLowerCase() || '')
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
@@ -65,19 +68,26 @@ function AttendanceHero({
           </div>
 
           {!isFinalized && (
-            <button
-              type="button"
-              onClick={onFinalize}
-              disabled={isFinalizing}
-              className="inline-flex items-center justify-center gap-3 rounded-2xl bg-[#0f2d52] px-7 py-4 text-sm font-bold text-white shadow-[0_18px_45px_rgba(15,45,82,0.2)] transition hover:bg-[#173c67] disabled:opacity-70"
-            >
-              {isFinalizing ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-              ) : (
-                <Check className="h-4 w-4" />
-              )}
-              {isFinalizing ? 'Finalizing...' : 'Finalize Session'}
-            </button>
+            canFinalize ? (
+              <button
+                type="button"
+                onClick={onFinalize}
+                disabled={isFinalizing}
+                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-[#0f2d52] px-7 py-4 text-sm font-bold text-white shadow-[0_18px_45px_rgba(15,45,82,0.2)] transition hover:bg-[#173c67] disabled:opacity-70"
+              >
+                {isFinalizing ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
+                {isFinalizing ? 'Finalizing...' : 'Finalize Session'}
+              </button>
+            ) : (
+              <div className="inline-flex items-center gap-3 rounded-2xl bg-slate-50 border border-slate-200 px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                <Lock className="h-3 w-3" />
+                Admin Only
+              </div>
+            )
           )}
         </div>
       </section>

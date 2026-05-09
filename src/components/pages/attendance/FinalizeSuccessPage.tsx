@@ -6,6 +6,7 @@ type FinalizeSuccessPageProps = {
     total: number
     present: number
     absent: number
+    excused: number
     performance: number
   }
   onReturn: () => void
@@ -29,7 +30,7 @@ function FinalizeSuccessPage({
         The Digital Registrar has securely archived all attendance records and performance metrics for <span className="font-semibold text-slate-800">{meetingTitle}</span>.
       </p>
 
-      <div className="mt-12 grid w-full max-w-4xl gap-6 sm:grid-cols-3">
+      <div className="mt-12 grid w-full max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-[28px] border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Final Present</p>
           <p className="mt-2 text-4xl font-bold text-[#0f2d52]">{stats.present}</p>
@@ -40,6 +41,12 @@ function FinalizeSuccessPage({
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-rose-400">Final Absent</p>
           <p className="mt-2 text-4xl font-bold text-[#0f2d52]">{stats.absent}</p>
           <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.absent} marked as absent</span>
+        </div>
+
+        <div className="rounded-[28px] border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-400">Final Excused</p>
+          <p className="mt-2 text-4xl font-bold text-[#0f2d52]">{stats.excused}</p>
+          <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.excused} stewards excused</span>
         </div>
 
         <div className="rounded-[28px] border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">

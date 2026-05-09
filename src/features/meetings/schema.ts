@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const meetingSchema = z.object({
   title: z.string().min(2, 'Meeting title must be at least 2 characters long'),
+  type: z.string().min(1, 'Meeting type is required'),
   date: z.string().min(1, 'Meeting date is required'),
   startTime: z.string().min(1, 'Start time is required'),
   cutoffTime: z.string().min(1, 'Cutoff time is required'),

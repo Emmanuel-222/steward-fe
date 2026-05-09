@@ -8,13 +8,15 @@ export type AttendanceRecord = {
   userId: string | number
   meetingId: string | number
   createdAt: string
+  excuseReason?: string
 }
 
 /** A steward merged with their attendance status for a specific meeting */
 export type MeetingAttendanceEntry = {
   steward: Steward
-  status: 'Present' | 'Unmarked' | 'Absent'
+  status: 'Present' | 'Unmarked' | 'Absent' | 'Excused'
   markedAt: string | null
+  excuseReason?: string
 }
 
 /** Computed stats for a meeting's attendance */
@@ -22,6 +24,7 @@ export type MeetingAttendanceStats = {
   total: number
   present: number
   absent: number
+  excused: number
   unmarked: number
   rate: string
 }

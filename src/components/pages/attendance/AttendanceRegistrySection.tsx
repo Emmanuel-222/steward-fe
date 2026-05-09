@@ -9,6 +9,7 @@ type AttendanceRegistrySectionProps = {
   onFilterChange: (filter: string) => void
   onMarkPresent: (userId: string) => void
   onMarkAbsent?: (userId: string) => void
+  onMarkExcused?: (userId: string) => void
   markingUserId: string | null
   cutoffDate?: Date | null
   isRushMode?: boolean
@@ -22,6 +23,7 @@ function AttendanceRegistrySection({
   onFilterChange,
   onMarkPresent,
   onMarkAbsent,
+  onMarkExcused,
   markingUserId,
   cutoffDate = null,
   isRushMode = false,
@@ -76,6 +78,7 @@ function AttendanceRegistrySection({
             const count = entries.filter(e => {
               if (filter === 'Present Only') return e.status === 'Present'
               if (filter === 'Absent Only') return e.status === 'Absent'
+              if (filter === 'Excused Only') return e.status === 'Excused'
               if (filter === 'Pending') return e.status === 'Unmarked'
               return true
             }).length
@@ -209,10 +212,17 @@ function AttendanceRegistrySection({
                                )}
                             </span>
                          </div>
-                       ) : isAbsent ? (
-                         <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-3 py-1 text-[10px] font-bold text-rose-700">
-                            ABSENT
-                         </span>
+                       ) : entry.status === 'Excused' ? (
+                          <div className="flex flex-col">
+                             <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100/80 px-3 py-1 text-[10px] font-bold text-sky-700">
+                                EXCUSED
+                             </span>
+                             {entry.excuseReason && (
+                               <span className="mt-1 text-[9px] font-medium text-sky-600/70 italic px-1 truncate max-w-[150px]">
+                                 "{entry.excuseReason}"
+                               </span>
+                             )}
+                          </div>
                        ) : (
                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-500">
                             <div className="h-1 w-1 rounded-full bg-slate-400" />
@@ -235,7 +245,7 @@ function AttendanceRegistrySection({
                          <>
                             <button
                               type="button"
-                              disabled={isMarking || isAbsent}
+                              disabled={isMarking || isAbsent || entry.status === 'Excused'}
                               onClick={() => onMarkPresent(entry.steward.id)}
                               className="inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-[11px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
                             >
@@ -248,11 +258,21 @@ function AttendanceRegistrySection({
                             </button>
                             <button 
                               type="button"
-                              disabled={isMarking || isAbsent}
+                              disabled={isMarking || isAbsent || entry.status === 'Excused'}
                               onClick={() => onMarkAbsent?.(entry.steward.id)}
+                              title="Mark as Absent"
                               className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
                             >
                                <Check className="h-4 w-4 rotate-45" />
+                            </button>
+                            <button 
+                              type="button"
+                              disabled={isMarking || entry.status === 'Excused'}
+                              onClick={() => onMarkExcused?.(entry.steward.id)}
+                              title="Mark as Excused"
+                              className="p-2.5 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 hover:bg-sky-500 hover:text-white transition disabled:opacity-50"
+                            >
+                               <Loader2 className="h-4 w-4" />
                             </button>
                          </>
                        )}

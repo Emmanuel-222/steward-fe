@@ -49,6 +49,7 @@ function ScheduleMeetingModal({
     resolver: zodResolver(schema),
     defaultValues: {
       title: '',
+      type: '',
       date: '',
       startTime: '',
       cutoffTime: '',
@@ -63,6 +64,7 @@ function ScheduleMeetingModal({
     if (!meeting) {
       reset({
         title: '',
+        type: '',
         date: '',
         startTime: '',
         cutoffTime: '',
@@ -74,6 +76,7 @@ function ScheduleMeetingModal({
 
     reset({
       title: meeting.title,
+      type: meeting.title === meeting.status ? 'Other' : 'Sunday', // Fallback for old data
       date: meeting.rawDate,
       startTime: meeting.rawStartTime,
       cutoffTime: meeting.rawCutoffTime,
@@ -187,20 +190,42 @@ function ScheduleMeetingModal({
             </p>
           ) : null}
 
-          <label className="block space-y-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Meeting Title
-            </span>
-            <input
-              type="text"
-              className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
-              placeholder="e.g. Sunday Service"
-              {...register('title')}
-            />
-            {errors.title ? (
-              <p className="text-sm text-rose-600">{errors.title.message}</p>
-            ) : null}
-          </label>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <label className="block space-y-2">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Meeting Title
+              </span>
+              <input
+                type="text"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                placeholder="e.g. Easter Sunday"
+                {...register('title')}
+              />
+              {errors.title ? (
+                <p className="text-sm text-rose-600">{errors.title.message}</p>
+              ) : null}
+            </label>
+
+            <label className="block space-y-2">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Meeting Type
+              </span>
+              <select
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                {...register('type')}
+              >
+                <option value="">Select Type</option>
+                <option value="Sunday">Sunday Service</option>
+                <option value="Special">Special Meeting</option>
+                <option value="Evangelism">Evangelism</option>
+                <option value="Rehearsal">Rehearsal</option>
+                <option value="Other">Other</option>
+              </select>
+              {errors.type ? (
+                <p className="text-sm text-rose-600">{errors.type.message}</p>
+              ) : null}
+            </label>
+          </div>
 
           <label className="block space-y-2">
             <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">

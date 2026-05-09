@@ -6,6 +6,7 @@ function useMeetingAttendanceQuery(meetingId: string | null) {
     queryKey: ['attendance', 'meeting', meetingId],
     queryFn: () => getMeetingAttendanceWithStewards(meetingId!),
     enabled: Boolean(meetingId),
+    refetchInterval: 10000, // Poll every 10 seconds
   })
 }
 

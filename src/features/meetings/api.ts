@@ -267,12 +267,7 @@ export async function getMeetings() {
 }
 
 export async function createMeeting(payload: CreateMeetingValues) {
-  const requestBody = {
-    ...payload,
-    type: payload.title,
-  }
-
-  const { data } = await api.post('/meetings', requestBody)
+  const { data } = await api.post('/meetings', payload)
   return normalizeMeeting(data as Record<string, unknown>)
 }
 
@@ -283,12 +278,7 @@ export async function updateMeeting({
   id: string
   payload: UpdateMeetingValues
 }) {
-  const requestBody = {
-    ...payload,
-    type: payload.title,
-  }
-
-  const { data } = await api.patch(`/meetings/${id}`, requestBody)
+  const { data } = await api.patch(`/meetings/${id}`, payload)
   return normalizeMeeting(data as Record<string, unknown>)
 }
 

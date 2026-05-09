@@ -14,6 +14,7 @@ function normalizeRecord(raw: Record<string, unknown>): AttendanceRecord {
     userId: String(raw.userId ?? raw.user_id ?? ''),
     meetingId: String(raw.meetingId ?? raw.meeting_id ?? ''),
     createdAt: String(raw.createdAt ?? ''),
+    excuseReason: (raw.excuseRequest as any)?.reason,
   }
 }
 
@@ -84,31 +85,60 @@ export async function getMeetingAttendanceWithStewards(
     .map((steward) => {
       const record = presentMap.get(String(steward.id))
     
-    let status: 'Present' | 'Absent' | 'Unmarked' = 'Unmarked'
+    let status: 'Present' | 'Absent' | 'Unmarked' | 'Excused' = 'Unmarked'
     if (record) {
       const recordStatus = String(record.status).toLowerCase()
-      status = recordStatus === 'present' ? 'Present' : 'Absent'
+      if (recordStatus === 'present' || recordStatus === 'late') {
+        status = 'Present'
+      } else if (recordStatus === 'excused') {
+        status = 'Excused'
+      } else {
+        status = 'Absent'
+      }
     }
 
-    return {
-      steward,
-      status,
-      markedAt: record ? formatCheckinTime(record.markedAt) : null,
-    }
-  })
+      return {
+        steward,
+        status,
+        markedAt: record ? formatCheckinTime(record.markedAt) : null,
+        excuseReason: record?.excuseReason,
+      }
+    })
 
-  // Sort: Unmarked -> Present -> Absent
-  const statusOrder = { Unmarked: 0, Present: 1, Absent: 2 }
+  // Sort: Unmarked -> Present -> Excused -> Absent
+  const statusOrder = { Unmarked: 0, Present: 1, Excused: 2, Absent: 3 }
   entries.sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
 
   const present = entries.filter((entry) => entry.status === 'Present').length
   const absent = entries.filter((entry) => entry.status === 'Absent').length
+  const excused = entries.filter((entry) => entry.status === 'Excused').length
   const total = entries.length
   const unmarked = entries.filter((entry) => entry.status === 'Unmarked').length
   const rate = total > 0 ? `${Math.round((present / total) * 100)}%` : '0%'
 
   return {
     entries,
-    stats: { total, present, unmarked, absent, rate },
+    stats: { total, present, unmarked, absent, excused, rate },
   }
+}
+
+export async function submitExcuse(meetingId: string, reason: string) {
+  const { data } = await api.post('/attendance/excuse', {
+    meetingId: Number(meetingId),
+    reason,
+  })
+  return data
+}
+
+export async function getPendingExcuses() {
+  const { data } = await api.get('/attendance/excuse/pending')
+  return data
+}
+
+export async function resolveExcuse(id: number, status: 'Approved' | 'Rejected', adminComment?: string) {
+  const { data } = await api.patch(`/attendance/excuse/${id}`, {
+    status,
+    adminComment,
+  })
+  return data
 }

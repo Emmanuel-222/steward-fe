@@ -19,6 +19,7 @@ export type Meeting = {
 
 export type CreateMeetingValues = {
   title: string
+  type: string
   date: string
   startTime: string
   cutoffTime: string

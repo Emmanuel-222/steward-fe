@@ -12,8 +12,12 @@ import useMarkPresentMutation from '../features/attendance/hooks/useMarkPresentM
 import useMeetingAttendanceQuery from '../features/attendance/hooks/useMeetingAttendanceQuery'
 import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
 import { useToast } from '../hooks/useToast'
+import useAuth from '../hooks/useAuth'
+import ExcuseRequestModal from '../components/pages/attendance/ExcuseRequestModal'
+import PendingExcusesBanner from '../components/pages/attendance/PendingExcusesBanner'
+import { MessageCircle } from 'lucide-react'
 
-const filters = ['All Stewards', 'Present Only', 'Absent Only', 'Pending']
+const filters = ['All Stewards', 'Present Only', 'Absent Only', 'Excused Only', 'Pending']
 
 function AttendancePage() {
   const { meetingId } = useParams()
@@ -28,6 +32,9 @@ function AttendancePage() {
     performance: number
   } | null>(null)
   const [showLateOnly, setShowLateOnly] = useState(false)
+  const [isExcuseModalOpen, setIsExcuseModalOpen] = useState(false)
+  const { user } = useAuth()
+  const isAdminOrLeader = user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'leader' || user?.role?.toLowerCase() === 'pastor'
 
   const meetingsQuery = useMeetingsQuery()
   const meetings = meetingsQuery.data ?? []
@@ -89,6 +96,7 @@ function AttendancePage() {
       total: statsData?.total ?? 0,
       present: statsData?.present ?? 0,
       absent: statsData?.absent ?? 0,
+      excused: statsData?.excused ?? 0,
       performance: parseInt(statsData?.rate ?? '0')
     }
 
@@ -141,6 +149,7 @@ function AttendancePage() {
     }
     if (activeFilter === 'Present Only') return entry.status === 'Present'
     if (activeFilter === 'Absent Only') return entry.status === 'Absent'
+    if (activeFilter === 'Excused Only') return entry.status === 'Excused'
     if (activeFilter === 'Pending') return entry.status === 'Unmarked'
     return true
   })
@@ -166,6 +175,13 @@ function AttendancePage() {
       detail: 'Marked Absent',
       tone: 'text-rose-600',
       border: 'border-rose-100 bg-rose-50/20',
+    },
+    {
+      label: 'Excused',
+      value: String(statsData?.excused ?? 0),
+      detail: 'Exempted',
+      tone: 'text-sky-600',
+      border: 'border-sky-100 bg-sky-50/20',
     },
     {
       label: 'Unmarked',
@@ -202,6 +218,19 @@ function AttendancePage() {
     }
   }
 
+  const handleMarkExcused = async (userId: string) => {
+    try {
+      await markPresentMutation.mutateAsync({
+        userId,
+        meetingId: activeMeeting.id,
+        status: 'excused',
+      })
+      showToast('Steward excused from meeting', 'success')
+    } catch (error) {
+      showToast('Failed to excuse steward', 'error')
+    }
+  }
+
   const handleFinalize = async () => {
     try {
       const result = await finalizeMutation.mutateAsync(activeMeeting.id)
@@ -220,30 +249,134 @@ function AttendancePage() {
         isFinalizing={finalizeMutation.isPending}
         isFinalized={activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
       />
-      
-      <AttendanceStatsSection stats={stats} />
-      
-      <RushModeBanner 
-        isActive={isRushMode}
-        onToggle={() => setIsRushMode(prev => !prev)}
-        expectedArrivals={statsData?.unmarked ?? 0}
-        peakWindow={`${activeMeeting.rawStartTime} - ${activeMeeting.rawCutoffTime}`}
-        checkinSpeed={Number(checkinSpeed)}
-        onViewLateList={() => setShowLateOnly(prev => !prev)}
-        isShowingLateOnly={showLateOnly}
-        meetingTitle={activeMeeting.title}
-      />
 
-      <AttendanceRegistrySection
-        entries={filteredEntries}
-        filters={filters}
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-        onMarkPresent={handleMarkPresent}
-        onMarkAbsent={handleMarkAbsent}
-        markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
-        cutoffDate={cutoffDate}
-        isRushMode={isRushMode}
+      {isAdminOrLeader && <PendingExcusesBanner />}
+      
+      {isAdminOrLeader ? (
+        <>
+          <AttendanceStatsSection stats={stats} />
+          
+          <RushModeBanner 
+            isActive={isRushMode}
+            onToggle={() => setIsRushMode(prev => !prev)}
+            expectedArrivals={statsData?.unmarked ?? 0}
+            peakWindow={`${activeMeeting.rawStartTime} - ${activeMeeting.rawCutoffTime}`}
+            checkinSpeed={Number(checkinSpeed)}
+            onViewLateList={() => setShowLateOnly(prev => !prev)}
+            isShowingLateOnly={showLateOnly}
+            meetingTitle={activeMeeting.title}
+          />
+
+          <AttendanceRegistrySection
+            entries={filteredEntries}
+            filters={filters}
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+            onMarkPresent={handleMarkPresent}
+            onMarkAbsent={handleMarkAbsent}
+            onMarkExcused={handleMarkExcused}
+            markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
+            cutoffDate={cutoffDate}
+            isRushMode={isRushMode}
+            meetingTitle={activeMeeting.title}
+          />
+        </>
+      ) : (
+        <div className="mx-auto max-w-2xl space-y-6">
+          <div className="rounded-[35px] border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
+            <div className="flex items-center gap-6">
+              <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-[#0f2d52] text-2xl font-bold text-white shadow-xl shadow-[#0f2d52]/20">
+                {user?.initials || user?.name?.[0] || 'S'}
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-2xl font-bold text-[#0f2d52]">{user?.name}</h3>
+                <p className="text-sm font-medium text-slate-400">{user?.role || 'Steward'}</p>
+              </div>
+            </div>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-3xl border border-slate-100 bg-slate-50/50 p-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Status</p>
+                <div className="mt-2 flex items-center gap-2">
+                  {(() => {
+                    const myEntry = entries.find(e => String(e.steward.id) === String(user?.id))
+                    if (!myEntry) return <span className="text-lg font-bold text-slate-400">Not Registered</span>
+                    
+                    if (myEntry.status === 'Present') return (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-bold text-emerald-700">
+                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        PRESENT
+                      </span>
+                    )
+                    if (myEntry.status === 'Excused') return (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-xs font-bold text-sky-700">
+                        EXCUSED
+                      </span>
+                    )
+                    if (myEntry.status === 'Absent') return (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-rose-100 px-4 py-1.5 text-xs font-bold text-rose-700">
+                        ABSENT
+                      </span>
+                    )
+                    return (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-slate-200 px-4 py-1.5 text-xs font-bold text-slate-600">
+                        PENDING
+                      </span>
+                    )
+                  })()}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-slate-100 bg-slate-50/50 p-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Session Date</p>
+                <p className="mt-2 text-lg font-bold text-[#0f2d52]">{activeMeeting.date}</p>
+              </div>
+            </div>
+
+            {(() => {
+              const myEntry = entries.find(e => String(e.steward.id) === String(user?.id))
+              if (myEntry?.status === 'Unmarked') {
+                return (
+                  <div className="mt-8 rounded-3xl border border-indigo-100 bg-indigo-50/50 p-6">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <p className="text-sm font-bold text-indigo-900">Unable to attend?</p>
+                        <p className="text-xs font-medium text-indigo-600">Submit an excuse request for this session.</p>
+                      </div>
+                      <button 
+                        onClick={() => setIsExcuseModalOpen(true)}
+                        className="rounded-2xl bg-indigo-600 px-6 py-3 text-xs font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition active:scale-95"
+                      >
+                        Request Excuse
+                      </button>
+                    </div>
+                  </div>
+                )
+              }
+              if (myEntry?.status === 'Excused' && myEntry.excuseReason) {
+                return (
+                  <div className="mt-8 rounded-3xl border border-sky-100 bg-sky-50/50 p-6">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-sky-600">Your Excuse Reason</p>
+                    <p className="mt-2 text-sm font-medium text-sky-800 italic">"{myEntry.excuseReason}"</p>
+                  </div>
+                )
+              }
+              return null
+            })()}
+          </div>
+
+          <div className="rounded-[30px] border border-slate-100 bg-slate-50/30 p-6 text-center">
+             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
+                End of personal session view
+             </p>
+          </div>
+        </div>
+      )}
+
+      <ExcuseRequestModal 
+        isOpen={isExcuseModalOpen}
+        onClose={() => setIsExcuseModalOpen(false)}
+        meetingId={activeMeeting.id}
         meetingTitle={activeMeeting.title}
       />
     </div>

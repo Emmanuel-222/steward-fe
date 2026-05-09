@@ -10,6 +10,7 @@ function useMeetingsQuery() {
   return useQuery({
     queryKey: meetingQueryKeys.list(),
     queryFn: getMeetings,
+    refetchInterval: 10000, // Poll every 10 seconds
   })
 }
 
