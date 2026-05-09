@@ -32,6 +32,7 @@ function AttendancePage() {
     absent: number
     performance: number
   } | null>(null)
+  const [showReport, setShowReport] = useState(false)
   const [showLateOnly, setShowLateOnly] = useState(false)
   const [isExcuseModalOpen, setIsExcuseModalOpen] = useState(false)
   const { user, isAuthenticated } = useAuth()
@@ -94,7 +95,7 @@ function AttendancePage() {
   }).length
   const checkinSpeed = (recentCheckins / 15).toFixed(1)
 
-  if (isAdminOrLeader && (finalizedData || activeMeeting?.status === 'Finalized' || activeMeeting?.status === 'Completed') && activeMeeting) {
+  if (isAdminOrLeader && (finalizedData || activeMeeting?.status === 'Finalized' || activeMeeting?.status === 'Completed') && activeMeeting && !showReport) {
     const stats = finalizedData || {
       total: statsData?.total ?? 0,
       present: statsData?.present ?? 0,
@@ -108,6 +109,7 @@ function AttendancePage() {
         meetingTitle={activeMeeting.title}
         stats={stats}
         onReturn={() => navigate('/dashboard')}
+        onViewReport={() => setShowReport(true)}
       />
     )
   }
@@ -270,6 +272,21 @@ function AttendancePage() {
             meetingTitle={activeMeeting.title}
           />
 
+          {showReport && (
+            <div className="mb-6 flex items-center justify-between rounded-3xl bg-[#0f2d52] p-6 text-white shadow-xl shadow-slate-200/50">
+              <div className="space-y-1">
+                <h2 className="text-xl font-bold">Detailed Session Report</h2>
+                <p className="text-xs font-medium text-slate-300">Viewing finalized attendance for {activeMeeting.title}</p>
+              </div>
+              <button
+                onClick={() => setShowReport(false)}
+                className="rounded-2xl bg-white/10 px-6 py-3 text-xs font-bold transition hover:bg-white/20"
+              >
+                Back to Summary
+              </button>
+            </div>
+          )}
+
           <AttendanceRegistrySection
             entries={filteredEntries}
             filters={filters}
@@ -282,6 +299,7 @@ function AttendancePage() {
             cutoffDate={cutoffDate}
             isRushMode={isRushMode}
             meetingTitle={activeMeeting.title}
+            isReadOnly={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
           />
         </>
       ) : (

@@ -14,6 +14,7 @@ type AttendanceRegistrySectionProps = {
   cutoffDate?: Date | null
   isRushMode?: boolean
   meetingTitle?: string
+  isReadOnly?: boolean
 }
 
 function AttendanceRegistrySection({
@@ -28,6 +29,7 @@ function AttendanceRegistrySection({
   cutoffDate = null,
   isRushMode = false,
   meetingTitle = 'Meeting',
+  isReadOnly = false,
 }: AttendanceRegistrySectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [focusedIndex, setFocusedIndex] = useState(-1)
@@ -127,7 +129,7 @@ function AttendanceRegistrySection({
             <p>Steward Information</p>
             {!isRushMode && <p>Role</p>}
             <p>Live Status</p>
-            <p className="text-right pr-4">Quick Marking Actions</p>
+            {!isReadOnly && <p className="text-right pr-4">Quick Marking Actions</p>}
           </div>
 
           <div ref={listRef} className="p-2 space-y-1">
@@ -231,52 +233,54 @@ function AttendanceRegistrySection({
                        )}
                     </div>
 
-                    <div className="flex items-center justify-end pr-2 gap-2">
-                       {isPresent ? (
-                         <>
-                            <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                               <History className="h-4 w-4" />
-                            </button>
-                            <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                               <Bolt className="h-4 w-4" />
-                            </button>
-                         </>
-                       ) : (
-                         <>
-                            <button
-                              type="button"
-                              disabled={isMarking || isAbsent || entry.status === 'Excused'}
-                              onClick={() => onMarkPresent(entry.steward.id)}
-                              className="inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-[11px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
-                            >
-                              {isMarking ? (
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                              ) : (
-                                <Check className="h-3 w-3 stroke-[3]" />
-                              )}
-                              Mark Present
-                            </button>
-                            <button 
-                              type="button"
-                              disabled={isMarking || isAbsent || entry.status === 'Excused'}
-                              onClick={() => onMarkAbsent?.(entry.steward.id)}
-                              title="Mark as Absent"
-                              className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
-                            >
-                               <Check className="h-4 w-4 rotate-45" />
-                            </button>
-                            <button 
-                              type="button"
-                              disabled={isMarking || entry.status === 'Excused'}
-                              onClick={() => onMarkExcused?.(entry.steward.id)}
-                              title="Mark as Excused"
-                              className="p-2.5 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 hover:bg-sky-500 hover:text-white transition disabled:opacity-50"
-                            >
-                               <Loader2 className="h-4 w-4" />
-                            </button>
-                         </>
-                       )}
-                    </div>
+                    {!isReadOnly && (
+                      <div className="flex items-center justify-end pr-2 gap-2">
+                         {isPresent ? (
+                           <>
+                              <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                 <History className="h-4 w-4" />
+                              </button>
+                              <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                 <Bolt className="h-4 w-4" />
+                              </button>
+                           </>
+                         ) : (
+                           <>
+                              <button
+                                type="button"
+                                disabled={isMarking || isAbsent || entry.status === 'Excused'}
+                                onClick={() => onMarkPresent(entry.steward.id)}
+                                className="inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-[11px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
+                              >
+                                {isMarking ? (
+                                  <Loader2 className="h-3 w-3 animate-spin" />
+                                ) : (
+                                  <Check className="h-3 w-3 stroke-[3]" />
+                                )}
+                                Mark Present
+                              </button>
+                              <button 
+                                type="button"
+                                disabled={isMarking || isAbsent || entry.status === 'Excused'}
+                                onClick={() => onMarkAbsent?.(entry.steward.id)}
+                                title="Mark as Absent"
+                                className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
+                              >
+                                 <Check className="h-4 w-4 rotate-45" />
+                              </button>
+                              <button 
+                                type="button"
+                                disabled={isMarking || entry.status === 'Excused'}
+                                onClick={() => onMarkExcused?.(entry.steward.id)}
+                                title="Mark as Excused"
+                                className="p-2.5 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 hover:bg-sky-500 hover:text-white transition disabled:opacity-50"
+                              >
+                                 <Loader2 className="h-4 w-4" />
+                              </button>
+                           </>
+                         )}
+                      </div>
+                    )}
                   </article>
                 )
               })
