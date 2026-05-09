@@ -139,9 +139,9 @@ function AttendanceRegistrySection({
               </div>
             ) : (
               searched.map((entry, index) => {
+                const isMarking = markingUserId === entry.steward.id
                 const isPresent = entry.status === 'Present'
                 const isAbsent = entry.status === 'Absent'
-                const isMarking = markingUserId === entry.steward.id
                 const isFocused = focusedIndex === index
 
                 return (
