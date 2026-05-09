@@ -16,7 +16,7 @@ function AttendanceHero({
   isFinalized = false,
 }: AttendanceHeroProps) {
   const { user } = useAuth()
-  const canFinalize = ['admin', 'pastor', 'leader'].includes(user?.role?.toLowerCase() || '')
+  const canFinalize = user?.role?.toLowerCase() === 'admin'
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}

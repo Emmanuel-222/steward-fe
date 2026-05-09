@@ -11,6 +11,7 @@ import useCreateMeetingMutation from "../features/meetings/hooks/useCreateMeetin
 import useDeleteMeetingMutation from "../features/meetings/hooks/useDeleteMeetingMutation";
 import useMeetingsQuery from "../features/meetings/hooks/useMeetingsQuery";
 import useUpdateMeetingMutation from "../features/meetings/hooks/useUpdateMeetingMutation";
+import useAuth from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
 import type {
   CreateMeetingValues,
@@ -28,6 +29,9 @@ function MeetingsPage() {
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
   const [deletingMeeting, setDeletingMeeting] = useState<Meeting | null>(null);
   const meetingsQuery = useMeetingsQuery();
+  const { user } = useAuth();
+  const isAdmin = user?.role?.toLowerCase() === "admin";
+
   const createMeetingMutation = useCreateMeetingMutation();
   const updateMeetingMutation = useUpdateMeetingMutation();
   const deleteMeetingMutation = useDeleteMeetingMutation();
@@ -106,14 +110,16 @@ function MeetingsPage() {
           eyebrow="Overview"
           title="Manage Ledger Sessions"
           actions={
-            <button
-              type="button"
-              onClick={() => setIsScheduleModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#0f2d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
-            >
-              <Plus className="h-4 w-4" />
-              Create Meeting
-            </button>
+            isAdmin && (
+              <button
+                type="button"
+                onClick={() => setIsScheduleModalOpen(true)}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#0f2d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
+              >
+                <Plus className="h-4 w-4" />
+                Create Meeting
+              </button>
+            )
           }
         />
 

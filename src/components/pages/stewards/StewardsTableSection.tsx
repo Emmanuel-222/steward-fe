@@ -1,6 +1,8 @@
 import { Eye, Pencil, Trash2 } from 'lucide-react'
 import type { Steward } from '../../../features/stewards/types'
 
+import useAuth from '../../../hooks/useAuth'
+
 type StewardsTableSectionProps = {
   stewards: Steward[]
   onView: (steward: Steward) => void
@@ -18,6 +20,8 @@ function StewardsTableSection({
   isLoading = false,
   errorMessage,
 }: StewardsTableSectionProps) {
+  const { user } = useAuth()
+  const isAdmin = user?.role?.toLowerCase() === 'admin'
   return (
     <section className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
       <div className="hidden grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 lg:grid">
@@ -86,22 +90,26 @@ function StewardsTableSection({
                 >
                   <Eye className="h-4 w-4" />
                 </button>
-                <button
-                  type="button"
-                  onClick={() => onEdit(steward)}
-                  className="transition hover:text-[#0f2d52]"
-                  aria-label={`Edit ${steward.name}`}
-                >
-                  <Pencil className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onDelete(steward)}
-                  className="transition hover:text-rose-600"
-                  aria-label={`Delete ${steward.name}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                {isAdmin && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => onEdit(steward)}
+                      className="transition hover:text-[#0f2d52]"
+                      aria-label={`Edit ${steward.name}`}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(steward)}
+                      className="transition hover:text-rose-600"
+                      aria-label={`Delete ${steward.name}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </>
+                )}
               </div>
             </article>
           ))}

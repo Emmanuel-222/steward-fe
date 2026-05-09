@@ -12,6 +12,8 @@ import useCreateStewardMutation from '../features/stewards/hooks/useCreateStewar
 import useDeleteStewardMutation from '../features/stewards/hooks/useDeleteStewardMutation'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import useUpdateStewardMutation from '../features/stewards/hooks/useUpdateStewardMutation'
+import useAuth from '../hooks/useAuth'
+import useMeQuery from '../features/auth/hooks/useMeQuery'
 import { useToast } from '../hooks/useToast'
 import type {
   CreateStewardValues,
@@ -22,6 +24,13 @@ import type {
 function StewardsPage() {
   const navigate = useNavigate()
   const { showToast } = useToast()
+  const { user, isAuthenticated } = useAuth()
+  const meQuery = useMeQuery(!user && isAuthenticated)
+  const currentUser = user || meQuery.data
+  
+  const role = currentUser?.role?.toLowerCase()
+  const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
+  const isAdmin = role === 'admin'
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState('All Roles')
@@ -33,6 +42,32 @@ function StewardsPage() {
   const createStewardMutation = useCreateStewardMutation()
   const updateStewardMutation = useUpdateStewardMutation()
   const deleteStewardMutation = useDeleteStewardMutation()
+
+  if (isAuthenticated && !currentUser) {
+    return (
+      <div className="rounded-[30px] border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
+        Loading directory...
+      </div>
+    )
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="flex flex-col items-center justify-center space-y-6 rounded-[35px] border border-slate-200 bg-white px-6 py-24 text-center shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
+        <h3 className="text-2xl font-bold tracking-tight text-[#0f2d52]">Access Restricted</h3>
+        <p className="text-slate-500 font-medium max-w-md">
+          You don't have the necessary permissions to view the steward registry. Please contact your administrator if you believe this is an error.
+        </p>
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="inline-flex items-center justify-center rounded-2xl bg-[#0f2d52] px-8 py-4 text-sm font-bold text-white shadow-[0_15px_40px_rgba(15,45,82,0.2)] transition hover:bg-[#173c67]"
+        >
+          Return to Dashboard
+        </button>
+      </div>
+    )
+  }
+
   const stewards = stewardsQuery.data ?? []
   const roles = Array.from(new Set(stewards.map((steward) => steward.role)))
   const filteredStewards =
@@ -130,14 +165,16 @@ function StewardsPage() {
           title="Registry Directory"
           description="Manage personnel records, roles, and departmental assignments."
           actions={
-            <button
-              type="button"
-              onClick={() => setIsAddUserModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#0f2d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
-            >
-              <UserPlus className="h-4 w-4" />
-              Add New User
-            </button>
+            isAdmin && (
+              <button
+                type="button"
+                onClick={() => setIsAddUserModalOpen(true)}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#0f2d52] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
+              >
+                <UserPlus className="h-4 w-4" />
+                Add New User
+              </button>
+            )
           }
         />
 

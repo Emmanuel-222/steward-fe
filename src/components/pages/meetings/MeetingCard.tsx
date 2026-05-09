@@ -8,6 +8,8 @@ import {
 } from 'lucide-react'
 import type { Meeting } from '../../../features/meetings/types'
 
+import useAuth from '../../../hooks/useAuth'
+
 type MeetingCardProps = {
   meeting: Meeting
   onEdit: (meeting: Meeting) => void
@@ -16,6 +18,8 @@ type MeetingCardProps = {
 }
 
 function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) {
+  const { user } = useAuth()
+  const isAdmin = user?.role?.toLowerCase() === 'admin'
   return (
     <article className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
       <div className="flex items-start justify-between gap-4">
@@ -85,22 +89,27 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
           <Eye className="h-4 w-4" />
           {meeting.primaryAction}
         </button>
-        <button
-          type="button"
-          onClick={() => onEdit(meeting)}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
-        >
-          <Pencil className="h-4 w-4" />
-          {meeting.secondaryAction}
-        </button>
-        <button
-          type="button"
-          onClick={() => onDelete(meeting)}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-100"
-        >
-          <Trash2 className="h-4 w-4" />
-          Delete
-        </button>
+        
+        {isAdmin && (
+          <>
+            <button
+              type="button"
+              onClick={() => onEdit(meeting)}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              <Pencil className="h-4 w-4" />
+              {meeting.secondaryAction}
+            </button>
+            <button
+              type="button"
+              onClick={() => onDelete(meeting)}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-100"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </button>
+          </>
+        )}
       </div>
     </article>
   )

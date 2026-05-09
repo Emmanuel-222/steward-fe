@@ -70,7 +70,17 @@ function MainLayout() {
       </div>
 
       <nav className="flex-1 space-y-1 px-4 py-6">
-        {navItems.map(({ label, to, icon: Icon, end }) => (
+        {navItems
+          .filter(({ label }) => {
+            const role = currentUser?.role?.toLowerCase()
+            const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
+            
+            if (label === 'Stewards' || label === 'Meetings') {
+              return isAuthorized
+            }
+            return true
+          })
+          .map(({ label, to, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}

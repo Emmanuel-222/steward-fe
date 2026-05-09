@@ -13,6 +13,7 @@ import useMeetingAttendanceQuery from '../features/attendance/hooks/useMeetingAt
 import useMeetingsQuery from '../features/meetings/hooks/useMeetingsQuery'
 import { useToast } from '../hooks/useToast'
 import useAuth from '../hooks/useAuth'
+import useMeQuery from '../features/auth/hooks/useMeQuery'
 import ExcuseRequestModal from '../components/pages/attendance/ExcuseRequestModal'
 import PendingExcusesBanner from '../components/pages/attendance/PendingExcusesBanner'
 import { MessageCircle } from 'lucide-react'
@@ -33,8 +34,10 @@ function AttendancePage() {
   } | null>(null)
   const [showLateOnly, setShowLateOnly] = useState(false)
   const [isExcuseModalOpen, setIsExcuseModalOpen] = useState(false)
-  const { user } = useAuth()
-  const isAdminOrLeader = user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'leader' || user?.role?.toLowerCase() === 'pastor'
+  const { user, isAuthenticated } = useAuth()
+  const meQuery = useMeQuery(!user && isAuthenticated)
+  const currentUser = user || meQuery.data
+  const isAdminOrLeader = currentUser?.role?.toLowerCase() === 'admin' || currentUser?.role?.toLowerCase() === 'leader' || currentUser?.role?.toLowerCase() === 'pastor'
 
   const meetingsQuery = useMeetingsQuery()
   const meetings = meetingsQuery.data ?? []
@@ -47,7 +50,7 @@ function AttendancePage() {
   const markPresentMutation = useMarkPresentMutation()
   const finalizeMutation = useFinalizeMeetingMutation()
 
-  if (meetingsQuery.isLoading || (activeMeeting && attendanceQuery.isLoading)) {
+  if (meetingsQuery.isLoading || (activeMeeting && attendanceQuery.isLoading) || (isAuthenticated && !currentUser)) {
     return (
       <div className="rounded-[30px] border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
         Checking active meeting...
@@ -91,7 +94,7 @@ function AttendancePage() {
   }).length
   const checkinSpeed = (recentCheckins / 15).toFixed(1)
 
-  if ((finalizedData || activeMeeting?.status === 'Finalized') && activeMeeting) {
+  if (isAdminOrLeader && (finalizedData || activeMeeting?.status === 'Finalized' || activeMeeting?.status === 'Completed') && activeMeeting) {
     const stats = finalizedData || {
       total: statsData?.total ?? 0,
       present: statsData?.present ?? 0,
@@ -286,11 +289,11 @@ function AttendancePage() {
           <div className="rounded-[35px] border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
             <div className="flex items-center gap-6">
               <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-[#0f2d52] text-2xl font-bold text-white shadow-xl shadow-[#0f2d52]/20">
-                {user?.initials || user?.name?.[0] || 'S'}
+                {currentUser?.initials || currentUser?.name?.[0] || 'S'}
               </div>
               <div className="space-y-1">
-                <h3 className="text-2xl font-bold text-[#0f2d52]">{user?.name}</h3>
-                <p className="text-sm font-medium text-slate-400">{user?.role || 'Steward'}</p>
+                <h3 className="text-2xl font-bold text-[#0f2d52]">{currentUser?.name}</h3>
+                <p className="text-sm font-medium text-slate-400">{currentUser?.role || 'Steward'}</p>
               </div>
             </div>
 
@@ -299,7 +302,7 @@ function AttendancePage() {
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Status</p>
                 <div className="mt-2 flex items-center gap-2">
                   {(() => {
-                    const myEntry = entries.find(e => String(e.steward.id) === String(user?.id))
+                    const myEntry = entries.find(e => String(e.steward.id) === String(currentUser?.id))
                     if (!myEntry) return <span className="text-lg font-bold text-slate-400">Not Registered</span>
                     
                     if (myEntry.status === 'Present') return (
@@ -334,22 +337,33 @@ function AttendancePage() {
             </div>
 
             {(() => {
-              const myEntry = entries.find(e => String(e.steward.id) === String(user?.id))
+              const myEntry = entries.find(e => String(e.steward.id) === String(currentUser?.id))
               if (myEntry?.status === 'Unmarked') {
-                return (
-                  <div className="mt-8 rounded-3xl border border-indigo-100 bg-indigo-50/50 p-6">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="space-y-1">
-                        <p className="text-sm font-bold text-indigo-900">Unable to attend?</p>
-                        <p className="text-xs font-medium text-indigo-600">Submit an excuse request for this session.</p>
+                if (activeMeeting.status === 'Ongoing') {
+                  return (
+                    <div className="mt-8 rounded-3xl border border-indigo-100 bg-indigo-50/50 p-6">
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <p className="text-sm font-bold text-indigo-900">Unable to attend?</p>
+                          <p className="text-xs font-medium text-indigo-600">Submit an excuse request for this session.</p>
+                        </div>
+                        <button 
+                          onClick={() => setIsExcuseModalOpen(true)}
+                          className="rounded-2xl bg-indigo-600 px-6 py-3 text-xs font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition active:scale-95"
+                        >
+                          Request Excuse
+                        </button>
                       </div>
-                      <button 
-                        onClick={() => setIsExcuseModalOpen(true)}
-                        className="rounded-2xl bg-indigo-600 px-6 py-3 text-xs font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition active:scale-95"
-                      >
-                        Request Excuse
-                      </button>
                     </div>
+                  )
+                }
+                
+                return (
+                  <div className="mt-8 rounded-3xl border border-rose-100 bg-rose-50/50 p-6">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-rose-600">Final Outcome</p>
+                    <p className="mt-2 text-sm font-medium text-rose-800">
+                      This session has concluded. You were marked as <span className="font-bold">Absent</span>.
+                    </p>
                   </div>
                 )
               }
