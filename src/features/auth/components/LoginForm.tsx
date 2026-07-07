@@ -1,18 +1,43 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff } from 'lucide-react'
+import { Clock, Eye, EyeOff, ShieldAlert } from 'lucide-react'
 import useLoginMutation from '../hooks/useLoginMutation'
 import { loginSchema } from '../schema'
 import type { LoginPayload } from '../types'
+
+function formatCooldown(seconds: number) {
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  if (m > 0) return `${m}m ${s}s`
+  return `${s}s`
+}
+
+const STORAGE_KEY = 'rateLimitResetAt'
+
+function getPersistedCooldown(): number {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (!stored) return 0
+    const remaining = Math.round((Number(stored) - Date.now()) / 1000)
+    if (remaining <= 0) {
+      localStorage.removeItem(STORAGE_KEY)
+      return 0
+    }
+    return remaining
+  } catch {
+    return 0
+  }
+}
 
 function LoginForm() {
   const navigate = useNavigate()
   const loginMutation = useLoginMutation()
   const [serverError, setServerError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [cooldown, setCooldown] = useState(getPersistedCooldown)
   const {
     register,
     handleSubmit,
@@ -26,16 +51,52 @@ function LoginForm() {
     },
   })
 
+  useEffect(() => {
+    if (cooldown <= 0) return
+
+    const id = setInterval(() => {
+      setCooldown((prev) => {
+        const next = prev - 1
+        if (next <= 0) {
+          localStorage.removeItem(STORAGE_KEY)
+          setServerError('')
+          return 0
+        }
+        return next
+      })
+    }, 1000)
+
+    return () => clearInterval(id)
+  }, [cooldown])
+
+  const isRateLimited = cooldown > 0
+
   const onSubmit = async (values: LoginPayload) => {
     try {
       setServerError('')
       await loginMutation.mutateAsync(values)
       navigate('/dashboard')
     } catch (error) {
-      if (isAxiosError<{ message?: string }>(error)) {
+      if (isAxiosError(error) && error.response) {
+        const status = error.response.status
+        const message = error.response.data?.message
+
+        if (status === 429) {
+          const resetHeader = error.response.headers['rateLimit-Reset']
+          let resetAt: number
+          if (resetHeader) {
+            resetAt = Number(resetHeader) * 1000
+          } else {
+            resetAt = Date.now() + 15 * 60 * 1000
+          }
+          localStorage.setItem(STORAGE_KEY, String(resetAt))
+          const remaining = Math.max(1, Math.round((resetAt - Date.now()) / 1000))
+          setCooldown(remaining)
+          return
+        }
+
         setServerError(
-          error.response?.data?.message ??
-            'Authentication failed. Please verify your email and password.',
+          message ?? 'Authentication failed. Please verify your email and password.',
         )
         return
       }
@@ -58,7 +119,19 @@ function LoginForm() {
       </div>
 
       <form className="mt-8 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {serverError ? (
+        {isRateLimited ? (
+          <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-600 text-white">
+              <ShieldAlert className="h-3 w-3" />
+            </div>
+            <div className="leading-6">
+              <p className="font-semibold">Too many login attempts</p>
+              <p className="mt-0.5 text-amber-700">
+                Try again in <span className="font-bold">{formatCooldown(cooldown)}</span>
+              </p>
+            </div>
+          </div>
+        ) : serverError ? (
           <div className="flex gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
             <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-rose-600 text-white">
               <svg
@@ -163,22 +236,31 @@ function LoginForm() {
         <button
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d2f57] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#133a6a] disabled:cursor-not-allowed disabled:opacity-70"
           type="submit"
-          disabled={loginMutation.isPending}
+          disabled={loginMutation.isPending || isRateLimited}
         >
-          <span>
-            {loginMutation.isPending ? 'Authenticating...' : 'Access Registry'}
-          </span>
-          <svg
-            aria-hidden="true"
-            className="h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M5 12h14" />
-            <path d="m13 6 6 6-6 6" />
-          </svg>
+          {isRateLimited ? (
+            <>
+              <Clock className="h-4 w-4" />
+              <span>Wait {formatCooldown(cooldown)}</span>
+            </>
+          ) : (
+            <>
+              <span>
+                {loginMutation.isPending ? 'Authenticating...' : 'Access Registry'}
+              </span>
+              <svg
+                aria-hidden="true"
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M5 12h14" />
+                <path d="m13 6 6 6-6 6" />
+              </svg>
+            </>
+          )}
         </button>
       </form>
 
