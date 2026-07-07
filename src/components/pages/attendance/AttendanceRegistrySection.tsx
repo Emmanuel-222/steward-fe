@@ -123,8 +123,8 @@ function AttendanceRegistrySection({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-[32px] border border-slate-200 bg-white p-2 shadow-[0_20px_70px_rgba(15,23,42,0.04)]">
-        <div className="min-w-[800px]">
+      <div className="overflow-x-auto rounded-4xl border border-slate-200 bg-white p-2 shadow-[0_20px_70px_rgba(15,23,42,0.04)]">
+        <div className="min-w-200">
           <div className={`grid ${isRushMode ? 'grid-cols-[3fr_1fr_1.5fr]' : 'grid-cols-[2fr_1fr_1.5fr_1.5fr]'} gap-4 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 border-b border-slate-50`}>
             <p>Steward Information</p>
             {!isRushMode && <p>Role</p>}
@@ -161,7 +161,7 @@ function AttendanceRegistrySection({
                          </div>
                          {isPresent && (
                             <div className="absolute -right-1 -bottom-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
-                               <Check className="h-2 w-2 text-white stroke-[4]" />
+                               <Check className="h-2 w-2 text-white stroke-4" />
                             </div>
                          )}
                       </div>
@@ -196,17 +196,19 @@ function AttendanceRegistrySection({
                                {entry.markedAt ? `Checked in at ${entry.markedAt}` : 'Confirmed'}
                                {entry.markedAt && cutoffDate && (() => {
                                   try {
-                                    const [time, modifier] = entry.markedAt!.split(' ')
-                                    let [hours, minutes] = time.split(':').map(Number)
-                                    if (modifier === 'PM' && hours < 12) hours += 12
-                                    if (modifier === 'AM' && hours === 12) hours = 0
+                                     const [time, modifier] = entry.markedAt!.split(' ')
+                                     const [hStr, mStr] = time.split(':')
+                                     let hours = Number(hStr)
+                                     const minutes = Number(mStr)
+                                     if (modifier === 'PM' && hours < 12) hours += 12
+                                     if (modifier === 'AM' && hours === 12) hours = 0
                                     
                                     // Use the meeting date from the cutoffDate to ensure correct comparison
                                     const markedTime = new Date(cutoffDate)
                                     markedTime.setHours(hours, minutes, 0, 0)
                                     
                                     return markedTime > cutoffDate
-                                  } catch (e) {
+                                  } catch {
                                     return false
                                   }
                                })() && (
@@ -220,7 +222,7 @@ function AttendanceRegistrySection({
                                 EXCUSED
                              </span>
                              {entry.excuseReason && (
-                               <span className="mt-1 text-[9px] font-medium text-sky-600/70 italic px-1 truncate max-w-[150px]">
+                               <span className="mt-1 text-[9px] font-medium text-sky-600/70 italic px-1 truncate max-w-37.5">
                                  "{entry.excuseReason}"
                                </span>
                              )}
@@ -255,7 +257,7 @@ function AttendanceRegistrySection({
                                 {isMarking ? (
                                   <Loader2 className="h-3 w-3 animate-spin" />
                                 ) : (
-                                  <Check className="h-3 w-3 stroke-[3]" />
+                                  <Check className="h-3 w-3 stroke-3" />
                                 )}
                                 Mark Present
                               </button>

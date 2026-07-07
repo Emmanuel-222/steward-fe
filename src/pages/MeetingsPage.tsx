@@ -68,7 +68,7 @@ function MeetingsPage() {
       await createMeetingMutation.mutateAsync(values);
       showToast("Meeting scheduled successfully", "success");
       setIsScheduleModalOpen(false);
-    } catch (error) {
+    } catch {
       showToast("Failed to schedule meeting", "error");
     }
   };
@@ -84,7 +84,7 @@ function MeetingsPage() {
       showToast("Meeting details updated", "success");
       setIsScheduleModalOpen(false);
       setEditingMeeting(null);
-    } catch (error) {
+    } catch {
       showToast("Failed to update meeting", "error");
     }
   };
@@ -96,7 +96,7 @@ function MeetingsPage() {
       await deleteMeetingMutation.mutateAsync(deletingMeeting.id);
       showToast("Meeting session deleted", "success");
       setDeletingMeeting(null);
-    } catch (error) {
+    } catch {
       showToast("Failed to delete meeting", "error");
     }
   };

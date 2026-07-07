@@ -81,7 +81,7 @@ function StewardDetailPage() {
       })
       showToast('Profile updated successfully', 'success')
       setIsEditModalOpen(false)
-    } catch (error) {
+    } catch {
       showToast('Failed to update record', 'error')
     }
   }

@@ -14,7 +14,7 @@ function normalizeRecord(raw: Record<string, unknown>): AttendanceRecord {
     userId: String(raw.userId ?? raw.user_id ?? ''),
     meetingId: String(raw.meetingId ?? raw.meeting_id ?? ''),
     createdAt: String(raw.createdAt ?? ''),
-    excuseReason: (raw.excuseRequest as any)?.reason,
+    excuseReason: (raw.excuseRequest as { reason?: string } | undefined)?.reason,
   }
 }
 

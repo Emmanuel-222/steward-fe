@@ -1,4 +1,4 @@
-import { Check, MessageSquare, X, ShieldAlert } from 'lucide-react'
+import { Check, MessageSquare, X } from 'lucide-react'
 import useExcuseRequestsQuery from '../../../features/attendance/hooks/useExcuseRequestsQuery'
 import useResolveExcuseMutation from '../../../features/attendance/hooks/useResolveExcuseMutation'
 import { useToast } from '../../../hooks/useToast'
@@ -18,13 +18,13 @@ function PendingExcusesBanner() {
     try {
       await resolveMutation.mutateAsync({ id, status })
       showToast(`Request ${status.toLowerCase()} successfully`, 'success')
-    } catch (error) {
+    } catch {
       showToast(`Failed to ${status.toLowerCase()} request`, 'error')
     }
   }
 
   return (
-    <div className="rounded-[32px] border border-sky-100 bg-sky-50/50 p-6 shadow-sm">
+    <div className="rounded-4xl border border-sky-100 bg-sky-50/50 p-6 shadow-sm">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500 text-white shadow-lg shadow-sky-500/20">
@@ -40,8 +40,8 @@ function PendingExcusesBanner() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {requests.map((req: any) => (
-          <div key={req.id} className="group relative flex flex-col rounded-[24px] border border-sky-100 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-sky-200">
+        {requests.map((req: { id: number; reason: string; steward: { fullName: string; department: string }; meeting: { type: string } }) => (
+          <div key={req.id} className="group relative flex flex-col rounded-3xl border border-sky-100 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-sky-200">
             <div className="mb-3 flex items-start justify-between gap-4">
               <div className="space-y-1">
                 <p className="text-[10px] font-black uppercase tracking-widest text-sky-900/40">
@@ -61,7 +61,7 @@ function PendingExcusesBanner() {
                   className="p-2 rounded-xl text-emerald-600 hover:bg-emerald-50 transition active:scale-90"
                   title="Approve"
                 >
-                  <Check className="h-4 w-4 stroke-[3]" />
+                  <Check className="h-4 w-4 stroke-3" />
                 </button>
                 <button
                   onClick={() => handleResolve(req.id, 'Rejected')}
@@ -69,7 +69,7 @@ function PendingExcusesBanner() {
                   className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 transition active:scale-90"
                   title="Reject"
                 >
-                  <X className="h-4 w-4 stroke-[3]" />
+                  <X className="h-4 w-4 stroke-3" />
                 </button>
               </div>
             </div>

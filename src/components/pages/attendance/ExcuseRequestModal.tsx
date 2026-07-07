@@ -26,7 +26,7 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
       showToast('Excuse request submitted successfully', 'success')
       setReason('')
       onClose()
-    } catch (error) {
+    } catch {
       showToast('Failed to submit excuse request', 'error')
     }
   }

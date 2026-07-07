@@ -82,15 +82,17 @@ function LoginForm() {
         const message = error.response.data?.message
 
         if (status === 429) {
+          // eslint-disable-next-line react-hooks/purity
+          const now = Date.now()
           const resetHeader = error.response.headers['rateLimit-Reset']
           let resetAt: number
           if (resetHeader) {
             resetAt = Number(resetHeader) * 1000
           } else {
-            resetAt = Date.now() + 15 * 60 * 1000
+            resetAt = now + 15 * 60 * 1000
           }
           localStorage.setItem(STORAGE_KEY, String(resetAt))
-          const remaining = Math.max(1, Math.round((resetAt - Date.now()) / 1000))
+          const remaining = Math.max(1, Math.round((resetAt - now) / 1000))
           setCooldown(remaining)
           return
         }

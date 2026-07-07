@@ -1,6 +1,6 @@
 import { CheckCircle2, FileText, LayoutDashboard, ShieldCheck } from 'lucide-react'
 
-type FinalizeSuccessPageProps = {
+export type FinalizeSuccessPageProps = {
   meetingTitle: string
   stats: {
     total: number
