@@ -17,7 +17,12 @@ api.interceptors.request.use((config) => {
 })
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data && typeof response.data === 'object' && 'success' in response.data && response.data.success === true && 'data' in response.data) {
+      response.data = response.data.data
+    }
+    return response
+  },
   (error) => {
     const isLoginRequest = error.config?.url === '/auth/login'
 
