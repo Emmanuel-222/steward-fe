@@ -1,8 +1,7 @@
-import { Bolt, Users } from 'lucide-react'
+import { Bolt } from 'lucide-react'
 
 type RushModeBannerProps = {
   isActive: boolean
-  onToggle: () => void
   expectedArrivals: number
   peakWindow: string
   checkinSpeed: number
@@ -13,7 +12,6 @@ type RushModeBannerProps = {
 
 function RushModeBanner({
   isActive,
-  onToggle,
   expectedArrivals,
   peakWindow,
   checkinSpeed,

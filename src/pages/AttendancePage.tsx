@@ -1,11 +1,11 @@
-import { CalendarDays as CalendarIcon, Clock3 } from 'lucide-react'
+import { CalendarDays as CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import AttendanceEmptyState from '../components/pages/attendance/AttendanceEmptyState'
 import AttendanceHero from '../components/pages/attendance/AttendanceHero'
 import AttendanceRegistrySection from '../components/pages/attendance/AttendanceRegistrySection'
 import AttendanceStatsSection from '../components/pages/attendance/AttendanceStatsSection'
-import FinalizeSuccessPage from '../components/pages/attendance/FinalizeSuccessPage'
+import FinalizeSuccessPage, { type FinalizeSuccessPageProps } from '../components/pages/attendance/FinalizeSuccessPage'
 import RushModeBanner from '../components/pages/attendance/RushModeBanner'
 import useFinalizeMeetingMutation from '../features/attendance/hooks/useFinalizeMeetingMutation'
 import useMarkPresentMutation from '../features/attendance/hooks/useMarkPresentMutation'
@@ -16,7 +16,6 @@ import useAuth from '../hooks/useAuth'
 import useMeQuery from '../features/auth/hooks/useMeQuery'
 import ExcuseRequestModal from '../components/pages/attendance/ExcuseRequestModal'
 import PendingExcusesBanner from '../components/pages/attendance/PendingExcusesBanner'
-import { MessageCircle } from 'lucide-react'
 
 const filters = ['All Stewards', 'Present Only', 'Absent Only', 'Excused Only', 'Pending']
 
@@ -25,11 +24,12 @@ function AttendancePage() {
   const navigate = useNavigate()
   const { showToast } = useToast()
   const [activeFilter, setActiveFilter] = useState('All Stewards')
-  const [isRushMode, setIsRushMode] = useState(true)
+  const [isRushMode] = useState(true)
   const [finalizedData, setFinalizedData] = useState<{
     total: number
     present: number
     absent: number
+    excused: number
     performance: number
   } | null>(null)
   const [showReport, setShowReport] = useState(false)
@@ -74,7 +74,9 @@ function AttendancePage() {
   const parseTime = (timeStr: string | undefined, dateStr: string | undefined) => {
     if (!timeStr || !dateStr) return null
     const [time, modifier] = timeStr.split(' ')
-    let [hours, minutes] = time.split(':').map(Number)
+    const [strHours, strMinutes] = time.split(':')
+    let hours = Number(strHours)
+    const minutes = Number(strMinutes)
     if (modifier === 'PM' && hours < 12) hours += 12
     if (modifier === 'AM' && hours === 12) hours = 0
     
@@ -96,7 +98,7 @@ function AttendancePage() {
   const checkinSpeed = (recentCheckins / 15).toFixed(1)
 
   if (isAdminOrLeader && (finalizedData || activeMeeting?.status === 'Finalized' || activeMeeting?.status === 'Completed') && activeMeeting && !showReport) {
-    const stats = finalizedData || {
+    const stats: FinalizeSuccessPageProps['stats'] = finalizedData ?? {
       total: statsData?.total ?? 0,
       present: statsData?.present ?? 0,
       absent: statsData?.absent ?? 0,
@@ -205,7 +207,7 @@ function AttendancePage() {
         status: 'present',
       })
       showToast('Steward marked as present', 'success')
-    } catch (error) {
+    } catch {
       showToast('Failed to mark attendance', 'error')
     }
   }
@@ -218,7 +220,7 @@ function AttendancePage() {
         status: 'absent',
       })
       showToast('Steward marked as absent', 'success')
-    } catch (error) {
+    } catch {
       showToast('Failed to mark attendance', 'error')
     }
   }
@@ -231,7 +233,7 @@ function AttendancePage() {
         status: 'excused',
       })
       showToast('Steward excused from meeting', 'success')
-    } catch (error) {
+    } catch {
       showToast('Failed to excuse steward', 'error')
     }
   }
@@ -241,7 +243,7 @@ function AttendancePage() {
       const result = await finalizeMutation.mutateAsync(activeMeeting.id)
       setFinalizedData(result.summary)
       showToast('Session finalized successfully', 'success')
-    } catch (error) {
+    } catch {
       showToast('Failed to finalize session', 'error')
     }
   }
@@ -263,7 +265,6 @@ function AttendancePage() {
           
           <RushModeBanner 
             isActive={isRushMode}
-            onToggle={() => setIsRushMode(prev => !prev)}
             expectedArrivals={statsData?.unmarked ?? 0}
             peakWindow={`${activeMeeting.rawStartTime} - ${activeMeeting.rawCutoffTime}`}
             checkinSpeed={Number(checkinSpeed)}
@@ -306,7 +307,7 @@ function AttendancePage() {
         <div className="mx-auto max-w-2xl space-y-6">
           <div className="rounded-[35px] border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
             <div className="flex items-center gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-[#0f2d52] text-2xl font-bold text-white shadow-xl shadow-[#0f2d52]/20">
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#0f2d52] text-2xl font-bold text-white shadow-xl shadow-[#0f2d52]/20">
                 {currentUser?.initials || currentUser?.name?.[0] || 'S'}
               </div>
               <div className="space-y-1">

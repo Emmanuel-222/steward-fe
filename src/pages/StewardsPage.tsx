@@ -43,6 +43,33 @@ function StewardsPage() {
   const updateStewardMutation = useUpdateStewardMutation()
   const deleteStewardMutation = useDeleteStewardMutation()
 
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 400)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [searchTerm])
+
+  useEffect(() => {
+    if (!isAddUserModalOpen && !isEditModalOpen && !isDeleteModalOpen) {
+      return undefined
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsAddUserModalOpen(false)
+        setIsEditModalOpen(false)
+        setIsDeleteModalOpen(false)
+        setModalStewardId(null)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isAddUserModalOpen, isDeleteModalOpen, isEditModalOpen])
+
   if (isAuthenticated && !currentUser) {
     return (
       <div className="rounded-[30px] border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
@@ -78,33 +105,6 @@ function StewardsPage() {
   const modalSteward =
     stewards.find((steward) => steward.id === modalStewardId) ?? null
 
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm)
-    }, 400)
-
-    return () => window.clearTimeout(timeoutId)
-  }, [searchTerm])
-
-  useEffect(() => {
-    if (!isAddUserModalOpen && !isEditModalOpen && !isDeleteModalOpen) {
-      return undefined
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsAddUserModalOpen(false)
-        setIsEditModalOpen(false)
-        setIsDeleteModalOpen(false)
-        setModalStewardId(null)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isAddUserModalOpen, isDeleteModalOpen, isEditModalOpen])
-
   const handleViewSteward = (steward: Steward) => {
     navigate(`/dashboard/stewards/${steward.id}`)
   }
@@ -124,7 +124,7 @@ function StewardsPage() {
       await createStewardMutation.mutateAsync(values)
       showToast('Steward added successfully', 'success')
       setIsAddUserModalOpen(false)
-    } catch (error) {
+    } catch {
       showToast('Failed to add steward', 'error')
     }
   }
@@ -140,7 +140,7 @@ function StewardsPage() {
       showToast('Steward updated successfully', 'success')
       setIsEditModalOpen(false)
       setModalStewardId(null)
-    } catch (error) {
+    } catch {
       showToast('Failed to update steward', 'error')
     }
   }
@@ -153,7 +153,7 @@ function StewardsPage() {
       showToast('Steward removed from registry', 'success')
       setIsDeleteModalOpen(false)
       setModalStewardId(null)
-    } catch (error) {
+    } catch {
       showToast('Failed to delete steward', 'error')
     }
   }
