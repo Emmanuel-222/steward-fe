@@ -274,15 +274,29 @@ export async function getMeetingsPage(page: number = 1, limit: number = 20) {
     ? data
     : (data as { items?: unknown[] })?.items ?? []
 
-  const pagination: PaginationData | null = !Array.isArray(data)
+  const serverPagination: PaginationData | null = !Array.isArray(data)
     ? (data as { pagination?: PaginationData })?.pagination ?? null
     : null
 
+  if (serverPagination) {
+    return {
+      items: rawItems.map((meeting) =>
+        normalizeMeeting(meeting as Record<string, unknown>),
+      ),
+      pagination: serverPagination,
+    }
+  }
+
+  const total = rawItems.length
+  const totalPages = Math.max(1, Math.ceil(total / limit))
+  const start = (page - 1) * limit
+  const sliced = rawItems.slice(start, start + limit)
+
   return {
-    items: rawItems.map((meeting) =>
+    items: sliced.map((meeting) =>
       normalizeMeeting(meeting as Record<string, unknown>),
     ),
-    pagination,
+    pagination: { total, page, limit, totalPages },
   }
 }
 
