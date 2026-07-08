@@ -198,6 +198,7 @@ function StewardsPage() {
               ? 'Unable to load stewards right now.'
               : undefined
           }
+          onRetry={() => stewardsQuery.refetch()}
         />
         <DirectoryFooter />
       </div>

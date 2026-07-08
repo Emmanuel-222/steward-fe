@@ -7,6 +7,8 @@ import MeetingsTabs from "../components/pages/meetings/MeetingsTabs";
 import ScheduleMeetingModal from "../components/pages/meetings/ScheduleMeetingModal";
 import DashboardPageHeader from "../components/shared/DashboardPageHeader";
 import FloatingActionButton from "../components/shared/FloatingActionButton";
+import Skeleton from "../components/ui/Skeleton";
+import ErrorState from "../components/ui/ErrorState";
 import useCreateMeetingMutation from "../features/meetings/hooks/useCreateMeetingMutation";
 import useDeleteMeetingMutation from "../features/meetings/hooks/useDeleteMeetingMutation";
 import useMeetingsQuery from "../features/meetings/hooks/useMeetingsQuery";
@@ -131,13 +133,24 @@ function MeetingsPage() {
           />
 
           {meetingsQuery.isLoading ? (
-            <div className="rounded-[28px] border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-              Loading meetings...
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="animate-pulse rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+                  <Skeleton className="mb-3 h-4 w-20" />
+                  <Skeleton className="mb-2 h-6 w-40" />
+                  <Skeleton className="mb-4 h-3 w-32" />
+                  <div className="flex gap-4">
+                    <Skeleton className="h-3 w-16" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : meetingsQuery.isError ? (
-            <div className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-10 text-center text-sm text-rose-600 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-              Unable to load meetings right now.
-            </div>
+            <ErrorState
+              message="Unable to load meetings right now."
+              onRetry={() => meetingsQuery.refetch()}
+            />
           ) : filteredMeetings.length === 0 ? (
             <div className="grid gap-5 xl:grid-cols-3">
               <div className="xl:col-span-2 rounded-[28px] border border-slate-200 bg-white px-6 py-10 text-center shadow-[0_18px_55px_rgba(15,23,42,0.06)]">

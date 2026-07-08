@@ -1,5 +1,7 @@
 import { Eye, Pencil, Trash2 } from 'lucide-react'
 import type { Steward } from '../../../features/stewards/types'
+import { SkeletonRow } from '../../ui/Skeleton'
+import ErrorState from '../../ui/ErrorState'
 
 import useAuth from '../../../hooks/useAuth'
 
@@ -10,6 +12,7 @@ type StewardsTableSectionProps = {
   onDelete: (steward: Steward) => void
   isLoading?: boolean
   errorMessage?: string
+  onRetry?: () => void
 }
 
 function StewardsTableSection({
@@ -19,6 +22,7 @@ function StewardsTableSection({
   onDelete,
   isLoading = false,
   errorMessage,
+  onRetry,
 }: StewardsTableSectionProps) {
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
@@ -34,13 +38,15 @@ function StewardsTableSection({
       </div>
 
       {isLoading ? (
-        <div className="px-4 py-10 text-center text-sm text-slate-500 sm:px-6">
-          Loading stewards...
+        <div className="divide-y divide-slate-100">
+          <SkeletonRow cols={6} />
+          <SkeletonRow cols={6} />
+          <SkeletonRow cols={6} />
+          <SkeletonRow cols={6} />
+          <SkeletonRow cols={6} />
         </div>
       ) : errorMessage ? (
-        <div className="px-4 py-10 text-center text-sm text-rose-600 sm:px-6">
-          {errorMessage}
-        </div>
+        <ErrorState message={errorMessage} onRetry={onRetry} />
       ) : stewards.length === 0 ? (
         <div className="px-4 py-10 text-center text-sm text-slate-500 sm:px-6">
           No stewards matched your current filters.
