@@ -31,8 +31,6 @@ function getPageNumbers(current: number, total: number): (number | 'ellipsis')[]
 }
 
 function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange }: PaginationProps) {
-  if (totalPages <= 1) return null
-
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 px-4 py-4">
       {onPageSizeChange ? (
