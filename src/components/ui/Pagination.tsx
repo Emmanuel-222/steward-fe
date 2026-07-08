@@ -6,7 +6,10 @@ type PaginationProps = {
   total: number
   pageSize: number
   onPageChange: (page: number) => void
+  onPageSizeChange?: (size: number) => void
 }
+
+const PAGE_SIZE_OPTIONS = [10, 20, 50]
 
 function getPageNumbers(current: number, total: number): (number | 'ellipsis')[] {
   if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1)
@@ -27,21 +30,39 @@ function getPageNumbers(current: number, total: number): (number | 'ellipsis')[]
   return pages
 }
 
-function Pagination({ page, totalPages, total, pageSize, onPageChange }: PaginationProps) {
+function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange }: PaginationProps) {
   if (totalPages <= 1) return null
 
-  const from = (page - 1) * pageSize + 1
-  const to = Math.min(page * pageSize, total)
-
   return (
-    <div className="flex flex-col items-center gap-4 border-t border-slate-200 px-4 py-4 sm:flex-row sm:justify-between">
-      <p className="text-xs text-slate-500">
-        Showing <span className="font-semibold text-slate-700">{from}</span> to{' '}
-        <span className="font-semibold text-slate-700">{to}</span> of{' '}
-        <span className="font-semibold text-slate-700">{total}</span> entries
-      </p>
+    <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-4">
+      <div className="flex items-center justify-between gap-4">
+        {onPageSizeChange ? (
+          <label className="flex items-center gap-2 text-xs text-slate-500">
+            Show
+            <select
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#0f2d52]"
+            >
+              {PAGE_SIZE_OPTIONS.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+            per page
+          </label>
+        ) : (
+          <span />
+        )}
 
-      <nav className="flex items-center gap-1" aria-label="Pagination">
+        <p className="text-xs text-slate-500">
+          Page <span className="font-semibold text-slate-700">{page}</span> of{' '}
+          <span className="font-semibold text-slate-700">{totalPages}</span>
+        </p>
+      </div>
+
+      <nav className="flex items-center justify-center gap-1" aria-label="Pagination">
         <button
           type="button"
           disabled={page <= 1}

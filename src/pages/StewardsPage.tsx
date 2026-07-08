@@ -23,7 +23,7 @@ import type {
   UpdateStewardValues,
 } from '../features/stewards/types'
 
-const PAGE_SIZE = 20
+const DEFAULT_PAGE_SIZE = 10
 
 function StewardsPage() {
   const navigate = useNavigate()
@@ -39,11 +39,12 @@ function StewardsPage() {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState('All Roles')
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false)
   const [modalStewardId, setModalStewardId] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const stewardsQuery = useStewardsQuery(debouncedSearchTerm, page, PAGE_SIZE, selectedRole)
+  const stewardsQuery = useStewardsQuery(debouncedSearchTerm, page, pageSize, selectedRole)
   const createStewardMutation = useCreateStewardMutation()
   const updateStewardMutation = useUpdateStewardMutation()
   const deleteStewardMutation = useDeleteStewardMutation()
@@ -223,8 +224,9 @@ function StewardsPage() {
             page={pagination.page}
             totalPages={pagination.totalPages}
             total={pagination.total}
-            pageSize={PAGE_SIZE}
+            pageSize={pageSize}
             onPageChange={setPage}
+            onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}
           />
         )}
         <DirectoryFooter />

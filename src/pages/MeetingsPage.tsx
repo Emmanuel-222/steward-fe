@@ -23,7 +23,7 @@ import type {
   UpdateMeetingValues,
 } from "../features/meetings/types";
 
-const PAGE_SIZE = 12;
+const DEFAULT_PAGE_SIZE = 10;
 const tabs = ["All Meetings", "Upcoming", "Ongoing", "Completed", "Archived"];
 
 function MeetingsPage() {
@@ -31,10 +31,11 @@ function MeetingsPage() {
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState("All Meetings");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
   const [deletingMeeting, setDeletingMeeting] = useState<Meeting | null>(null);
-  const meetingsQuery = useMeetingsQuery(page, PAGE_SIZE);
+  const meetingsQuery = useMeetingsQuery(page, pageSize);
   const { user } = useAuth();
   const isAdmin = user?.role?.toLowerCase() === "admin";
 
@@ -226,8 +227,9 @@ function MeetingsPage() {
             page={pagination.page}
             totalPages={pagination.totalPages}
             total={pagination.total}
-            pageSize={PAGE_SIZE}
+            pageSize={pageSize}
             onPageChange={setPage}
+            onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}
           />
         )}
 
