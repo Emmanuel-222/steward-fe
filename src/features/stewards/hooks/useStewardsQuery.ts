@@ -26,6 +26,7 @@ function useStewardsQuery(search: string, page?: number, limit?: number, role?: 
       const items = await getStewards(search)
       return { items, pagination: null }
     },
+    placeholderData: (previousData) => previousData,
   })
 }
 

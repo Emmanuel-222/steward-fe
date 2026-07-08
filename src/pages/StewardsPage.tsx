@@ -1,5 +1,5 @@
 import { UserPlus } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AddUserModal from '../components/pages/stewards/AddUserModal'
 import DeleteUserModal from '../components/pages/stewards/DeleteUserModal'
@@ -112,21 +112,14 @@ function StewardsPage() {
     ? (stewardsQueryData as { pagination?: PaginationData } | null)?.pagination ?? null
     : null
 
-  const lastPaginationRef = useRef<PaginationData | null>(null)
-  if (pagination) lastPaginationRef.current = pagination
-  const displayPagination = pagination ?? lastPaginationRef.current
-  const lastStewardsRef = useRef<Steward[]>([])
-  if (stewards.length > 0) lastStewardsRef.current = stewards
-  const displayStewards = stewards.length > 0 ? stewards : lastStewardsRef.current
-
-  const roles = Array.from(new Set(displayStewards.map((steward) => steward.role)))
+  const roles = Array.from(new Set(stewards.map((steward) => steward.role)))
   const filteredStewards =
     selectedRole === 'All Roles'
-      ? displayStewards
-      : displayStewards.filter((steward) => steward.role === selectedRole)
+      ? stewards
+      : stewards.filter((steward) => steward.role === selectedRole)
   
   const modalSteward =
-    displayStewards.find((steward) => steward.id === modalStewardId) ?? null
+    stewards.find((steward) => steward.id === modalStewardId) ?? null
 
   const handleViewSteward = (steward: Steward) => {
     navigate(`/dashboard/stewards/${steward.id}`)
@@ -226,11 +219,11 @@ function StewardsPage() {
           }
           onRetry={() => stewardsQuery.refetch()}
         />
-        {displayPagination && (
+        {pagination && (
           <Pagination
-            page={displayPagination.page}
-            totalPages={displayPagination.totalPages}
-            total={displayPagination.total}
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            total={pagination.total}
             pageSize={pageSize}
             onPageChange={setPage}
             onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}

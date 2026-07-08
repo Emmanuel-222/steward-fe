@@ -1,5 +1,5 @@
 import { CalendarDays, Plus } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MeetingCard from "../components/pages/meetings/MeetingCard";
 import MeetingScheduleCard from "../components/pages/meetings/MeetingScheduleCard";
@@ -55,17 +55,11 @@ function MeetingsPage() {
   const pagination = !Array.isArray(meetingsQueryData)
     ? (meetingsQueryData as { pagination?: PaginationData } | null)?.pagination ?? null
     : null;
-  const lastPaginationRef = useRef<PaginationData | null>(null);
-  if (pagination) lastPaginationRef.current = pagination;
-  const displayPagination = pagination ?? lastPaginationRef.current;
-  const lastMeetingsRef = useRef<Meeting[]>([]);
-  if (meetings.length > 0) lastMeetingsRef.current = meetings;
-  const displayMeetings = meetings.length > 0 ? meetings : lastMeetingsRef.current;
 
   const filteredMeetings =
     activeTab === "All Meetings"
-      ? displayMeetings
-      : displayMeetings.filter(
+      ? meetings
+      : meetings.filter(
           (meeting) => meeting.status === activeTab.replace("All ", ""),
         );
 
@@ -228,11 +222,11 @@ function MeetingsPage() {
           )}
         </section>
 
-        {displayPagination && (
+        {pagination && (
           <Pagination
-            page={displayPagination.page}
-            totalPages={displayPagination.totalPages}
-            total={displayPagination.total}
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            total={pagination.total}
             pageSize={pageSize}
             onPageChange={setPage}
             onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}
