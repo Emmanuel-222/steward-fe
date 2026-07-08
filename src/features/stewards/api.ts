@@ -1,4 +1,5 @@
 import api from '../../services/axios'
+import type { PaginationData } from '../../types'
 import type {
   CreateStewardValues,
   Steward,
@@ -96,10 +97,11 @@ function extractStewardArray(payload: unknown) {
   }
 
   if (payload && typeof payload === 'object') {
-    const { users, data, results } = payload as StewardsResponse
-    if (Array.isArray(users)) return users
-    if (Array.isArray(data)) return data
-    if (Array.isArray(results)) return results
+    const obj = payload as StewardsResponse
+    if (Array.isArray(obj.items)) return obj.items
+    if (Array.isArray(obj.users)) return obj.users
+    if (Array.isArray(obj.data)) return obj.data
+    if (Array.isArray(obj.results)) return obj.results
   }
 
   return []
@@ -169,9 +171,42 @@ export async function getStewards(search?: string) {
 
   const { data } = await api.get(endpoint)
 
-  return extractStewardArray(data).map((steward) =>
-    normalizeSteward(steward as Record<string, unknown>),
+  return (extractStewardArray(data) as Record<string, unknown>[]).map(
+    (steward) => normalizeSteward(steward),
   )
+}
+
+export async function getStewardsPage(
+  search: string,
+  page: number = 1,
+  limit: number = 20,
+  role?: string,
+) {
+  const normalizedSearch = search?.trim()
+  const endpoint =
+    normalizedSearch
+      ? `/users/search/${encodeURIComponent(normalizedSearch)}`
+      : '/users'
+
+  const params: Record<string, string | number> = { page, limit }
+  if (role && role !== 'All Roles') params.role = role
+
+  const { data } = await api.get(endpoint, { params })
+
+  const rawItems: unknown[] = Array.isArray(data)
+    ? data
+    : (data as { items?: unknown[] })?.items ?? []
+
+  const pagination: PaginationData | null = !Array.isArray(data)
+    ? (data as { pagination?: PaginationData })?.pagination ?? null
+    : null
+
+  return {
+    items: rawItems.map((steward) =>
+      normalizeSteward(steward as Record<string, unknown>),
+    ),
+    pagination,
+  }
 }
 
 export async function getStewardById(id: string) {

@@ -1,5 +1,6 @@
 import api from '../../services/axios'
 import { getStewards } from '../stewards/api'
+import type { Steward } from '../stewards/types'
 import type {
   AttendanceRecord,
   MeetingAttendanceData,
@@ -80,9 +81,9 @@ export async function getMeetingAttendanceWithStewards(
     presentMap.set(String(record.userId), record)
   }
 
-  const entries: MeetingAttendanceEntry[] = stewards
-    .filter((s) => s.role.toLowerCase() !== 'admin')
-    .map((steward) => {
+  const entries: MeetingAttendanceEntry[] = (stewards as Steward[])
+    .filter((s: Steward) => s.role.toLowerCase() !== 'admin')
+    .map((steward: Steward) => {
       const record = presentMap.get(String(steward.id))
     
     let status: 'Present' | 'Absent' | 'Unmarked' | 'Excused' = 'Unmarked'

@@ -1,9 +1,10 @@
 import { CalendarDays, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MeetingCard from "../components/pages/meetings/MeetingCard";
 import MeetingScheduleCard from "../components/pages/meetings/MeetingScheduleCard";
 import MeetingsTabs from "../components/pages/meetings/MeetingsTabs";
+import Pagination from "../components/ui/Pagination";
 import ScheduleMeetingModal from "../components/pages/meetings/ScheduleMeetingModal";
 import DashboardPageHeader from "../components/shared/DashboardPageHeader";
 import FloatingActionButton from "../components/shared/FloatingActionButton";
@@ -15,31 +16,46 @@ import useMeetingsQuery from "../features/meetings/hooks/useMeetingsQuery";
 import useUpdateMeetingMutation from "../features/meetings/hooks/useUpdateMeetingMutation";
 import useAuth from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
+import type { PaginationData } from "../types";
 import type {
   CreateMeetingValues,
   Meeting,
   UpdateMeetingValues,
 } from "../features/meetings/types";
 
+const DEFAULT_PAGE_SIZE = 10;
 const tabs = ["All Meetings", "Upcoming", "Ongoing", "Completed", "Archived"];
 
 function MeetingsPage() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState("All Meetings");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
   const [deletingMeeting, setDeletingMeeting] = useState<Meeting | null>(null);
-  const meetingsQuery = useMeetingsQuery();
+  const meetingsQuery = useMeetingsQuery(page, pageSize);
   const { user } = useAuth();
   const isAdmin = user?.role?.toLowerCase() === "admin";
+
+  const resetPage = useCallback(() => setPage(1), []);
 
   const createMeetingMutation = useCreateMeetingMutation();
   const updateMeetingMutation = useUpdateMeetingMutation();
   const deleteMeetingMutation = useDeleteMeetingMutation();
-  const meetings = (meetingsQuery.data ?? []).sort(
+
+  const meetingsQueryData = meetingsQuery.data;
+  const meetings = (Array.isArray(meetingsQueryData)
+    ? meetingsQueryData
+    : (meetingsQueryData as { items?: Meeting[] } | null)?.items ?? []
+  ).sort(
     (a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime(),
   );
+  const pagination = !Array.isArray(meetingsQueryData)
+    ? (meetingsQueryData as { pagination?: PaginationData } | null)?.pagination ?? null
+    : null;
+
   const filteredMeetings =
     activeTab === "All Meetings"
       ? meetings
@@ -70,6 +86,7 @@ function MeetingsPage() {
       await createMeetingMutation.mutateAsync(values);
       showToast("Meeting scheduled successfully", "success");
       setIsScheduleModalOpen(false);
+      meetingsQuery.refetch();
     } catch {
       showToast("Failed to schedule meeting", "error");
     }
@@ -86,6 +103,7 @@ function MeetingsPage() {
       showToast("Meeting details updated", "success");
       setIsScheduleModalOpen(false);
       setEditingMeeting(null);
+      meetingsQuery.refetch();
     } catch {
       showToast("Failed to update meeting", "error");
     }
@@ -98,6 +116,7 @@ function MeetingsPage() {
       await deleteMeetingMutation.mutateAsync(deletingMeeting.id);
       showToast("Meeting session deleted", "success");
       setDeletingMeeting(null);
+      meetingsQuery.refetch();
     } catch {
       showToast("Failed to delete meeting", "error");
     }
@@ -129,7 +148,7 @@ function MeetingsPage() {
           <MeetingsTabs
             tabs={tabs}
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={(tab) => { setActiveTab(tab); resetPage() }}
           />
 
           {meetingsQuery.isLoading ? (
@@ -202,6 +221,17 @@ function MeetingsPage() {
             </>
           )}
         </section>
+
+        {pagination && (
+          <Pagination
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            total={pagination.total}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}
+          />
+        )}
 
         <FloatingActionButton
           icon={CalendarDays}

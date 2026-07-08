@@ -43,7 +43,7 @@ function AttendancePage() {
   const isAdminOrLeader = currentUser?.role?.toLowerCase() === 'admin' || currentUser?.role?.toLowerCase() === 'leader' || currentUser?.role?.toLowerCase() === 'pastor'
 
   const meetingsQuery = useMeetingsQuery()
-  const meetings = meetingsQuery.data ?? []
+  const meetings = meetingsQuery.data?.items ?? []
   
   const activeMeeting = meetingId 
     ? (meetings.find(m => m.id === meetingId) ?? null)

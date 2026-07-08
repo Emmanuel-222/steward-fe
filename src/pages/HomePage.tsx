@@ -17,9 +17,9 @@ function HomePage() {
   const stewardsQuery = useStewardsQuery('')
   const meetingsQuery = useMeetingsQuery()
 
-  const allStewards = stewardsQuery.data ?? []
-  const stewards = allStewards.filter((s) => s.role.toLowerCase() !== 'admin')
-  const meetings = meetingsQuery.data ?? []
+  const allStewards = stewardsQuery.data?.items ?? []
+  const stewards = allStewards.filter((s: { role: string }) => s.role.toLowerCase() !== 'admin')
+  const meetings = meetingsQuery.data?.items ?? []
 
   const ongoingMeeting = meetings.find((m) => m.status === 'Ongoing')
   

@@ -27,44 +27,45 @@ function StewardsTableSection({
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
   return (
-    <section className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
-      <div className="hidden grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 lg:grid">
-        <p>Full Name</p>
-        <p>Department</p>
-        <p>Role</p>
-        <p>Phone</p>
-        <p>Date Added</p>
-        <p>Actions</p>
-      </div>
+    <section className="rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
+      <div className="overflow-x-auto">
+        <div className="hidden min-w-[640px] grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:grid">
+          <p>Full Name</p>
+          <p>Department</p>
+          <p>Role</p>
+          <p>Phone</p>
+          <p>Date Added</p>
+          <p>Actions</p>
+        </div>
 
-      {isLoading ? (
-        <div className="divide-y divide-slate-100">
-          <SkeletonRow cols={6} />
-          <SkeletonRow cols={6} />
-          <SkeletonRow cols={6} />
-          <SkeletonRow cols={6} />
-          <SkeletonRow cols={6} />
-        </div>
-      ) : errorMessage ? (
-        <ErrorState message={errorMessage} onRetry={onRetry} />
-      ) : stewards.length === 0 ? (
-        <div className="px-4 py-10 text-center text-sm text-slate-500 sm:px-6">
-          No stewards matched your current filters.
-        </div>
-      ) : (
-        <div className="divide-y divide-slate-100">
-          {stewards.map((steward) => (
-            <article
-              key={steward.id}
-              className="grid gap-4 px-4 py-5 sm:px-6 lg:grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] lg:items-center"
-            >
-              <div className="flex items-center gap-4">
+        {isLoading ? (
+          <div className="divide-y divide-slate-100">
+            <SkeletonRow cols={6} />
+            <SkeletonRow cols={6} />
+            <SkeletonRow cols={6} />
+            <SkeletonRow cols={6} />
+            <SkeletonRow cols={6} />
+          </div>
+        ) : errorMessage ? (
+          <ErrorState message={errorMessage} onRetry={onRetry} />
+        ) : stewards.length === 0 ? (
+          <div className="px-4 py-10 text-center text-sm text-slate-500 sm:px-6">
+            No stewards matched your current filters.
+          </div>
+        ) : (
+          <div className="min-w-[640px] divide-y divide-slate-100">
+            {stewards.map((steward) => (
+              <article
+                key={steward.id}
+                className="grid gap-4 px-4 py-5 sm:px-6 sm:grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] sm:items-center"
+              >
+              <div className="flex items-center gap-4 min-w-0">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dfeafa] text-sm font-semibold text-[#0f2d52]">
                   {steward.initials}
                 </div>
-                <div>
-                  <p className="font-semibold text-slate-800">{steward.name}</p>
-                  <p className="break-all text-sm text-slate-500 sm:break-normal">
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-slate-800">{steward.name}</p>
+                  <p className="truncate text-sm text-slate-500">
                     {steward.email}
                   </p>
                 </div>
@@ -121,6 +122,7 @@ function StewardsTableSection({
           ))}
         </div>
       )}
+      </div>
 
       <div className="border-t border-slate-100 px-4 py-5 text-sm text-slate-500 sm:px-6">
         <p>
