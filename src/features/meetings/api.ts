@@ -1,4 +1,5 @@
 import api from '../../services/axios'
+import type { PaginationData } from '../../types'
 import type { CreateMeetingValues, Meeting, UpdateMeetingValues } from './types'
 
 const statusToneMap: Record<string, string> = {
@@ -259,11 +260,30 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
 
 export async function getMeetings() {
   const { data } = await api.get('/meetings')
-  const meetings = Array.isArray(data) ? data : []
+  const items = Array.isArray(data) ? data : (data as { items?: unknown[] })?.items ?? []
 
-  return meetings.map((meeting) =>
+  return (Array.isArray(items) ? items : []).map((meeting) =>
     normalizeMeeting(meeting as Record<string, unknown>),
   )
+}
+
+export async function getMeetingsPage(page: number = 1, limit: number = 20) {
+  const { data } = await api.get('/meetings', { params: { page, limit } })
+
+  const rawItems: unknown[] = Array.isArray(data)
+    ? data
+    : (data as { items?: unknown[] })?.items ?? []
+
+  const pagination: PaginationData | null = !Array.isArray(data)
+    ? (data as { pagination?: PaginationData })?.pagination ?? null
+    : null
+
+  return {
+    items: rawItems.map((meeting) =>
+      normalizeMeeting(meeting as Record<string, unknown>),
+    ),
+    pagination,
+  }
 }
 
 export async function createMeeting(payload: CreateMeetingValues) {

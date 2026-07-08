@@ -1,10 +1,11 @@
 import { UserPlus } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AddUserModal from '../components/pages/stewards/AddUserModal'
 import DeleteUserModal from '../components/pages/stewards/DeleteUserModal'
 import DirectoryFooter from '../components/pages/stewards/DirectoryFooter'
 import EditUserModal from '../components/pages/stewards/EditUserModal'
+import Pagination from '../components/ui/Pagination'
 import StewardsTableSection from '../components/pages/stewards/StewardsTableSection'
 import StewardsToolbar from '../components/pages/stewards/StewardsToolbar'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
@@ -15,11 +16,14 @@ import useUpdateStewardMutation from '../features/stewards/hooks/useUpdateStewar
 import useAuth from '../hooks/useAuth'
 import useMeQuery from '../features/auth/hooks/useMeQuery'
 import { useToast } from '../hooks/useToast'
+import type { PaginationData } from '../types'
 import type {
   CreateStewardValues,
   Steward,
   UpdateStewardValues,
 } from '../features/stewards/types'
+
+const PAGE_SIZE = 20
 
 function StewardsPage() {
   const navigate = useNavigate()
@@ -34,22 +38,26 @@ function StewardsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState('All Roles')
+  const [page, setPage] = useState(1)
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false)
   const [modalStewardId, setModalStewardId] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const stewardsQuery = useStewardsQuery(debouncedSearchTerm)
+  const stewardsQuery = useStewardsQuery(debouncedSearchTerm, page, PAGE_SIZE, selectedRole)
   const createStewardMutation = useCreateStewardMutation()
   const updateStewardMutation = useUpdateStewardMutation()
   const deleteStewardMutation = useDeleteStewardMutation()
 
+  const resetPage = useCallback(() => setPage(1), [])
+
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       setDebouncedSearchTerm(searchTerm)
+      resetPage()
     }, 400)
 
     return () => window.clearTimeout(timeoutId)
-  }, [searchTerm])
+  }, [searchTerm, resetPage])
 
   useEffect(() => {
     if (!isAddUserModalOpen && !isEditModalOpen && !isDeleteModalOpen) {
@@ -95,7 +103,14 @@ function StewardsPage() {
     )
   }
 
-  const stewards = stewardsQuery.data ?? []
+  const stewardsQueryData = stewardsQuery.data
+  const stewards = Array.isArray(stewardsQueryData)
+    ? stewardsQueryData
+    : (stewardsQueryData as { items?: Steward[] } | null)?.items ?? []
+  const pagination = !Array.isArray(stewardsQueryData)
+    ? (stewardsQueryData as { pagination?: PaginationData } | null)?.pagination ?? null
+    : null
+
   const roles = Array.from(new Set(stewards.map((steward) => steward.role)))
   const filteredStewards =
     selectedRole === 'All Roles'
@@ -124,6 +139,7 @@ function StewardsPage() {
       await createStewardMutation.mutateAsync(values)
       showToast('Steward added successfully', 'success')
       setIsAddUserModalOpen(false)
+      stewardsQuery.refetch()
     } catch {
       showToast('Failed to add steward', 'error')
     }
@@ -140,6 +156,7 @@ function StewardsPage() {
       showToast('Steward updated successfully', 'success')
       setIsEditModalOpen(false)
       setModalStewardId(null)
+      stewardsQuery.refetch()
     } catch {
       showToast('Failed to update steward', 'error')
     }
@@ -153,6 +170,7 @@ function StewardsPage() {
       showToast('Steward removed from registry', 'success')
       setIsDeleteModalOpen(false)
       setModalStewardId(null)
+      stewardsQuery.refetch()
     } catch {
       showToast('Failed to delete steward', 'error')
     }
@@ -179,12 +197,12 @@ function StewardsPage() {
         />
 
         <StewardsToolbar
-          total={filteredStewards.length}
+          total={pagination?.total ?? filteredStewards.length}
           growth={searchTerm.trim() ? 'filtered' : 'live'}
           searchValue={searchTerm}
           onSearchChange={setSearchTerm}
           roleValue={selectedRole}
-          onRoleChange={setSelectedRole}
+          onRoleChange={(r) => { setSelectedRole(r); resetPage() }}
           roles={roles}
         />
         <StewardsTableSection
@@ -200,6 +218,15 @@ function StewardsPage() {
           }
           onRetry={() => stewardsQuery.refetch()}
         />
+        {pagination && (
+          <Pagination
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            total={pagination.total}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
+        )}
         <DirectoryFooter />
       </div>
 

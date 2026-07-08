@@ -1,16 +1,29 @@
 import { useQuery } from '@tanstack/react-query'
-import { getMeetings } from '../api'
+import type { Meeting } from '../types'
+import type { PaginationData } from '../../../types'
+import { getMeetings, getMeetingsPage } from '../api'
 
 export const meetingQueryKeys = {
   all: ['meetings'] as const,
   list: () => ['meetings', 'list'] as const,
+  listPage: (page: number, limit: number) => ['meetings', 'list', page, limit] as const,
 }
 
-function useMeetingsQuery() {
-  return useQuery({
-    queryKey: meetingQueryKeys.list(),
-    queryFn: getMeetings,
-    refetchInterval: 10000, // Poll every 10 seconds
+type MeetingsQueryResult = { items: Meeting[]; pagination: PaginationData | null }
+
+function useMeetingsQuery(page?: number, limit?: number) {
+  const isPaginated = page !== undefined
+
+  return useQuery<MeetingsQueryResult>({
+    queryKey: isPaginated
+      ? meetingQueryKeys.listPage(page, limit ?? 20)
+      : meetingQueryKeys.list(),
+    queryFn: async () => {
+      if (isPaginated) return getMeetingsPage(page!, limit ?? 20)
+      const items = await getMeetings()
+      return { items, pagination: null }
+    },
+    refetchInterval: isPaginated ? false : 10000,
   })
 }
 

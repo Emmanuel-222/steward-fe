@@ -34,6 +34,15 @@ function MainLayout() {
     }
   }, [meQuery.data, user])
 
+  useEffect(() => {
+    if (isMobileNavOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [isMobileNavOpen])
+
   if (!isAuthenticated) {
     return <Navigate to="/" replace />
   }
@@ -44,15 +53,6 @@ function MainLayout() {
   }
 
   const closeMobileNav = () => setIsMobileNavOpen(false)
-
-  useEffect(() => {
-    if (isMobileNavOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => { document.body.style.overflow = '' }
-  }, [isMobileNavOpen])
 
   const sidebarContent = (
     <>

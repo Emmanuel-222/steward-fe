@@ -44,6 +44,7 @@ export type CreateStewardValues = {
 export type UpdateStewardValues = Omit<CreateStewardValues, 'password'>
 
 export type StewardsResponse = {
+  items?: unknown[]
   users?: unknown[]
   data?: unknown[]
   results?: unknown[]

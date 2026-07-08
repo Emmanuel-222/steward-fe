@@ -1,17 +1,31 @@
 import { useQuery } from '@tanstack/react-query'
-import { getStewardAttendanceReport, getStewardById, getStewards } from '../api'
+import type { PaginationData } from '../../../types'
+import type { Steward } from '../types'
+import { getStewardAttendanceReport, getStewardById, getStewards, getStewardsPage } from '../api'
 
 export const stewardQueryKeys = {
   all: ['stewards'] as const,
   list: (search: string) => ['stewards', 'list', search] as const,
+  listPage: (search: string, page: number, limit: number) =>
+    ['stewards', 'list', search, page, limit] as const,
   detail: (id: string) => ['stewards', 'detail', id] as const,
   attendance: (id: string) => ['stewards', 'attendance', id] as const,
 }
 
-function useStewardsQuery(search: string) {
-  return useQuery({
-    queryKey: stewardQueryKeys.list(search),
-    queryFn: () => getStewards(search),
+type StewardsQueryResult = { items: Steward[]; pagination: PaginationData | null }
+
+function useStewardsQuery(search: string, page?: number, limit?: number, role?: string) {
+  const isPaginated = page !== undefined
+
+  return useQuery<StewardsQueryResult>({
+    queryKey: isPaginated
+      ? ['stewards', 'list', search, page, limit ?? 20, role ?? 'All Roles']
+      : stewardQueryKeys.list(search),
+    queryFn: async () => {
+      if (isPaginated) return getStewardsPage(search, page!, limit ?? 20, role)
+      const items = await getStewards(search)
+      return { items, pagination: null }
+    },
   })
 }
 
