@@ -7,6 +7,8 @@ import AttendanceRegistrySection from '../components/pages/attendance/Attendance
 import AttendanceStatsSection from '../components/pages/attendance/AttendanceStatsSection'
 import FinalizeSuccessPage, { type FinalizeSuccessPageProps } from '../components/pages/attendance/FinalizeSuccessPage'
 import RushModeBanner from '../components/pages/attendance/RushModeBanner'
+import Skeleton from '../components/ui/Skeleton'
+import ErrorState from '../components/ui/ErrorState'
 import useFinalizeMeetingMutation from '../features/attendance/hooks/useFinalizeMeetingMutation'
 import useMarkPresentMutation from '../features/attendance/hooks/useMarkPresentMutation'
 import useMeetingAttendanceQuery from '../features/attendance/hooks/useMeetingAttendanceQuery'
@@ -53,17 +55,28 @@ function AttendancePage() {
 
   if (meetingsQuery.isLoading || (activeMeeting && attendanceQuery.isLoading) || (isAuthenticated && !currentUser)) {
     return (
-      <div className="rounded-[30px] border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
-        Checking active meeting...
+      <div className="animate-pulse space-y-6">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-32 w-full rounded-[30px]" />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 rounded-[20px]" />
+          ))}
+        </div>
+        <Skeleton className="h-64 w-full rounded-[28px]" />
       </div>
     )
   }
 
   if (meetingsQuery.isError || attendanceQuery.isError) {
     return (
-      <div className="rounded-[30px] border border-rose-200 bg-rose-50 px-6 py-10 text-center text-sm text-rose-600 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
-        Unable to load attendance right now.
-      </div>
+      <ErrorState
+        message="Unable to load attendance right now."
+        onRetry={() => {
+          meetingsQuery.refetch()
+          if (activeMeeting) attendanceQuery.refetch()
+        }}
+      />
     )
   }
 

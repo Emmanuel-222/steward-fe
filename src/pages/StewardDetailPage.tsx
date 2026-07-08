@@ -7,6 +7,8 @@ import useUpdateStewardMutation from '../features/stewards/hooks/useUpdateStewar
 import useAuth from '../hooks/useAuth'
 import useMeQuery from '../features/auth/hooks/useMeQuery'
 import { useToast } from '../hooks/useToast'
+import Skeleton from '../components/ui/Skeleton'
+import ErrorState from '../components/ui/ErrorState'
 import type { UpdateStewardValues } from '../features/stewards/types'
 
 function StewardDetailPage() {
@@ -51,23 +53,31 @@ function StewardDetailPage() {
 
   if (detailQuery.isLoading) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
-        <p className="text-sm text-slate-500">Loading steward record...</p>
+      <div className="animate-pulse space-y-6">
+        <Skeleton className="h-6 w-40" />
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="md:col-span-2 rounded-[30px] border border-slate-200 bg-white p-6">
+            <Skeleton className="mb-4 h-5 w-32" />
+            <Skeleton className="mb-2 h-4 w-48" />
+            <Skeleton className="mb-2 h-4 w-36" />
+            <Skeleton className="h-4 w-28" />
+          </div>
+          <div className="rounded-[30px] border border-slate-200 bg-white p-6">
+            <Skeleton className="mb-3 h-4 w-20" />
+            <Skeleton className="mb-2 h-8 w-16" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+        </div>
       </div>
     )
   }
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center gap-4 rounded-[30px] border border-rose-100 bg-rose-50 shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
-        <p className="text-sm font-medium text-rose-600">Personnel record not found.</p>
-        <button 
-          onClick={() => navigate('/dashboard/stewards')}
-          className="text-xs font-semibold uppercase tracking-wider text-rose-700 underline"
-        >
-          Return to Registry
-        </button>
-      </div>
+      <ErrorState
+        message="Unable to load steward record."
+        onRetry={() => detailQuery.refetch()}
+      />
     )
   }
 

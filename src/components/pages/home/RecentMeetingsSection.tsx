@@ -1,5 +1,6 @@
 import { CalendarDays } from 'lucide-react'
 import type { Meeting } from '../../../features/meetings/types'
+import Skeleton from '../../ui/Skeleton'
 
 type RecentMeetingsSectionProps = {
   meetings: Meeting[]
@@ -27,8 +28,17 @@ function RecentMeetingsSection({
 
       <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
         {isLoading ? (
-          <div className="px-5 py-10 text-center text-sm text-slate-500">
-            Loading recent sessions...
+          <div className="divide-y divide-slate-100">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 px-5 py-4">
+                <Skeleton className="h-10 w-10 rounded-xl" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-3 w-16" />
+              </div>
+            ))}
           </div>
         ) : meetings.length === 0 ? (
           <div className="px-5 py-10 text-center text-sm text-slate-500">

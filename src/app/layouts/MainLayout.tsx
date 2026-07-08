@@ -45,6 +45,15 @@ function MainLayout() {
 
   const closeMobileNav = () => setIsMobileNavOpen(false)
 
+  useEffect(() => {
+    if (isMobileNavOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [isMobileNavOpen])
+
   const sidebarContent = (
     <>
       <div className="border-b border-slate-200 px-6 py-6">
