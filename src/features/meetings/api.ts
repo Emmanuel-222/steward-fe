@@ -240,6 +240,7 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
     status,
     statusTone: statusToneMap[status] ?? 'bg-slate-100 text-slate-700',
     title,
+    type: String(rawMeeting.type ?? ''),
     subtitle,
     date: formatDate(rawDate || rawMeeting.createdAt),
     time:

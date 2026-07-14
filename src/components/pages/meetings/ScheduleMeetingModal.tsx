@@ -76,7 +76,7 @@ function ScheduleMeetingModal({
 
     reset({
       title: meeting.title,
-      type: meeting.title === meeting.status ? 'Other' : 'Sunday', // Fallback for old data
+      type: 'Sunday',
       date: meeting.rawDate,
       startTime: meeting.rawStartTime,
       cutoffTime: meeting.rawCutoffTime,
@@ -217,9 +217,7 @@ function ScheduleMeetingModal({
                 <option value="">Select Type</option>
                 <option value="Sunday">Sunday Service</option>
                 <option value="Special">Special Meeting</option>
-                <option value="Evangelism">Evangelism</option>
-                <option value="Rehearsal">Rehearsal</option>
-                <option value="Other">Other</option>
+                <option value="Prayer Meeting">Prayer Meeting</option>
               </select>
               {errors.type ? (
                 <p className="text-sm text-rose-600">{errors.type.message}</p>

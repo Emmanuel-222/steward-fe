@@ -3,6 +3,7 @@ export type Meeting = {
   status: string
   statusTone: string
   title: string
+  type: string
   subtitle: string
   date: string
   time: string
