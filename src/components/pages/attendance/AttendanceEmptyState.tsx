@@ -30,7 +30,7 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
               to="/dashboard/meetings"
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0f2d52] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
             >
-              <CalendarDays className="h-4 w-4" />
+              <CalendarDays className="h-4 w-4 text-white" />
               <span>Go To Meetings</span>
             </Link>
           </div>

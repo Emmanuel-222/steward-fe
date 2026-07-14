@@ -25,11 +25,18 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
   return (
     <article className={["rounded-[28px] border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]", isToday ? 'border-[#0f2d52]/20 ring-2 ring-[#0f2d52]/10' : 'border-slate-200'].join(' ')}>
       <div className="flex items-start justify-between gap-4">
-        <span
-          className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${meeting.statusTone}`}
-        >
-          {meeting.status}
-        </span>
+        <div className="flex flex-wrap gap-2">
+          <span
+            className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${meeting.statusTone}`}
+          >
+            {meeting.status}
+          </span>
+          {meeting.type && (
+            <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0f2d52]">
+              {meeting.type}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="mt-5 space-y-2">

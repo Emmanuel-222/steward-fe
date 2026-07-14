@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
-import { Calendar as CalendarIcon, Info, X } from 'lucide-react'
+import { Info, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { meetingSchema } from '../../../features/meetings/schema'
@@ -76,7 +76,7 @@ function ScheduleMeetingModal({
 
     reset({
       title: meeting.title,
-      type: 'Sunday',
+      type: meeting.type,
       date: meeting.rawDate,
       startTime: meeting.rawStartTime,
       cutoffTime: meeting.rawCutoffTime,
@@ -232,10 +232,10 @@ function ScheduleMeetingModal({
             <div className="relative">
               <input
                 type="date"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                id="meeting-date"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
                 {...register('date')}
               />
-              <CalendarIcon className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
             </div>
             {errors.date ? (
               <p className="text-sm text-rose-600">{errors.date.message}</p>

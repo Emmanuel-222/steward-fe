@@ -48,7 +48,7 @@ function useGlobalSearch(query: string) {
   })
 
   const meetingsQuery = useQuery({
-    queryKey: ['meetings', 'list'],
+    queryKey: ['globalSearch', 'meetings', 'list'],
     queryFn: getMeetings,
     enabled: isAuthorized,
     staleTime: 30000,

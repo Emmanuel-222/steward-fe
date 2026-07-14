@@ -1,4 +1,3 @@
-import { ChevronDown, Filter } from 'lucide-react'
 import SearchField from '../../shared/SearchField'
 import StatCard from '../../shared/StatCard'
 
@@ -22,7 +21,7 @@ function StewardsToolbar({
   roles,
 }: StewardsToolbarProps) {
   return (
-    <section className="grid gap-4 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_160px_56px]">
+    <section className="grid gap-4 lg:grid-cols-[220px_1fr_160px]">
       <StatCard
         label="Total Stewards"
         value={total}
@@ -36,34 +35,25 @@ function StewardsToolbar({
         onChange={(event) => onSearchChange(event.target.value)}
       />
 
-      <button
-        type="button"
-        className="relative flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-medium text-slate-600 shadow-[0_18px_55px_rgba(15,23,42,0.04)]"
+      <select
+        value={roleValue}
+        onChange={(event) => onRoleChange(event.target.value)}
+        className="flex h-[58px] w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 pr-10 text-sm font-medium text-slate-600 shadow-[0_18px_55px_rgba(15,23,42,0.04)] outline-none appearance-none cursor-pointer"
+        aria-label="Filter by role"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 16px center',
+          backgroundSize: '16px',
+        }}
       >
-        <select
-          value={roleValue}
-          onChange={(event) => onRoleChange(event.target.value)}
-          className="absolute inset-0 h-full w-full cursor-pointer appearance-none rounded-2xl bg-transparent px-4 text-sm text-transparent outline-none"
-          aria-label="Filter by role"
-        >
-          <option value="All Roles">All Roles</option>
-          {roles.map((role) => (
-            <option key={role} value={role}>
-              {role}
-            </option>
-          ))}
-        </select>
-        <span>{roleValue}</span>
-        <ChevronDown className="h-4 w-4" />
-      </button>
-
-      <button
-        type="button"
-        className="flex h-[58px] items-center justify-center rounded-2xl border border-slate-200 bg-[#eef3f9] text-slate-600 shadow-[0_18px_55px_rgba(15,23,42,0.04)] transition hover:bg-white"
-        aria-label="Open filters"
-      >
-        <Filter className="h-4 w-4" />
-      </button>
+        <option value="All Roles">All Roles</option>
+        {roles.map((role) => (
+          <option key={role} value={role}>
+            {role}
+          </option>
+        ))}
+      </select>
     </section>
   )
 }

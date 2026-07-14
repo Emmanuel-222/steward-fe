@@ -119,13 +119,13 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] sm:pt-[12vh]"
+      className="fixed inset-0 z-50"
       onClick={onClose}
     >
       <div className="fixed inset-0 bg-slate-950/30 backdrop-blur-[2px]" />
 
       <div
-        className="relative z-10 mx-0 flex w-full max-w-none flex-col sm:mx-4 sm:max-w-[560px] sm:rounded-2xl fixed inset-0 sm:static bg-white shadow-[0_28px_80px_rgba(15,23,42,0.24)] transition-all duration-200"
+        className="relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col bg-white shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:mt-[12vh] sm:max-w-[560px] sm:rounded-2xl rounded-none h-full sm:h-auto"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
