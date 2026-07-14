@@ -259,12 +259,37 @@ function normalizeMeeting(rawMeeting: Record<string, unknown>): Meeting {
   }
 }
 
+function sortMeetings(meetings: Meeting[]): Meeting[] {
+  const priority: Record<string, number> = {
+    Ongoing: 0,
+    Upcoming: 1,
+    Completed: 2,
+    Archived: 2,
+  }
+
+  return [...meetings].sort((a, b) => {
+    const pa = priority[a.status] ?? 2
+    const pb = priority[b.status] ?? 2
+    if (pa !== pb) return pa - pb
+
+    if (a.status === 'Ongoing') {
+      return a.rawStartTime.localeCompare(b.rawStartTime)
+    }
+    if (a.status === 'Upcoming') {
+      return a.rawDate.localeCompare(b.rawDate)
+    }
+    return b.rawDate.localeCompare(a.rawDate)
+  })
+}
+
 export async function getMeetings() {
   const { data } = await api.get('/meetings')
   const items = Array.isArray(data) ? data : (data as { items?: unknown[] })?.items ?? []
 
-  return (Array.isArray(items) ? items : []).map((meeting) =>
-    normalizeMeeting(meeting as Record<string, unknown>),
+  return sortMeetings(
+    (Array.isArray(items) ? items : []).map((meeting) =>
+      normalizeMeeting(meeting as Record<string, unknown>),
+    ),
   )
 }
 
@@ -275,28 +300,29 @@ export async function getMeetingsPage(page: number = 1, limit: number = 20) {
     ? data
     : (data as { items?: unknown[] })?.items ?? []
 
+  const allNormalized = rawItems.map((meeting) =>
+    normalizeMeeting(meeting as Record<string, unknown>),
+  )
+  const sorted = sortMeetings(allNormalized)
+
   const serverPagination: PaginationData | null = !Array.isArray(data)
     ? (data as { pagination?: PaginationData })?.pagination ?? null
     : null
 
   if (serverPagination) {
     return {
-      items: rawItems.map((meeting) =>
-        normalizeMeeting(meeting as Record<string, unknown>),
-      ),
+      items: sorted,
       pagination: serverPagination,
     }
   }
 
-  const total = rawItems.length
+  const total = sorted.length
   const totalPages = Math.max(1, Math.ceil(total / limit))
   const start = (page - 1) * limit
-  const sliced = rawItems.slice(start, start + limit)
+  const sliced = sorted.slice(start, start + limit)
 
   return {
-    items: sliced.map((meeting) =>
-      normalizeMeeting(meeting as Record<string, unknown>),
-    ),
+    items: sliced,
     pagination: { total, page, limit, totalPages },
   }
 }
