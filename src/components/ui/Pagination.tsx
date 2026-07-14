@@ -31,38 +31,29 @@ function getPageNumbers(current: number, total: number): (number | 'ellipsis')[]
 }
 
 function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange }: PaginationProps) {
-  if (totalPages <= 1) return null
-
   return (
-    <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-4">
-      <div className="flex items-center justify-between gap-4">
-        {onPageSizeChange ? (
-          <label className="flex items-center gap-2 text-xs text-slate-500">
-            Show
-            <select
-              value={pageSize}
-              onChange={(e) => onPageSizeChange(Number(e.target.value))}
-              className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#0f2d52]"
-            >
-              {PAGE_SIZE_OPTIONS.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-            per page
-          </label>
-        ) : (
-          <span />
-        )}
+    <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 px-4 py-4">
+      {onPageSizeChange ? (
+        <label className="flex items-center gap-2 text-xs text-slate-500">
+          Show
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#0f2d52]"
+          >
+            {PAGE_SIZE_OPTIONS.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+          per page
+        </label>
+      ) : (
+        <span />
+      )}
 
-        <p className="text-xs text-slate-500">
-          Page <span className="font-semibold text-slate-700">{page}</span> of{' '}
-          <span className="font-semibold text-slate-700">{totalPages}</span>
-        </p>
-      </div>
-
-      <nav className="flex items-center justify-center gap-1" aria-label="Pagination">
+      <nav className="flex items-center gap-1" aria-label="Pagination">
         <button
           type="button"
           disabled={page <= 1}
@@ -106,6 +97,11 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
           <ChevronRight className="h-4 w-4" />
         </button>
       </nav>
+
+      <p className="text-xs text-slate-500 whitespace-nowrap">
+        Page <span className="font-semibold text-slate-700">{page}</span> of{' '}
+        <span className="font-semibold text-slate-700">{totalPages}</span>
+      </p>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { UserPlus } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import AddUserModal from '../components/pages/stewards/AddUserModal'
 import DeleteUserModal from '../components/pages/stewards/DeleteUserModal'
 import DirectoryFooter from '../components/pages/stewards/DirectoryFooter'
@@ -35,8 +35,10 @@ function StewardsPage() {
   const role = currentUser?.role?.toLowerCase()
   const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
   const isAdmin = role === 'admin'
-  const [searchTerm, setSearchTerm] = useState('')
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialFromUrl = searchParams.get('department') ?? searchParams.get('search') ?? ''
+  const [searchTerm, setSearchTerm] = useState(initialFromUrl)
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialFromUrl)
   const [selectedRole, setSelectedRole] = useState('All Roles')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
@@ -50,6 +52,37 @@ function StewardsPage() {
   const deleteStewardMutation = useDeleteStewardMutation()
 
   const resetPage = useCallback(() => setPage(1), [])
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchTerm(value)
+      const dept = searchParams.get('department')
+      const srch = searchParams.get('search')
+      if ((dept && value !== dept) || (srch && value !== srch)) {
+        setSearchParams({}, { replace: true })
+      }
+    },
+    [searchParams, setSearchParams],
+  )
+
+  const prevParamsRef = useRef(searchParams.toString())
+
+  useEffect(() => {
+    const paramsStr = searchParams.toString()
+    if (paramsStr === prevParamsRef.current) return
+    prevParamsRef.current = paramsStr
+
+    const dept = searchParams.get('department')
+    const srch = searchParams.get('search')
+    const urlQuery = dept || srch || ''
+    if (urlQuery) {
+      requestAnimationFrame(() => {
+        setSearchTerm(urlQuery)
+        setDebouncedSearchTerm(urlQuery)
+        resetPage()
+      })
+    }
+  }, [searchParams, resetPage])
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -201,7 +234,7 @@ function StewardsPage() {
           total={pagination?.total ?? filteredStewards.length}
           growth={searchTerm.trim() ? 'filtered' : 'live'}
           searchValue={searchTerm}
-          onSearchChange={setSearchTerm}
+          onSearchChange={handleSearchChange}
           roleValue={selectedRole}
           onRoleChange={(r) => { setSelectedRole(r); resetPage() }}
           roles={roles}

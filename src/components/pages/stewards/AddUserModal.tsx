@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { createStewardSchema, stewardRoleOptions } from '../../../features/stewards/schema'
 import type { CreateStewardValues } from '../../../features/stewards/types'
+import { DEPARTMENTS } from '../../../constants/departments'
 
 type AddUserModalProps = {
   open: boolean
@@ -182,12 +183,18 @@ function AddUserModal({
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Department
               </span>
-              <input
-                type="text"
-                placeholder="e.g. Hospitality"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52] placeholder:text-slate-400"
-                {...register('department')}
-              />
+              <div className="relative">
+                <select
+                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                  {...register('department')}
+                >
+                  <option value="">Select Department</option>
+                  {DEPARTMENTS.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              </div>
               {errors.department ? (
                 <p className="text-sm text-rose-600">{errors.department.message}</p>
               ) : null}

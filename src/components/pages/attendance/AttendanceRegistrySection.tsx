@@ -1,5 +1,5 @@
-import { Bolt, Check, History, Loader2, Search } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { ArrowDownAZ, ArrowUpAZ, Bolt, Check, History, Loader2, Search } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MeetingAttendanceEntry } from '../../../features/attendance/types'
 
 type AttendanceRegistrySectionProps = {
@@ -32,19 +32,36 @@ function AttendanceRegistrySection({
   isReadOnly = false,
 }: AttendanceRegistrySectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
+  const [departmentSort, setDepartmentSort] = useState<'none' | 'asc' | 'desc'>('none')
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const listRef = useRef<HTMLDivElement>(null)
 
-  const searched = searchTerm.trim()
-    ? entries.filter((entry) => {
-        const term = searchTerm.toLowerCase()
-        return (
-          entry.steward.name.toLowerCase().includes(term) ||
-          entry.steward.email.toLowerCase().includes(term) ||
-          entry.steward.role.toLowerCase().includes(term)
-        )
+  const toggleDepartmentSort = () => {
+    setDepartmentSort((prev) => (prev === 'none' ? 'asc' : prev === 'asc' ? 'desc' : 'none'))
+  }
+
+  const searched = useMemo(() => {
+    let result = searchTerm.trim()
+      ? entries.filter((entry) => {
+          const term = searchTerm.toLowerCase()
+          return (
+            entry.steward.name.toLowerCase().includes(term) ||
+            entry.steward.email.toLowerCase().includes(term) ||
+            entry.steward.role.toLowerCase().includes(term) ||
+            entry.steward.department.toLowerCase().includes(term)
+          )
+        })
+      : entries
+
+    if (departmentSort !== 'none') {
+      result = [...result].sort((a, b) => {
+        const cmp = a.steward.department.localeCompare(b.steward.department)
+        return departmentSort === 'asc' ? cmp : -cmp
       })
-    : entries
+    }
+
+    return result
+  }, [entries, searchTerm, departmentSort])
 
   useEffect(() => {
     if (!isRushMode) return
@@ -117,6 +134,19 @@ function AttendanceRegistrySection({
               className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-4 text-sm font-medium text-slate-800 outline-none ring-slate-400/20 transition focus:border-[#0f2d52] focus:ring-4 lg:w-80"
             />
           </div>
+          <button
+            type="button"
+            onClick={toggleDepartmentSort}
+            title={`Sort by department (${departmentSort === 'none' ? 'off' : departmentSort})`}
+            className={[
+              'p-3.5 rounded-2xl border transition',
+              departmentSort !== 'none'
+                ? 'bg-[#0f2d52] text-white border-[#0f2d52]'
+                : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50',
+            ].join(' ')}
+          >
+             {departmentSort === 'asc' ? <ArrowDownAZ className="h-5 w-5" /> : <ArrowUpAZ className="h-5 w-5" />}
+          </button>
           <button className="p-3.5 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition">
              <Bolt className="h-5 w-5" />
           </button>
@@ -174,6 +204,9 @@ function AttendanceRegistrySection({
                             {entry.steward.email}
                           </p>
                         )}
+                        <p className="text-[10px] font-medium text-slate-400 truncate mt-0.5">
+                          {entry.steward.department}
+                        </p>
                       </div>
                     </div>
 

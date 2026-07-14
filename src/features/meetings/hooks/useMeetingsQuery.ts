@@ -23,6 +23,7 @@ function useMeetingsQuery(page?: number, limit?: number) {
       const items = await getMeetings()
       return { items, pagination: null }
     },
+    placeholderData: (previousData) => previousData,
     refetchInterval: isPaginated ? false : 10000,
   })
 }
