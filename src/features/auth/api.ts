@@ -10,3 +10,8 @@ export async function getMe() {
   const { data } = await api.get('/auth/me')
   return data
 }
+
+export async function refresh(refreshToken: string) {
+  const { data } = await api.post<AuthResponse>('/auth/refresh', { refreshToken })
+  return data
+}

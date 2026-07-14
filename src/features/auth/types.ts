@@ -5,6 +5,7 @@ export type LoginPayload = z.infer<typeof loginSchema>
 
 export type AuthResponse = {
   token: string
+  refreshToken: string
   user?: {
     id: string
     email: string
