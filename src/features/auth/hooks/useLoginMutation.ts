@@ -6,6 +6,7 @@ function useLoginMutation() {
     mutationFn: login,
     onSuccess: (response) => {
       localStorage.setItem('token', response.token)
+      localStorage.setItem('refreshToken', response.refreshToken)
       if (response.user) {
         localStorage.setItem('user', JSON.stringify(response.user))
       }
