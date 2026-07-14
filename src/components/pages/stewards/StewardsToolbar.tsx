@@ -21,7 +21,7 @@ function StewardsToolbar({
   roles,
 }: StewardsToolbarProps) {
   return (
-    <section className="grid gap-4 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_160px]">
+    <section className="grid gap-4 lg:grid-cols-[220px_1fr_160px]">
       <StatCard
         label="Total Stewards"
         value={total}
@@ -38,7 +38,7 @@ function StewardsToolbar({
       <select
         value={roleValue}
         onChange={(event) => onRoleChange(event.target.value)}
-        className="flex h-[58px] w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-medium text-slate-600 shadow-[0_18px_55px_rgba(15,23,42,0.04)] outline-none appearance-none"
+        className="flex h-[58px] w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 pr-10 text-sm font-medium text-slate-600 shadow-[0_18px_55px_rgba(15,23,42,0.04)] outline-none appearance-none cursor-pointer"
         aria-label="Filter by role"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
