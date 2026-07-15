@@ -1,5 +1,33 @@
 import type { Steward } from '../stewards/types'
 
+export type MyAttendanceRecord = {
+  id: string
+  status: string
+  markedAt: string
+  meeting: {
+    title: string
+    type: string
+    date: string
+    startTime: string
+    status: string
+  }
+  excuseRequest?: { reason: string }
+}
+
+export type MyExcuseRequest = {
+  id: string
+  meetingId: number
+  reason: string
+  status: string
+  adminComment?: string
+  createdAt: string
+  meeting: {
+    title: string
+    type: string
+    date: string
+  }
+}
+
 /** Raw attendance record returned by the API */
 export type AttendanceRecord = {
   id: string

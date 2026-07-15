@@ -10,7 +10,7 @@ function PendingExcusesBanner() {
   const resolveMutation = useResolveExcuseMutation()
   const { showToast } = useToast()
 
-  const isAdmin = user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'pastor'
+  const isAdminOrPastor = user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'pastor'
 
   if (isLoading || !requests || requests.length === 0) return null
 
@@ -33,7 +33,7 @@ function PendingExcusesBanner() {
           <div>
             <h3 className="text-sm font-bold text-sky-900">Pending Excuse Requests</h3>
             <p className="text-[11px] font-medium text-sky-600">
-              {isAdmin ? 'Global Overview' : `Department: ${user?.department}`} • {requests.length} pending
+              {isAdminOrPastor ? 'Global Overview' : `Department: ${user?.department}`} • {requests.length} pending
             </p>
           </div>
         </div>
@@ -47,7 +47,7 @@ function PendingExcusesBanner() {
                 <p className="text-[10px] font-black uppercase tracking-widest text-sky-900/40">
                   {req.steward.fullName}
                 </p>
-                {isAdmin && (
+                {isAdminOrPastor && (
                   <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-slate-500 uppercase">
                     {req.steward.department}
                   </span>
