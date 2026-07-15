@@ -45,7 +45,7 @@ function MainLayout() {
   const currentUser = user || meQuery.data
 
   const isNonSteward = currentUser?.role?.toLowerCase() !== 'steward'
-  const { data: pendingExcuses } = useExcuseRequestsQuery()
+  const { data: pendingExcuses } = useExcuseRequestsQuery(isNonSteward)
   const excuseCount = isNonSteward ? (pendingExcuses?.length ?? 0) : 0
 
   useEffect(() => {
