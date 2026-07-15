@@ -1,9 +1,11 @@
 import {
   CalendarDays,
   ClipboardList,
+  FileText,
   LayoutDashboard,
   LogOut,
   Menu,
+  MessageSquare,
   PanelLeftClose,
   PanelLeftOpen,
   Users,
@@ -16,12 +18,20 @@ import GlobalSearchOverlay from '../../components/global-search/GlobalSearchOver
 import useGlobalSearchHotkey from '../../components/global-search/useGlobalSearchHotkey'
 import useAuth from '../../hooks/useAuth'
 import useMeQuery from '../../features/auth/hooks/useMeQuery'
+import useExcuseRequestsQuery from '../../features/attendance/hooks/useExcuseRequestsQuery'
 
-const navItems = [
+const adminNavItems = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
   { label: 'Stewards', to: '/dashboard/stewards', icon: Users },
   { label: 'Meetings', to: '/dashboard/meetings', icon: CalendarDays },
+  { label: 'Excuses', to: '/dashboard/excuse-requests', icon: MessageSquare },
   { label: 'Attendance', to: '/dashboard/attendance', icon: ClipboardList },
+]
+
+const stewardNavItems = [
+  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
+  { label: 'My Attendance', to: '/dashboard/attendance', icon: ClipboardList },
+  { label: 'My Excuses', to: '/dashboard/my-excuses', icon: FileText },
 ]
 
 function MainLayout() {
@@ -33,6 +43,10 @@ function MainLayout() {
   const { isOpen: isSearchOpen, open: openSearch, close: closeSearch } = useGlobalSearchHotkey()
 
   const currentUser = user || meQuery.data
+
+  const isNonSteward = currentUser?.role?.toLowerCase() !== 'steward'
+  const { data: pendingExcuses } = useExcuseRequestsQuery()
+  const excuseCount = isNonSteward ? (pendingExcuses?.length ?? 0) : 0
 
   useEffect(() => {
     if (meQuery.data && !user) {
@@ -85,17 +99,23 @@ function MainLayout() {
       </div>
 
       <nav className="flex-1 space-y-1 px-4 py-6">
-        {navItems
-          .filter(({ label }) => {
-            const role = currentUser?.role?.toLowerCase()
-            const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
-            
-            if (label === 'Stewards' || label === 'Meetings') {
+        {(() => {
+          const role = currentUser?.role?.toLowerCase()
+          const isSteward = role === 'steward'
+          const items = isSteward ? stewardNavItems : adminNavItems
+
+          if (isSteward) return items
+
+          const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
+          return items.filter(({ label }) => {
+            if (label === 'Stewards' || label === 'Meetings' || label === 'Excuses') {
               return isAuthorized
             }
             return true
           })
-          .map(({ label, to, icon: Icon, end }) => (
+        })().map(({ label, to, icon: Icon, end }) => {
+          const showBadge = label === 'Excuses' && excuseCount > 0
+          return (
           <NavLink
             key={to}
             to={to}
@@ -110,10 +130,23 @@ function MainLayout() {
               ].join(' ')
             }
           >
-            <Icon className="h-5 w-5 shrink-0" />
+            <div className="relative shrink-0">
+              <Icon className="h-5 w-5" />
+              {showBadge && collapsed && (
+                <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[8px] font-bold leading-none text-white shadow-sm">
+                  {excuseCount > 9 ? '9+' : excuseCount}
+                </span>
+              )}
+            </div>
             <span className={collapsed ? 'lg:hidden' : ''}>{label}</span>
+            {showBadge && !collapsed && (
+              <span className="ml-auto rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold leading-none text-white">
+                {excuseCount}
+              </span>
+            )}
           </NavLink>
-        ))}
+          )
+        })}
       </nav>
 
       <div className="px-4 py-6 space-y-2">

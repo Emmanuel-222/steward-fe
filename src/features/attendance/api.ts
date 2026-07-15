@@ -143,3 +143,13 @@ export async function resolveExcuse(id: number, status: 'Approved' | 'Rejected',
   })
   return data
 }
+
+export async function getMyAttendance() {
+  const { data } = await api.get('/attendance/my')
+  return Array.isArray(data) ? data : (data.data ?? [])
+}
+
+export async function getMyExcuses() {
+  const { data } = await api.get('/attendance/excuse/my')
+  return Array.isArray(data) ? data : (data.data ?? [])
+}

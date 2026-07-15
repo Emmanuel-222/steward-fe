@@ -7,6 +7,8 @@ import AttendancePage from '../../pages/AttendancePage'
 import MeetingsPage from '../../pages/MeetingsPage'
 import StewardsPage from '../../pages/StewardsPage'
 import StewardDetailPage from '../../pages/StewardDetailPage'
+import MyExcusesPage from '../../pages/MyExcusesPage'
+import ExcuseRequestsPage from '../../pages/ExcuseRequestsPage'
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +39,14 @@ export const router = createBrowserRouter([
       {
         path: 'attendance/:meetingId?',
         element: <AttendancePage />,
+      },
+      {
+        path: 'my-excuses',
+        element: <MyExcusesPage />,
+      },
+      {
+        path: 'excuse-requests',
+        element: <ExcuseRequestsPage />,
       },
     ],
   },

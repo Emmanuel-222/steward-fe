@@ -41,6 +41,7 @@ function AttendancePage() {
   const meQuery = useMeQuery(!user && isAuthenticated)
   const currentUser = user || meQuery.data
   const isAdminOrLeader = currentUser?.role?.toLowerCase() === 'admin' || currentUser?.role?.toLowerCase() === 'leader' || currentUser?.role?.toLowerCase() === 'pastor'
+  const canMarkAttendance = currentUser?.role?.toLowerCase() === 'admin' || currentUser?.role?.toLowerCase() === 'pastor'
 
   const meetingsQuery = useMeetingsQuery()
   const meetings = meetingsQuery.data?.items ?? []
@@ -238,19 +239,6 @@ function AttendancePage() {
     }
   }
 
-  const handleMarkExcused = async (userId: string) => {
-    try {
-      await markPresentMutation.mutateAsync({
-        userId,
-        meetingId: activeMeeting.id,
-        status: 'excused',
-      })
-      showToast('Steward excused from meeting', 'success')
-    } catch {
-      showToast('Failed to excuse steward', 'error')
-    }
-  }
-
   const handleFinalize = async () => {
     try {
       const result = await finalizeMutation.mutateAsync(activeMeeting.id)
@@ -308,12 +296,12 @@ function AttendancePage() {
             onFilterChange={setActiveFilter}
             onMarkPresent={handleMarkPresent}
             onMarkAbsent={handleMarkAbsent}
-            onMarkExcused={handleMarkExcused}
             markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
             cutoffDate={cutoffDate}
             isRushMode={isRushMode}
             meetingTitle={activeMeeting.title}
-            isReadOnly={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
+            isReadOnly={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed' || !canMarkAttendance}
+            meetingIsFinalized={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
           />
         </>
       ) : (

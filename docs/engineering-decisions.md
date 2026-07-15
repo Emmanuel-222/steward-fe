@@ -283,3 +283,36 @@ function normalizeMeeting(raw: Record<string, unknown>): Meeting {
 - The normalizer is the single source of truth for data shape transformation
 
 **Cost:** Every new endpoint needs a normalizer. The normalizer must be kept in sync with backend changes.
+
+---
+
+## 13. Token Refresh Flow — Short-Lived Access Tokens with DB-Stored Refresh Token Rotation
+
+**Concept:** JWT token lifecycle, rotation-based invalidation, silent authentication refresh
+
+**The Problem:** The access token had a 24h expiry with no mechanism to refresh it. When it expired:
+- `useAuth()` only checked `localStorage` existence (`Boolean(token)`) — not JWT `exp`
+- Dashboard loaded with stale data; next API call got 401
+- Axios interceptor cleared everything and redirected — jarring mid-session kick-out
+
+**Options considered:**
+- **Extend to 7 days:** Simplest but insecure — leaked token valid for a week
+- **DB-stored refresh tokens (chosen):** Server-side revocation + rotation, random hex string (not JWT), stored in `RefreshToken` table
+- **JWT-only refresh token:** Stateless, but no revocation; stolen token usable until expiry
+- **httpOnly cookie:** Most secure, but requires cookie-parser + CORS domain configuration
+
+**Decision:** DB-stored refresh tokens with rotation:
+- Access token: `24h` → **6h** (reduces exposure window)
+- Refresh token: **7 days**, stored as random hex in `RefreshToken` table (`token`, `userId`, `expiresAt`, `revoked`)
+- Rotation: each refresh revokes the old token and issues a new one — stolen token becomes useless after one legitimate use
+- Daily cron (`cron/cleanupTokens.js`) purges expired + revoked tokens older than 7 days
+- `POST /logout` revokes the refresh token server-side
+- `package.json` `postinstall` runs `prisma generate && prisma migrate deploy` for auto-migration on Render
+
+**Frontend changes:**
+- `useAuth()` decodes JWT payload via `atob()`, checks `exp * 1000 < Date.now()`. If expired → `localStorage.clear()`, `isAuthenticated: false` (user never sees dashboard with stale token)
+- Axios response interceptor: on 401 → attempts `POST /auth/refresh`, stores new token pair, retries original request
+- `isRefreshing` flag + `failedQueue` pattern: only one refresh request in flight; concurrent 401s wait for that single result
+- Refresh endpoint itself is excluded from retry logic (infinite loop prevention)
+
+**Trade-off:** Two DB writes per refresh (revoke old + create new). Acceptable for a small team (~4 refreshes/user/day with 6h tokens). If user base grows significantly, increase access token expiry or add DB indexing on `userId`.

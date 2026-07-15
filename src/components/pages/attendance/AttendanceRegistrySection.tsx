@@ -9,12 +9,12 @@ type AttendanceRegistrySectionProps = {
   onFilterChange: (filter: string) => void
   onMarkPresent: (userId: string) => void
   onMarkAbsent?: (userId: string) => void
-  onMarkExcused?: (userId: string) => void
   markingUserId: string | null
   cutoffDate?: Date | null
   isRushMode?: boolean
   meetingTitle?: string
   isReadOnly?: boolean
+  meetingIsFinalized?: boolean
 }
 
 function AttendanceRegistrySection({
@@ -24,12 +24,12 @@ function AttendanceRegistrySection({
   onFilterChange,
   onMarkPresent,
   onMarkAbsent,
-  onMarkExcused,
   markingUserId,
   cutoffDate = null,
   isRushMode = false,
   meetingTitle = 'Meeting',
   isReadOnly = false,
+  meetingIsFinalized = false,
 }: AttendanceRegistrySectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [departmentSort, setDepartmentSort] = useState<'none' | 'asc' | 'desc'>('none')
@@ -153,71 +153,64 @@ function AttendanceRegistrySection({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-4xl border border-slate-200 bg-white p-2 shadow-[0_20px_70px_rgba(15,23,42,0.04)]">
-        <div className="min-w-200">
-          <div className={`grid ${isRushMode ? 'grid-cols-[3fr_1fr_1.5fr]' : 'grid-cols-[2fr_1fr_1.5fr_1.5fr]'} gap-4 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 border-b border-slate-50`}>
-            <p>Steward Information</p>
-            {!isRushMode && <p>Role</p>}
-            <p>Live Status</p>
-            {!isReadOnly && <p className="text-right pr-4">Quick Marking Actions</p>}
-          </div>
+      <div className="rounded-4xl border border-slate-200 bg-white p-2 shadow-[0_20px_70px_rgba(15,23,42,0.04)]">
+        <div className="hidden lg:grid lg:grid-cols-[2fr_1.5fr_auto] gap-4 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 border-b border-slate-50">
+          <p>Steward Information</p>
+          <p>Live Status</p>
+          {!isReadOnly && <p className="text-right pr-4">Quick Marking Actions</p>}
+        </div>
 
-          <div ref={listRef} className="p-2 space-y-1">
-            {searched.length === 0 ? (
-              <div className="py-20 text-center">
-                <p className="text-sm font-medium text-slate-400">No stewards match your criteria.</p>
-              </div>
-            ) : (
-              searched.map((entry, index) => {
-                const isMarking = markingUserId === entry.steward.id
-                const isPresent = entry.status === 'Present'
-                const isAbsent = entry.status === 'Absent'
-                const isFocused = focusedIndex === index
+        <div ref={listRef} className="p-2 space-y-1">
+          {searched.length === 0 ? (
+            <div className="py-20 text-center">
+              <p className="text-sm font-medium text-slate-400">No stewards match your criteria.</p>
+            </div>
+          ) : (
+            searched.map((entry, index) => {
+              const isMarking = markingUserId === entry.steward.id
+              const isPresent = entry.status === 'Present'
+              const isAbsent = entry.status === 'Absent'
+              const isFocused = focusedIndex === index
 
-                return (
-                  <article
-                    key={entry.steward.id}
-                    className={[
-                      'group grid gap-4 rounded-2xl p-3 items-center transition-all duration-200',
-                      isRushMode ? 'grid-cols-[3fr_1fr_1.5fr]' : 'grid-cols-[2fr_1fr_1.5fr_1.5fr]',
-                      isFocused ? 'bg-blue-50 ring-2 ring-[#0f2d52]/10' : 'hover:bg-slate-50',
-                      isPresent ? 'bg-emerald-50/30' : ''
-                    ].join(' ')}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white overflow-hidden shadow-sm">
-                           {entry.steward.initials}
-                         </div>
-                         {isPresent && (
-                            <div className="absolute -right-1 -bottom-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
-                               <Check className="h-2 w-2 text-white stroke-4" />
-                            </div>
-                         )}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-[#0f2d52] truncate">
-                          {entry.steward.name}
-                        </p>
-                        {!isRushMode && (
-                          <p className="text-[11px] font-medium text-slate-400 truncate">
-                            {entry.steward.email}
-                          </p>
-                        )}
-                        <p className="text-[10px] font-medium text-slate-400 truncate mt-0.5">
-                          {entry.steward.department}
-                        </p>
-                      </div>
+              return (
+                <article
+                  key={entry.steward.id}
+                  className={[
+                    'group flex flex-col gap-3 lg:grid lg:grid-cols-[2fr_1.5fr_auto] lg:items-center rounded-2xl p-3 transition-all duration-200',
+                    isFocused ? 'bg-blue-50 ring-2 ring-[#0f2d52]/10' : 'hover:bg-slate-50',
+                    isPresent ? 'bg-emerald-50/30' : ''
+                  ].join(' ')}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white overflow-hidden shadow-sm">
+                         {entry.steward.initials}
+                       </div>
+                       {isPresent && (
+                          <div className="absolute -right-1 -bottom-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
+                             <Check className="h-2 w-2 text-white stroke-4" />
+                          </div>
+                       )}
                     </div>
-
-                    {!isRushMode && (
-                      <div>
-                        <span className="inline-flex rounded-lg bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-600 border border-indigo-100">
+                    <div className="min-w-0">
+                      <p className="font-bold text-[#0f2d52] truncate">
+                        {entry.steward.name}
+                      </p>
+                      {!isRushMode && (
+                        <p className="text-[11px] font-medium text-slate-400 truncate">
+                          {entry.steward.email}
+                        </p>
+                      )}
+                      <p className="text-[10px] font-medium text-slate-400 truncate mt-0.5">
+                        {entry.steward.department}
+                        <span className="inline-flex ml-1.5 rounded-lg bg-indigo-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-indigo-600 border border-indigo-100 align-middle">
                           {entry.steward.role}
                         </span>
-                      </div>
-                    )}
+                      </p>
+                    </div>
+                  </div>
 
+                  <div className="flex items-center justify-between lg:block">
                     <div className="flex items-center gap-2">
                        {isPresent ? (
                          <div className="flex flex-col">
@@ -235,12 +228,11 @@ function AttendanceRegistrySection({
                                      const minutes = Number(mStr)
                                      if (modifier === 'PM' && hours < 12) hours += 12
                                      if (modifier === 'AM' && hours === 12) hours = 0
-                                    
-                                    // Use the meeting date from the cutoffDate to ensure correct comparison
-                                    const markedTime = new Date(cutoffDate)
-                                    markedTime.setHours(hours, minutes, 0, 0)
-                                    
-                                    return markedTime > cutoffDate
+
+                                     const markedTime = new Date(cutoffDate)
+                                     markedTime.setHours(hours, minutes, 0, 0)
+
+                                     return markedTime > cutoffDate
                                   } catch {
                                     return false
                                   }
@@ -260,6 +252,16 @@ function AttendanceRegistrySection({
                                </span>
                              )}
                           </div>
+                       ) : meetingIsFinalized ? (
+                          <div className="flex flex-col">
+                             <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-3 py-1 text-[10px] font-bold text-rose-700">
+                                ABSENT
+                             </span>
+                             <span className="mt-1 text-[9px] font-bold text-slate-400 flex items-center gap-1">
+                                <History className="h-3 w-3" />
+                                Finalized as absent
+                             </span>
+                          </div>
                        ) : (
                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-500">
                             <div className="h-1 w-1 rounded-full bg-slate-400" />
@@ -269,14 +271,14 @@ function AttendanceRegistrySection({
                     </div>
 
                     {!isReadOnly && (
-                      <div className="flex items-center justify-end pr-2 gap-2">
+                      <div className="flex lg:hidden gap-2">
                          {isPresent ? (
                            <>
-                              <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                                 <History className="h-4 w-4" />
+                              <button className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                 <History className="h-3.5 w-3.5" />
                               </button>
-                              <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                                 <Bolt className="h-4 w-4" />
+                              <button className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                 <Bolt className="h-3.5 w-3.5" />
                               </button>
                            </>
                          ) : (
@@ -285,42 +287,73 @@ function AttendanceRegistrySection({
                                 type="button"
                                 disabled={isMarking || isAbsent || entry.status === 'Excused'}
                                 onClick={() => onMarkPresent(entry.steward.id)}
-                                className="inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-[11px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
+                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-[10px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
                               >
                                 {isMarking ? (
                                   <Loader2 className="h-3 w-3 animate-spin" />
                                 ) : (
                                   <Check className="h-3 w-3 stroke-3" />
                                 )}
-                                Mark Present
+                                Present
                               </button>
                               <button 
                                 type="button"
                                 disabled={isMarking || isAbsent || entry.status === 'Excused'}
                                 onClick={() => onMarkAbsent?.(entry.steward.id)}
                                 title="Mark as Absent"
-                                className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
+                                className="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
                               >
-                                 <Check className="h-4 w-4 rotate-45" />
-                              </button>
-                              <button 
-                                type="button"
-                                disabled={isMarking || entry.status === 'Excused'}
-                                onClick={() => onMarkExcused?.(entry.steward.id)}
-                                title="Mark as Excused"
-                                className="p-2.5 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 hover:bg-sky-500 hover:text-white transition disabled:opacity-50"
-                              >
-                                 <Loader2 className="h-4 w-4" />
+                                 <Check className="h-3.5 w-3.5 rotate-45" />
                               </button>
                            </>
-                         )}
+                        )}
                       </div>
                     )}
-                  </article>
-                )
-              })
-            )}
-          </div>
+                  </div>
+
+                  {!isReadOnly && (
+                    <div className="hidden lg:flex items-center justify-end pr-2 gap-2">
+                       {isPresent ? (
+                         <>
+                            <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                               <History className="h-4 w-4" />
+                            </button>
+                            <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                               <Bolt className="h-4 w-4" />
+                            </button>
+                         </>
+                       ) : (
+                         <>
+                            <button
+                              type="button"
+                              disabled={isMarking || isAbsent || entry.status === 'Excused'}
+                              onClick={() => onMarkPresent(entry.steward.id)}
+                              className="inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-[11px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
+                            >
+                              {isMarking ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <Check className="h-3 w-3 stroke-3" />
+                              )}
+                              Mark Present
+                            </button>
+                            <button 
+                              type="button"
+                              disabled={isMarking || isAbsent || entry.status === 'Excused'}
+                              onClick={() => onMarkAbsent?.(entry.steward.id)}
+                              title="Mark as Absent"
+                              className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
+                            >
+                               <Check className="h-4 w-4 rotate-45" />
+                            </button>
+                         </>
+                       )}
+                    </div>
+                  )}
+                </article>
+              )
+            })
+          )}
         </div>
       </div>
       
