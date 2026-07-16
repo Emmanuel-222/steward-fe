@@ -36,7 +36,7 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
       <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.2)]">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-[#0f2d52]">Request Excuse</h3>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition">
+          <button onClick={onClose} aria-label="Close excuse request dialog" className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -53,6 +53,7 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
             </label>
             <textarea
               required
+              autoFocus
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="E.g. Travel, Health issues, Family emergency..."
