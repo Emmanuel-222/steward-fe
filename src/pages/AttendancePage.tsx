@@ -27,6 +27,7 @@ function AttendancePage() {
   const { showToast } = useToast()
   const [activeFilter, setActiveFilter] = useState('All Stewards')
   const [isRushMode] = useState(true)
+  const [justMarkedUserId, setJustMarkedUserId] = useState<string | null>(null)
   const [finalizedData, setFinalizedData] = useState<{
     total: number
     present: number
@@ -220,6 +221,8 @@ function AttendancePage() {
         meetingId: activeMeeting.id,
         status: 'present',
       })
+      setJustMarkedUserId(userId)
+      setTimeout(() => setJustMarkedUserId(null), 800)
       showToast('Steward marked as present', 'success')
     } catch {
       showToast('Failed to mark attendance', 'error')
@@ -233,6 +236,8 @@ function AttendancePage() {
         meetingId: activeMeeting.id,
         status: 'absent',
       })
+      setJustMarkedUserId(userId)
+      setTimeout(() => setJustMarkedUserId(null), 800)
       showToast('Steward marked as absent', 'success')
     } catch {
       showToast('Failed to mark attendance', 'error')
@@ -302,6 +307,7 @@ function AttendancePage() {
             meetingTitle={activeMeeting.title}
             isReadOnly={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed' || !canMarkAttendance}
             meetingIsFinalized={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
+            justMarkedUserId={justMarkedUserId}
           />
         </>
       ) : (
