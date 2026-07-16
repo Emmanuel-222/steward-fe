@@ -138,6 +138,7 @@ function AttendanceRegistrySection({
             type="button"
             onClick={toggleDepartmentSort}
             title={`Sort by department (${departmentSort === 'none' ? 'off' : departmentSort})`}
+            aria-label={`Sort by department, currently ${departmentSort === 'none' ? 'off' : departmentSort}`}
             className={[
               'p-3.5 rounded-2xl border transition',
               departmentSort !== 'none'
@@ -147,7 +148,7 @@ function AttendanceRegistrySection({
           >
              {departmentSort === 'asc' ? <ArrowDownAZ className="h-5 w-5" /> : <ArrowUpAZ className="h-5 w-5" />}
           </button>
-          <button className="p-3.5 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition">
+          <button aria-label="Toggle rush mode" className="p-3.5 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition">
              <Bolt className="h-5 w-5" />
           </button>
         </div>
@@ -272,57 +273,58 @@ function AttendanceRegistrySection({
 
                     {!isReadOnly && (
                       <div className="flex lg:hidden gap-2">
-                         {isPresent ? (
-                           <>
-                              <button className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                                 <History className="h-3.5 w-3.5" />
-                              </button>
-                              <button className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                                 <Bolt className="h-3.5 w-3.5" />
-                              </button>
-                           </>
-                         ) : (
-                           <>
-                              <button
-                                type="button"
-                                disabled={isMarking || isAbsent || entry.status === 'Excused'}
-                                onClick={() => onMarkPresent(entry.steward.id)}
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-[10px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
-                              >
-                                {isMarking ? (
-                                  <Loader2 className="h-3 w-3 animate-spin" />
-                                ) : (
-                                  <Check className="h-3 w-3 stroke-3" />
-                                )}
-                                Present
-                              </button>
-                              <button 
-                                type="button"
-                                disabled={isMarking || isAbsent || entry.status === 'Excused'}
-                                onClick={() => onMarkAbsent?.(entry.steward.id)}
-                                title="Mark as Absent"
-                                className="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
-                              >
-                                 <Check className="h-3.5 w-3.5 rotate-45" />
-                              </button>
-                           </>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                          {isPresent ? (
+                            <>
+                               <button aria-label="View check-in time" className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                  <History className="h-3.5 w-3.5" />
+                               </button>
+                               <button aria-label="Quick actions" className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                  <Bolt className="h-3.5 w-3.5" />
+                               </button>
+                            </>
+                          ) : (
+                            <>
+                               <button
+                                 type="button"
+                                 disabled={isMarking || isAbsent || entry.status === 'Excused'}
+                                 onClick={() => onMarkPresent(entry.steward.id)}
+                                 className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-[10px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
+                               >
+                                 {isMarking ? (
+                                   <Loader2 className="h-3 w-3 animate-spin" />
+                                 ) : (
+                                   <Check className="h-3 w-3 stroke-3" />
+                                 )}
+                                 Present
+                               </button>
+                               <button 
+                                 type="button"
+                                 disabled={isMarking || isAbsent || entry.status === 'Excused'}
+                                 onClick={() => onMarkAbsent?.(entry.steward.id)}
+                                 title="Mark as Absent"
+                                 aria-label="Mark as absent"
+                                 className="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
+                               >
+                                  <Check className="h-3.5 w-3.5 rotate-45" />
+                               </button>
+                            </>
+                         )}
+                       </div>
+                     )}
+                   </div>
 
-                  {!isReadOnly && (
-                    <div className="hidden lg:flex items-center justify-end pr-2 gap-2">
-                       {isPresent ? (
-                         <>
-                            <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                               <History className="h-4 w-4" />
-                            </button>
-                            <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                               <Bolt className="h-4 w-4" />
-                            </button>
-                         </>
-                       ) : (
+                   {!isReadOnly && (
+                     <div className="hidden lg:flex items-center justify-end pr-2 gap-2">
+                        {isPresent ? (
+                          <>
+                             <button aria-label="View check-in time" className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                <History className="h-4 w-4" />
+                             </button>
+                             <button aria-label="Quick actions" className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                <Bolt className="h-4 w-4" />
+                             </button>
+                          </>
+                        ) : (
                          <>
                             <button
                               type="button"
@@ -342,6 +344,7 @@ function AttendanceRegistrySection({
                               disabled={isMarking || isAbsent || entry.status === 'Excused'}
                               onClick={() => onMarkAbsent?.(entry.steward.id)}
                               title="Mark as Absent"
+                              aria-label="Mark as absent"
                               className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
                             >
                                <Check className="h-4 w-4 rotate-45" />

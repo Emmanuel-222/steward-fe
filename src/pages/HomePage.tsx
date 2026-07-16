@@ -250,12 +250,12 @@ function HomePage() {
                               {meeting.title || `${meeting.type} Meeting`}
                             </p>
                             <p className="text-xs font-medium text-slate-400">
-                              {meeting.rawDate.split('T')[0]} &middot; {meeting.startTime}
+                               {meeting.rawDate.split('T')[0]} &middot; {meeting.rawStartTime}
                             </p>
                           </div>
                           {config ? (
                             <span className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold ${config.bg} ${config.text}`}>
-                              <span className={`h-1.5 w-1.5 rounded-full ${config.bg.replace('-100', '-500')} ${excuse.status === 'Pending' ? 'animate-pulse' : ''}`} />
+                              <span className={`h-1.5 w-1.5 rounded-full ${config.bg.replace('-100', '-500')} ${excuse?.status === 'Pending' ? 'animate-pulse' : ''}`} />
                               {config.label}
                             </span>
                           ) : (
