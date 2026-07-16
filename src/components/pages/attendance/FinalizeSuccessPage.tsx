@@ -33,25 +33,25 @@ function FinalizeSuccessPage({
       </p>
 
       <div className="mt-12 grid w-full max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '0ms' }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Final Present</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.present}</p>
           <span className="mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-600">CONFIRMED</span>
         </div>
 
-        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-rose-400">Final Absent</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.absent}</p>
           <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.absent} marked as absent</span>
         </div>
 
-        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-400">Final Excused</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.excused}</p>
           <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.excused} stewards excused</span>
         </div>
 
-        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '300ms' }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Performance</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.performance}%</p>
           <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">

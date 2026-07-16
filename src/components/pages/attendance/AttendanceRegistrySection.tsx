@@ -15,6 +15,7 @@ type AttendanceRegistrySectionProps = {
   meetingTitle?: string
   isReadOnly?: boolean
   meetingIsFinalized?: boolean
+  justMarkedUserId?: string | null
 }
 
 function AttendanceRegistrySection({
@@ -30,6 +31,7 @@ function AttendanceRegistrySection({
   meetingTitle = 'Meeting',
   isReadOnly = false,
   meetingIsFinalized = false,
+  justMarkedUserId = null,
 }: AttendanceRegistrySectionProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [departmentSort, setDepartmentSort] = useState<'none' | 'asc' | 'desc'>('none')
@@ -217,6 +219,7 @@ function AttendanceRegistrySection({
               const isPresent = entry.status === 'Present'
               const isAbsent = entry.status === 'Absent'
               const isFocused = focusedIndex === index
+              const isJustMarked = justMarkedUserId === entry.steward.id
               const isLate = isPresent && entry.markedAt && cutoffDate && (() => {
                 try {
                   const [time, modifier] = entry.markedAt!.split(' ')
@@ -239,7 +242,7 @@ function AttendanceRegistrySection({
                     !isReadOnly ? 'lg:grid lg:grid-cols-[auto_2fr_1.5fr_auto]' : 'lg:grid lg:grid-cols-[2fr_1.5fr_auto]',
                     'lg:items-center',
                     isFocused ? 'bg-blue-50 ring-2 ring-brand/10' : 'hover:bg-slate-50',
-                    isPresent && !isLate ? 'bg-emerald-50/30' : isLate ? 'bg-amber-50/30' : ''
+                    isJustMarked && !isLate ? 'animate-row-flash bg-emerald-50/30' : isPresent && !isLate ? 'bg-emerald-50/30' : isLate ? 'bg-amber-50/30' : isJustMarked ? 'animate-row-flash bg-emerald-50/30' : ''
                   ].join(' ')}
                 >
                   {!isReadOnly && (
@@ -288,7 +291,7 @@ function AttendanceRegistrySection({
                     <div className="flex items-center gap-2">
                        {isPresent ? (
                          <div className="flex flex-col">
-                             <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-sans text-[10px] font-bold ${isLate ? 'bg-amber-100/80 text-amber-700' : 'bg-emerald-100/80 text-emerald-700'}`}>
+                             <span key={`badge-${entry.status}`} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-sans text-[10px] font-bold animate-scale-in ${isLate ? 'bg-amber-100/80 text-amber-700' : 'bg-emerald-100/80 text-emerald-700'}`}>
                                 {isLate ? 'LATE' : 'PRESENT'}
                              </span>
                              <span className="mt-1 font-sans text-[9px] font-bold text-slate-400 flex items-center gap-1">
@@ -298,7 +301,7 @@ function AttendanceRegistrySection({
                          </div>
                        ) : entry.status === 'Excused' ? (
                           <div className="flex flex-col">
-                              <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100/80 px-3 py-1 font-sans text-[10px] font-bold text-sky-700">
+                              <span key={`badge-${entry.status}`} className="inline-flex items-center gap-1.5 rounded-full bg-sky-100/80 px-3 py-1 font-sans text-[10px] font-bold text-sky-700 animate-scale-in">
                                  EXCUSED
                               </span>
                               {entry.excuseReason && (
@@ -309,7 +312,7 @@ function AttendanceRegistrySection({
                           </div>
                        ) : meetingIsFinalized ? (
                           <div className="flex flex-col">
-                              <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-3 py-1 font-sans text-[10px] font-bold text-rose-700">
+                              <span key={`badge-${entry.status}`} className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-3 py-1 font-sans text-[10px] font-bold text-rose-700 animate-scale-in">
                                  ABSENT
                               </span>
                               <span className="mt-1 font-sans text-[9px] font-bold text-slate-400 flex items-center gap-1">
@@ -318,7 +321,7 @@ function AttendanceRegistrySection({
                               </span>
                           </div>
                        ) : (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 font-sans text-[10px] font-bold text-slate-500">
+                          <span key={`badge-${entry.status}`} className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 font-sans text-[10px] font-bold text-slate-500">
                              <div className="h-1 w-1 rounded-full bg-slate-400" />
                              UNMARKED
                           </span>
