@@ -79,7 +79,7 @@ function MainLayout() {
       <div className="border-b border-slate-200 px-6 py-6">
         <div className={`flex items-center justify-between lg:block ${collapsed ? 'lg:text-center' : ''}`}>
           <div>
-            <h2 className={`font-semibold tracking-tight text-[#0f2d52] ${collapsed ? 'text-lg lg:text-xl' : 'text-xl'}`}>
+            <h2 className={`font-semibold tracking-tight text-brand ${collapsed ? 'text-lg lg:text-xl' : 'text-xl'}`}>
               {collapsed ? 'TR' : 'The Registrar'}
             </h2>
             <p className={`mt-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400 ${collapsed ? 'lg:hidden' : ''}`}>
@@ -125,8 +125,8 @@ function MainLayout() {
               [
                 `group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${collapsed ? 'lg:justify-center lg:px-2' : ''}`,
                 isActive
-                  ? 'bg-white text-[#0f2d52] shadow-[0_10px_30px_rgba(15,45,82,0.08)]'
-                  : 'text-slate-500 hover:bg-white/50 hover:text-[#0f2d52]',
+                  ? 'bg-white text-brand shadow-[0_10px_30px_rgba(15,45,82,0.08)]'
+                  : 'text-slate-500 hover:bg-white/50 hover:text-brand',
               ].join(' ')
             }
           >
@@ -156,7 +156,7 @@ function MainLayout() {
              {currentUser?.name ? currentUser.name.charAt(0) : '👤'}
           </div>
           <div className={`min-w-0 ${collapsed ? 'lg:hidden' : ''}`}>
-             <p className="text-sm font-bold text-[#0f2d52] truncate">{currentUser?.name || (meQuery.isLoading ? 'Fetching...' : 'Loading...')}</p>
+             <p className="text-sm font-bold text-brand truncate">{currentUser?.name || (meQuery.isLoading ? 'Fetching...' : 'Loading...')}</p>
              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{currentUser?.role || 'User'}</p>
           </div>
         </div>
@@ -174,12 +174,12 @@ function MainLayout() {
   )
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[#f3f6fb] text-slate-900">
+    <div className="flex h-screen flex-col overflow-hidden bg-page-bg text-slate-900">
       {/* Mobile Header */}
-      <header className="flex-none border-b border-slate-200 bg-[#eef3f9] px-4 py-4 lg:hidden">
+      <header className="flex-none border-b border-slate-200 bg-sidebar-bg px-4 py-4 lg:hidden">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-[#0f2d52]">
+            <h2 className="text-lg font-semibold tracking-tight text-brand">
               The Registrar
             </h2>
             <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
@@ -190,7 +190,7 @@ function MainLayout() {
           <button
             type="button"
             onClick={() => setIsMobileNavOpen(true)}
-            className="rounded-xl bg-white p-3 text-[#0f2d52] shadow-sm"
+            className="rounded-xl bg-white p-3 text-brand shadow-sm"
             aria-label="Open navigation"
           >
             <Menu className="h-5 w-5" />
@@ -199,13 +199,13 @@ function MainLayout() {
       </header>
 
       <div className={`flex flex-1 overflow-hidden lg:grid ${collapsed ? 'lg:grid-cols-[72px_1fr]' : 'lg:grid-cols-[260px_1fr]'}`}>
-        <aside className="hidden flex-col border-r border-slate-200 bg-[#eef3f9] lg:flex text-[#0f2d52] transition-all duration-300">
+        <aside className="hidden flex-col border-r border-slate-200 bg-sidebar-bg lg:flex text-brand transition-all duration-300">
           {sidebarContent(collapsed)}
 
           <button
             type="button"
             onClick={() => setCollapsed((prev) => !prev)}
-            className="mx-auto mb-4 hidden rounded-xl p-2 text-slate-400 transition hover:bg-white hover:text-[#0f2d52] lg:block"
+            className="mx-auto mb-4 hidden rounded-xl p-2 text-slate-400 transition hover:bg-white hover:text-brand lg:block"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
@@ -229,7 +229,7 @@ function MainLayout() {
         <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px]" onClick={closeMobileNav} />
         
         <aside 
-          className={`relative flex h-full w-[86%] max-w-[320px] flex-col bg-[#eef3f9] shadow-[0_24px_60px_rgba(15,23,42,0.24)] transition-transform duration-300 ease-out ${
+          className={`relative flex h-full w-[86%] max-w-[320px] flex-col bg-sidebar-bg shadow-[0_24px_60px_rgba(15,23,42,0.24)] transition-transform duration-300 ease-out ${
             isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -243,3 +243,4 @@ function MainLayout() {
 }
 
 export default MainLayout
+

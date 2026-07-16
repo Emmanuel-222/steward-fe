@@ -15,7 +15,7 @@ function MeetingsTabs({ tabs, activeTab, onTabChange }: MeetingsTabsProps) {
           className={[
             'rounded-full px-4 py-2 text-sm font-semibold transition',
             activeTab === tab
-              ? 'bg-[#0f2d52] text-white'
+              ? 'bg-brand text-white'
               : 'bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-700',
           ].join(' ')}
         >
@@ -27,3 +27,4 @@ function MeetingsTabs({ tabs, activeTab, onTabChange }: MeetingsTabsProps) {
 }
 
 export default MeetingsTabs
+

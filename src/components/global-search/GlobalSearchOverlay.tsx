@@ -262,12 +262,12 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
                       onMouseEnter={() => setSelectedIndex(globalIndex)}
                       className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition ${
                         isSelected
-                          ? 'bg-blue-50 ring-1 ring-[#0f2d52]/10'
+                          ? 'bg-blue-50 ring-1 ring-brand/10'
                           : 'hover:bg-slate-50'
-                      } ${item.isViewAll ? 'font-semibold text-[#0f2d52]' : 'text-slate-700'}`}
+                      } ${item.isViewAll ? 'font-semibold text-brand' : 'text-slate-700'}`}
                     >
                       {item.isViewAll ? (
-                        <ChevronRight className="h-4 w-4 shrink-0 text-[#0f2d52]" />
+                        <ChevronRight className="h-4 w-4 shrink-0 text-brand" />
                       ) : (
                         <ResultIcon group={group} image={item.image} />
                       )}
@@ -297,7 +297,7 @@ function ResultIcon({ group, image }: { group: SearchGroup; image?: string }) {
   switch (group) {
     case 'stewards':
       return image ? (
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#0f2d52] text-[10px] font-bold text-white">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand text-[10px] font-bold text-white">
           {image}
         </div>
       ) : (
@@ -315,3 +315,4 @@ function ResultIcon({ group, image }: { group: SearchGroup; image?: string }) {
 }
 
 export default GlobalSearchOverlay
+

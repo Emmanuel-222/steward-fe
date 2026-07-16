@@ -32,7 +32,7 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex min-h-screen items-center justify-center bg-slate-50 p-8">
-          <div className="w-full max-w-md rounded-[32px] border border-rose-100 bg-white p-8 text-center shadow-lg">
+          <div className="w-full max-w-md rounded-card border border-rose-100 bg-white p-8 text-center shadow-lg">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-rose-50 text-rose-500">
               <AlertTriangle className="h-8 w-8" />
             </div>
@@ -42,7 +42,7 @@ class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={this.handleReset}
-              className="inline-flex items-center gap-2 rounded-2xl bg-[#0f2d52] px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#173c67]"
+              className="inline-flex items-center gap-2 rounded-2xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-brand-hover"
             >
               <RefreshCw className="h-4 w-4" />
               Try Again
@@ -57,3 +57,5 @@ class ErrorBoundary extends Component<Props, State> {
 }
 
 export default ErrorBoundary
+
+

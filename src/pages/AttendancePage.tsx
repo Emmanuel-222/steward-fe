@@ -58,13 +58,13 @@ function AttendancePage() {
     return (
       <div className="animate-pulse space-y-6">
         <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-32 w-full rounded-[30px]" />
+        <Skeleton className="h-32 w-full rounded-card" />
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-24 rounded-[20px]" />
           ))}
         </div>
-        <Skeleton className="h-64 w-full rounded-[28px]" />
+        <Skeleton className="h-64 w-full rounded-card" />
       </div>
     )
   }
@@ -132,22 +132,22 @@ function AttendancePage() {
 
   if (activeMeeting?.status === 'Upcoming') {
     return (
-      <div className="flex flex-col items-center justify-center space-y-6 rounded-[35px] border border-slate-200 bg-white px-6 py-24 text-center shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
+      <div className="flex flex-col items-center justify-center space-y-6 rounded-card border border-slate-200 bg-white px-6 py-24 text-center shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
         <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-sky-50 text-sky-500 shadow-sm border border-sky-100/50">
           <CalendarIcon className="h-10 w-10" />
         </div>
         <div className="max-w-md space-y-2">
-          <h3 className="text-2xl font-bold tracking-tight text-[#0f2d52]">
+          <h3 className="text-2xl font-bold tracking-tight text-brand">
             {activeMeeting.title} is scheduled
           </h3>
           <p className="text-slate-500 font-medium">
-            This session is set for <span className="text-[#0f2d52] font-bold">{activeMeeting.date}</span> at <span className="text-[#0f2d52] font-bold">{activeMeeting.time}</span>. 
+            This session is set for <span className="text-brand font-bold">{activeMeeting.date}</span> at <span className="text-brand font-bold">{activeMeeting.time}</span>. 
             Attendance marking will be enabled once the session starts.
           </p>
         </div>
         <button
           onClick={() => navigate('/dashboard/meetings')}
-          className="inline-flex items-center justify-center rounded-2xl bg-[#0f2d52] px-8 py-4 text-sm font-bold text-white shadow-[0_15px_40px_rgba(15,45,82,0.2)] transition hover:bg-[#173c67]"
+          className="inline-flex items-center justify-center rounded-2xl bg-brand px-8 py-4 text-sm font-bold text-white shadow-[0_15px_40px_rgba(15,45,82,0.2)] transition hover:bg-brand-hover"
         >
           Return to Schedule
         </button>
@@ -275,7 +275,7 @@ function AttendancePage() {
           />
 
           {showReport && (
-            <div className="mb-6 flex items-center justify-between rounded-3xl bg-[#0f2d52] p-6 text-white shadow-xl shadow-slate-200/50">
+            <div className="mb-6 flex items-center justify-between rounded-3xl bg-brand p-6 text-white shadow-xl shadow-slate-200/50">
               <div className="space-y-1">
                 <h2 className="text-xl font-bold">Detailed Session Report</h2>
                 <p className="text-xs font-medium text-slate-300">Viewing finalized attendance for {activeMeeting.title}</p>
@@ -306,13 +306,13 @@ function AttendancePage() {
         </>
       ) : (
         <div className="mx-auto max-w-2xl space-y-6">
-          <div className="rounded-[35px] border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
+          <div className="rounded-card border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
             <div className="flex items-center gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#0f2d52] text-2xl font-bold text-white shadow-xl shadow-[#0f2d52]/20">
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand text-2xl font-bold text-white shadow-xl shadow-[#0f2d52]/20">
                 {currentUser?.initials || currentUser?.name?.[0] || 'S'}
               </div>
               <div className="space-y-1">
-                <h3 className="text-2xl font-bold text-[#0f2d52]">{currentUser?.name}</h3>
+                <h3 className="text-2xl font-bold text-brand">{currentUser?.name}</h3>
                 <p className="text-sm font-medium text-slate-400">{currentUser?.role || 'Steward'}</p>
               </div>
             </div>
@@ -352,7 +352,7 @@ function AttendancePage() {
 
               <div className="rounded-3xl border border-slate-100 bg-slate-50/50 p-6">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Session Date</p>
-                <p className="mt-2 text-lg font-bold text-[#0f2d52]">{activeMeeting.date}</p>
+                <p className="mt-2 text-lg font-bold text-brand">{activeMeeting.date}</p>
               </div>
             </div>
 
@@ -399,7 +399,7 @@ function AttendancePage() {
             })()}
           </div>
 
-          <div className="rounded-[30px] border border-slate-100 bg-slate-50/30 p-6 text-center">
+          <div className="rounded-card border border-slate-100 bg-slate-50/30 p-6 text-center">
              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
                 End of personal session view
              </p>
@@ -418,3 +418,5 @@ function AttendancePage() {
 }
 
 export default AttendancePage
+
+

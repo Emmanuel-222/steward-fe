@@ -159,7 +159,7 @@ function ScheduleMeetingModal({
           <div>
             <h3
               id="schedule-meeting-title"
-              className="text-xl font-semibold text-[#0f2d52]"
+              className="text-xl font-semibold text-brand"
             >
               {mode === 'create' ? 'Schedule New Meeting' : 'Edit Meeting'}
             </h3>
@@ -197,7 +197,7 @@ function ScheduleMeetingModal({
               </span>
               <input
                 type="text"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
                 placeholder="e.g. Easter Sunday"
                 {...register('title')}
               />
@@ -211,7 +211,7 @@ function ScheduleMeetingModal({
                 Meeting Type
               </span>
               <select
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
                 {...register('type')}
               >
                 <option value="">Select Type</option>
@@ -233,7 +233,7 @@ function ScheduleMeetingModal({
               <input
                 type="date"
                 id="meeting-date"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
                 {...register('date')}
               />
             </div>
@@ -250,7 +250,7 @@ function ScheduleMeetingModal({
               <input
                 type="time"
                 step="60"
-                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
                 {...register('startTime')}
               />
               {errors.startTime ? (
@@ -267,7 +267,7 @@ function ScheduleMeetingModal({
               <input
                 type="time"
                 step="60"
-                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
                 {...register('cutoffTime')}
               />
               {errors.cutoffTime ? (
@@ -284,7 +284,7 @@ function ScheduleMeetingModal({
               <input
                 type="time"
                 step="60"
-                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
                 {...register('endTime')}
               />
               {errors.endTime ? (
@@ -299,7 +299,7 @@ function ScheduleMeetingModal({
             </span>
             <input
               type="text"
-              className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+              className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
               placeholder="e.g. Main Sanctuary"
               {...register('location')}
             />
@@ -327,7 +327,7 @@ function ScheduleMeetingModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl bg-[#0f2d52] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#173c67] disabled:cursor-not-allowed disabled:opacity-70"
+              className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting
                 ? mode === 'create'
@@ -345,3 +345,4 @@ function ScheduleMeetingModal({
 }
 
 export default ScheduleMeetingModal
+

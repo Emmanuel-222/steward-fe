@@ -78,16 +78,16 @@ function StewardProfileView({
         </button>
 
       <section className="grid gap-5 xl:grid-cols-[1.8fr_0.9fr]">
-        <article className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:p-6">
+        <article className="rounded-card border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:p-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-[#0f2d52] text-xl font-semibold text-white sm:h-20 sm:w-20 sm:text-2xl">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-brand text-xl font-semibold text-white sm:h-20 sm:w-20 sm:text-2xl">
                 {steward.initials}
               </div>
 
               <div className="min-w-0 space-y-3">
                 <div>
-                  <h2 className="break-words text-2xl font-semibold text-[#0f2d52] sm:text-3xl">
+                  <h2 className="break-words text-2xl font-semibold text-brand sm:text-3xl">
                     {steward.name}
                   </h2>
                   <p className="mt-1 inline-flex max-w-full items-center gap-2 rounded-full bg-[#eef6ff] px-3 py-1 text-sm font-medium text-[#4f6b9a]">
@@ -123,7 +123,7 @@ function StewardProfileView({
           </div>
         </article>
 
-        <article className="rounded-[28px] bg-[#0f2d52] p-5 text-white shadow-[0_18px_55px_rgba(15,45,82,0.18)] sm:p-6">
+        <article className="rounded-card bg-brand p-5 text-white shadow-[0_18px_55px_rgba(15,45,82,0.18)] sm:p-6">
           <p className="text-sm font-semibold">Availability Status</p>
           <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
@@ -135,7 +135,7 @@ function StewardProfileView({
           </p>
           <button
             type="button"
-            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-[#0f2d52] transition hover:bg-slate-100"
+            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-brand transition hover:bg-slate-100"
           >
             Update Schedule
           </button>
@@ -143,16 +143,16 @@ function StewardProfileView({
       </section>
 
       <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        <article className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+        <article className="rounded-card border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
           <div className="flex items-center justify-between">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef3ff] text-[#0f2d52]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef3ff] text-brand">
               <CalendarDays className="h-5 w-5" />
             </div>
             <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
               Total Year
             </span>
           </div>
-          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">
+          <p className="mt-6 text-4xl font-semibold text-brand">
             {attendanceSummary.total}
           </p>
           <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
@@ -160,7 +160,7 @@ function StewardProfileView({
           </p>
         </article>
 
-        <article className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+        <article className="rounded-card border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
           <div className="flex items-center justify-between">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
               <ShieldCheck className="h-5 w-5" />
@@ -169,7 +169,7 @@ function StewardProfileView({
               {attendanceRate}%
             </span>
           </div>
-          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">
+          <p className="mt-6 text-4xl font-semibold text-brand">
             {attendanceSummary.present}
           </p>
           <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
@@ -177,7 +177,7 @@ function StewardProfileView({
           </p>
         </article>
 
-        <article className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:col-span-2 xl:col-span-1">
+        <article className="rounded-card border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:col-span-2 xl:col-span-1">
           <div className="flex items-center justify-between">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
               <Clock3 className="h-5 w-5" />
@@ -186,7 +186,7 @@ function StewardProfileView({
               {attendanceSummary.total > 0 ? 100 - attendanceRate : 0}%
             </span>
           </div>
-          <p className="mt-6 text-4xl font-semibold text-[#0f2d52]">
+          <p className="mt-6 text-4xl font-semibold text-brand">
             {attendanceSummary.absent}
           </p>
           <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
@@ -196,11 +196,11 @@ function StewardProfileView({
       </section>
 
       {attendanceSummary.total > 0 && (
-        <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:p-6">
+        <section className="rounded-card border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-sm font-semibold text-slate-500">Attendance Rate</p>
-              <p className="mt-1 text-2xl font-semibold text-[#0f2d52]">{attendanceRate}%</p>
+              <p className="mt-1 text-2xl font-semibold text-brand">{attendanceRate}%</p>
             </div>
             <div className="shrink-0 text-right">
               <p className="text-xs text-slate-400">
@@ -210,16 +210,16 @@ function StewardProfileView({
           </div>
           <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
             <div
-              className="h-full rounded-full bg-[#0f2d52] transition-all duration-500"
+              className="h-full rounded-full bg-brand transition-all duration-500"
               style={{ width: `${attendanceRate}%` }}
             />
           </div>
         </section>
       )}
 
-      <section className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
+      <section className="overflow-hidden rounded-card border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
         <div className="flex flex-col gap-4 border-b border-slate-100 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-          <h3 className="text-xl font-semibold text-[#0f2d52]">
+          <h3 className="text-xl font-semibold text-brand">
             Attendance History
           </h3>
           <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -325,3 +325,5 @@ function StewardProfileView({
 }
 
 export default StewardProfileView
+
+

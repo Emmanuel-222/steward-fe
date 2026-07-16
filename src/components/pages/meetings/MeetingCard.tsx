@@ -23,7 +23,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
   const today = new Date().toISOString().split('T')[0]
   const isToday = meeting.rawDate === today
   return (
-    <article className={["rounded-[28px] border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]", isToday ? 'border-[#0f2d52]/20 ring-2 ring-[#0f2d52]/10' : 'border-slate-200'].join(' ')}>
+    <article className={["rounded-card border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]", isToday ? 'border-brand/20 ring-2 ring-brand/10' : 'border-slate-200'].join(' ')}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-wrap gap-2">
           <span
@@ -32,7 +32,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
             {meeting.status}
           </span>
           {meeting.type && (
-            <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0f2d52]">
+            <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
               {meeting.type}
             </span>
           )}
@@ -40,7 +40,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
       </div>
 
       <div className="mt-5 space-y-2">
-        <h3 className="text-xl font-semibold text-[#0f2d52]">{meeting.title}</h3>
+        <h3 className="text-xl font-semibold text-brand">{meeting.title}</h3>
         <p className="text-sm text-slate-500">{meeting.subtitle}</p>
       </div>
 
@@ -65,7 +65,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
               Present
             </p>
-            <p className="mt-2 text-3xl font-semibold text-[#0f2d52]">
+            <p className="mt-2 text-3xl font-semibold text-brand">
               {meeting.present}
             </p>
           </div>
@@ -93,7 +93,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
         <button
           type="button"
           onClick={() => onAction(meeting)}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0f2d52] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#173c67]"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-hover"
         >
           <Eye className="h-4 w-4" />
           {meeting.primaryAction}
@@ -125,3 +125,5 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
 }
 
 export default MeetingCard
+
+

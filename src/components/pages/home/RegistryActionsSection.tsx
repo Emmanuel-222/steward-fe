@@ -15,7 +15,7 @@ type RegistryActionsSectionProps = {
 function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-[#0f2d52]">Registry Actions</h3>
+      <h3 className="text-xl font-semibold text-brand">Registry Actions</h3>
 
       <div className="space-y-3">
         {actions.map((action) => {
@@ -29,7 +29,7 @@ function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
               className={[
                 'flex w-full items-center justify-between rounded-2xl border px-5 py-4 text-left transition',
                 action.emphasized
-                  ? 'border-[#0f2d52] bg-[#0f2d52] text-white shadow-[0_18px_40px_rgba(15,45,82,0.25)]'
+                  ? 'border-brand bg-brand text-white shadow-[0_18px_40px_rgba(15,45,82,0.25)]'
                   : 'border-slate-200 bg-white text-slate-800 hover:border-slate-300 hover:bg-slate-50',
               ].join(' ')}
             >
@@ -43,7 +43,7 @@ function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
         })}
       </div>
 
-      <article className="rounded-[28px] bg-[#0f2d52] p-6 text-white shadow-[0_18px_45px_rgba(15,45,82,0.22)]">
+      <article className="rounded-card bg-brand p-6 text-white shadow-[0_18px_45px_rgba(15,45,82,0.22)]">
         <h4 className="text-lg font-semibold">Registry Health</h4>
         <p className="mt-3 text-sm leading-6 text-slate-200">
           Total engagement is up 4.5% this month. Weekly reports are ready for
@@ -51,7 +51,7 @@ function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
         </p>
         <button
           type="button"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-[#0f2d52] transition hover:bg-emerald-300"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-brand transition hover:bg-emerald-300"
         >
           <Download className="h-4 w-4" />
           Download PDF
@@ -62,3 +62,5 @@ function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
 }
 
 export default RegistryActionsSection
+
+

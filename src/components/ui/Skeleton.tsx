@@ -21,7 +21,7 @@ export function SkeletonRow({ cols = 6 }: { cols?: number }) {
 
 export function SkeletonTable({ rows = 5, cols = 6 }: { rows?: number; cols?: number }) {
   return (
-    <div className="rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    <div className="rounded-card border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
       <div className="flex items-center gap-4 border-b border-slate-100 px-4 py-3 sm:px-6">
         {Array.from({ length: cols }).map((_, i) => (
           <Skeleton key={i} className="h-3 flex-1" />
@@ -44,3 +44,4 @@ export function SkeletonCard({ className = '' }: { className?: string }) {
 }
 
 export default Skeleton
+

@@ -54,7 +54,7 @@ function ActionMenu({ steward, onView, onEdit, onDelete, isAdmin }: {
         ref={buttonRef}
         type="button"
         onClick={handleToggle}
-        className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-[#0f2d52]"
+        className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-brand"
         aria-label="Actions"
       >
         <EllipsisVertical className="h-4 w-4" />
@@ -110,7 +110,7 @@ function StewardsTableSection({
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
   return (
-    <section className="rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
+    <section className="rounded-card border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
       <div className="overflow-x-auto">
         <div className="hidden min-w-[640px] grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:grid">
           <p>Full Name</p>
@@ -145,7 +145,7 @@ function StewardsTableSection({
                 {/* ---- Mobile layout ---- */}
 
                 <div className="flex items-center gap-4 min-w-0 sm:hidden">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dfeafa] text-sm font-semibold text-[#0f2d52]">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dfeafa] text-sm font-semibold text-brand">
                     {steward.initials}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -176,7 +176,7 @@ function StewardsTableSection({
                 {/* ---- Desktop layout ---- */}
 
                 <div className="hidden sm:flex sm:items-center sm:gap-4 sm:min-w-0">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dfeafa] text-sm font-semibold text-[#0f2d52]">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dfeafa] text-sm font-semibold text-brand">
                     {steward.initials}
                   </div>
                   <div className="min-w-0">
@@ -232,3 +232,5 @@ function StewardsTableSection({
 }
 
 export default StewardsTableSection
+
+
