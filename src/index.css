@@ -23,7 +23,7 @@
   --animate-fade-in-up: fadeInUp 400ms ease-out both;
   --animate-page-enter: pageEnter 300ms ease-out;
   --animate-modal-enter: modalEnter 250ms ease-out;
-  --animate-modal-exit: modalExit 200ms ease-in;
+  --animate-modal-exit: modalExit 200ms ease-in both;
   --animate-fade-in: fadeIn 200ms ease-out;
   --animate-slide-down: slideDown 250ms ease-out;
   --animate-stagger-fade: staggerFade 300ms ease-out;

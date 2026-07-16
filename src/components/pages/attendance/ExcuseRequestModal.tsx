@@ -33,7 +33,7 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
   }
 
   return (
-    <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 ${phase === 'enter' ? 'animate-fade-in' : ''}`}>
+    <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}>
       <div className={`w-full max-w-md rounded-card bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.2)] ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-brand">Request Excuse</h3>

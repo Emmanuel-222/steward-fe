@@ -124,10 +124,10 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
       className="fixed inset-0 z-50"
       onClick={onClose}
     >
-      <div className={`fixed inset-0 bg-slate-950/30 backdrop-blur-[2px] ${phase === 'enter' ? 'animate-fade-in' : ''}`} />
+      <div className={`fixed inset-0 bg-slate-950/30 backdrop-blur-[2px] ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`} />
 
       <div
-        className={`relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col bg-white shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:mt-[12vh] sm:max-w-[560px] sm:rounded-2xl rounded-none h-full sm:h-auto ${phase === 'enter' ? 'animate-slide-down' : 'animate-fade-in'}`}
+        className={`relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col bg-white shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:mt-[12vh] sm:max-w-[560px] sm:rounded-2xl rounded-none h-full sm:h-auto ${phase === 'enter' ? 'animate-slide-down' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

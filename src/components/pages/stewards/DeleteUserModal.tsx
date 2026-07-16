@@ -22,7 +22,7 @@ function DeleteUserModal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4 py-6 backdrop-blur-[2px] ${phase === 'enter' ? 'animate-fade-in' : ''}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4 py-6 backdrop-blur-[2px] ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}
       onClick={onClose}
     >
       <div
