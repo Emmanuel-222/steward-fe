@@ -152,7 +152,7 @@ function LoginForm() {
           </div>
         ) : null}
 
-        <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '100ms' }}>
+        <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '200ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
               Email address
@@ -184,7 +184,7 @@ function LoginForm() {
           ) : null}
         </label>
 
-        <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '150ms' }}>
+        <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '400ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
               Password
@@ -235,7 +235,7 @@ function LoginForm() {
           ) : null}
         </label>
 
-        <div className="animate-stagger-fade" style={{ animationDelay: '200ms' }}>
+        <div className="animate-stagger-fade" style={{ animationDelay: '600ms' }}>
           <button
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d2f57] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#133a6a] disabled:cursor-not-allowed disabled:opacity-70"
             type="submit"

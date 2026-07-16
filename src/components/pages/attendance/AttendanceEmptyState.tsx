@@ -28,10 +28,10 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               to="/dashboard/meetings"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-brand-hover"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-hover active:scale-95"
             >
               <CalendarDays className="h-4 w-4 text-white" />
-              <span>Go To Meetings</span>
+              <span className='text-white'>Go To Meetings</span>
             </Link>
           </div>
         </div>
