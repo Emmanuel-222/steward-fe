@@ -230,16 +230,19 @@ function StewardsPage() {
           }
         />
 
-        <StewardsToolbar
-          total={pagination?.total ?? filteredStewards.length}
-          growth={searchTerm.trim() ? 'filtered' : 'live'}
-          searchValue={searchTerm}
-          onSearchChange={handleSearchChange}
-          roleValue={selectedRole}
-          onRoleChange={(r) => { setSelectedRole(r); resetPage() }}
-          roles={roles}
-        />
-        <StewardsTableSection
+        <div className="animate-stagger-fade" style={{ animationDelay: '0ms' }}>
+          <StewardsToolbar
+            total={pagination?.total ?? filteredStewards.length}
+            growth={searchTerm.trim() ? 'filtered' : 'live'}
+            searchValue={searchTerm}
+            onSearchChange={handleSearchChange}
+            roleValue={selectedRole}
+            onRoleChange={(r) => { setSelectedRole(r); resetPage() }}
+            roles={roles}
+          />
+        </div>
+        <div className="animate-stagger-fade" style={{ animationDelay: '100ms' }}>
+          <StewardsTableSection
           stewards={filteredStewards}
           onView={handleViewSteward}
           onEdit={handleEditSteward}
@@ -252,6 +255,8 @@ function StewardsPage() {
           }
           onRetry={() => stewardsQuery.refetch()}
         />
+        </div>
+        <div className="animate-stagger-fade" style={{ animationDelay: '200ms' }}>
         {pagination && (
           <Pagination
             page={pagination.page}
@@ -263,6 +268,7 @@ function StewardsPage() {
           />
         )}
         <DirectoryFooter />
+        </div>
       </div>
 
       <AddUserModal

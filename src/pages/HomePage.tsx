@@ -190,11 +190,14 @@ function HomePage() {
         }
       />
 
-      <HomeStatsSection 
-        stats={isSteward ? stewardStats : adminStats} 
-        isLoading={isSteward ? (myAttendanceQuery.isLoading || myExcusesQuery.isLoading) : (stewardsQuery.isLoading || meetingsQuery.isLoading)}
-      />
+      <div className="animate-stagger-fade" style={{ animationDelay: '0ms' }}>
+        <HomeStatsSection 
+          stats={isSteward ? stewardStats : adminStats} 
+          isLoading={isSteward ? (myAttendanceQuery.isLoading || myExcusesQuery.isLoading) : (stewardsQuery.isLoading || meetingsQuery.isLoading)}
+        />
+      </div>
 
+      <div className="animate-stagger-fade" style={{ animationDelay: '100ms' }}>
       {isSteward ? (
         <section className="grid gap-6 xl:grid-cols-[1.5fr_0.9fr]">
           <div className="rounded-card border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)]">
@@ -299,6 +302,7 @@ function HomePage() {
           <RegistryActionsSection actions={adminQuickActions} />
         </section>
       )}
+      </div>
 
       <ExcuseRequestModal
         isOpen={excuseModalMeeting !== null}

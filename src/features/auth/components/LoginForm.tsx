@@ -111,7 +111,7 @@ function LoginForm() {
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="space-y-2">
+      <div className="space-y-2 animate-stagger-fade" style={{ animationDelay: '0ms' }}>
         <h2 className="text-[2rem] font-semibold tracking-tight text-slate-900">
           Welcome Back
         </h2>
@@ -152,7 +152,7 @@ function LoginForm() {
           </div>
         ) : null}
 
-        <label className="block space-y-2">
+        <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '200ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
               Email address
@@ -184,7 +184,7 @@ function LoginForm() {
           ) : null}
         </label>
 
-        <label className="block space-y-2">
+        <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '400ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
               Password
@@ -235,35 +235,37 @@ function LoginForm() {
           ) : null}
         </label>
 
-        <button
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d2f57] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#133a6a] disabled:cursor-not-allowed disabled:opacity-70"
-          type="submit"
-          disabled={loginMutation.isPending || isRateLimited}
-        >
-          {isRateLimited ? (
-            <>
-              <Clock className="h-4 w-4" />
-              <span>Wait {formatCooldown(cooldown)}</span>
-            </>
-          ) : (
-            <>
-              <span>
-                {loginMutation.isPending ? 'Authenticating...' : 'Access Registry'}
-              </span>
-              <svg
-                aria-hidden="true"
-                className="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M5 12h14" />
-                <path d="m13 6 6 6-6 6" />
-              </svg>
-            </>
-          )}
-        </button>
+        <div className="animate-stagger-fade" style={{ animationDelay: '600ms' }}>
+          <button
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d2f57] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#133a6a] disabled:cursor-not-allowed disabled:opacity-70"
+            type="submit"
+            disabled={loginMutation.isPending || isRateLimited}
+          >
+            {isRateLimited ? (
+              <>
+                <Clock className="h-4 w-4" />
+                <span>Wait {formatCooldown(cooldown)}</span>
+              </>
+            ) : (
+              <>
+                <span>
+                  {loginMutation.isPending ? 'Authenticating...' : 'Access Registry'}
+                </span>
+                <svg
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+              </>
+            )}
+          </button>
+        </div>
       </form>
 
       <div className="mt-8 flex items-center justify-between gap-4 text-[11px] text-slate-400">

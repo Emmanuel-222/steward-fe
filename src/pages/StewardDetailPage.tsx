@@ -97,13 +97,15 @@ function StewardDetailPage() {
   }
 
   return (
-    <>
-      <StewardProfileView
-        stewardId={steward.id}
-        initialSteward={steward}
-        onBack={() => navigate('/dashboard/stewards')}
-        onEdit={() => setIsEditModalOpen(true)}
-      />
+    <div className="space-y-8">
+      <div className="animate-stagger-fade" style={{ animationDelay: '0ms' }}>
+        <StewardProfileView
+          stewardId={steward.id}
+          initialSteward={steward}
+          onBack={() => navigate('/dashboard/stewards')}
+          onEdit={() => setIsEditModalOpen(true)}
+        />
+      </div>
 
       <EditUserModal
         steward={steward}
@@ -112,7 +114,7 @@ function StewardDetailPage() {
         isSubmitting={updateStewardMutation.isPending}
         onClose={() => setIsEditModalOpen(false)}
       />
-    </>
+    </div>
   )
 }
 

@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import AppHeader from '../../components/shared/AppHeader'
 import GlobalSearchOverlay from '../../components/global-search/GlobalSearchOverlay'
 import useGlobalSearchHotkey from '../../components/global-search/useGlobalSearchHotkey'
@@ -40,6 +40,7 @@ function MainLayout() {
   const meQuery = useMeQuery(!user && isAuthenticated)
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
+  const location = useLocation()
   const { isOpen: isSearchOpen, open: openSearch, close: closeSearch } = useGlobalSearchHotkey()
 
   const currentUser = user || meQuery.data
@@ -219,7 +220,9 @@ function MainLayout() {
         <div className="flex flex-1 flex-col overflow-y-auto">
           <AppHeader onSearchClick={openSearch} />
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-            <Outlet />
+            <div key={location.pathname} className="animate-page-enter">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

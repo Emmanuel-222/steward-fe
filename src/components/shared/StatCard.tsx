@@ -10,6 +10,7 @@ type StatCardProps = {
     isUpward: boolean
   }
   className?: string
+  style?: React.CSSProperties
   isLoading?: boolean
 }
 
@@ -20,11 +21,12 @@ function StatCard({
   detailClassName = 'text-slate-500',
   trend,
   className = 'border-slate-200',
+  style,
   isLoading = false,
 }: StatCardProps) {
   if (isLoading) {
     return (
-      <article className={`rounded-3xl border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] ${className} animate-pulse`}>
+      <article className={`rounded-3xl border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] ${className} animate-pulse`} style={style}>
         <div className="h-3 w-16 rounded-full bg-slate-100" />
         <div className="mt-5 flex items-end gap-3">
           <div className="h-9 w-20 rounded-lg bg-slate-200" />
@@ -35,6 +37,7 @@ function StatCard({
   }
   return (
     <article
+      style={style}
       className={`rounded-3xl border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] ${className}`}
     >
       <div className="flex items-center justify-between">

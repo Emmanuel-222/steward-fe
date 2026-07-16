@@ -14,9 +14,10 @@ dist-ssr
 .env
 .env.production
 .pipa/
-docs/
 .agents/
 skills-lock.json
+docs/
+.superpowers/
 
 # Editor directories and files
 .vscode/*

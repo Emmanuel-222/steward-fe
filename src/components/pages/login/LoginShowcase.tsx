@@ -1,6 +1,6 @@
 function LoginShowcase() {
   return (
-    <section className="flex flex-col justify-between bg-[#0d2f57] p-8 text-white sm:p-10">
+    <section className={`flex flex-col justify-between bg-[#0d2f57] p-8 text-white sm:p-10 animate-stagger-fade`}>
       <div className="space-y-10">
         <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#0d2f57]">

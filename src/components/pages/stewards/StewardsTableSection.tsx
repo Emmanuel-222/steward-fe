@@ -62,7 +62,7 @@ function ActionMenu({ steward, onView, onEdit, onDelete, isAdmin }: {
 
       {open && (
         <div
-          className={`absolute right-0 z-10 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.12)] sm:right-0 sm:top-full sm:bottom-auto sm:mb-0 sm:mt-1 ${openUp ? 'bottom-full mb-2' : 'top-full mt-1'}`}
+          className={`absolute right-0 z-10 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.12)] sm:right-0 sm:top-full sm:bottom-auto sm:mb-0 sm:mt-1 animate-slide-down ${openUp ? 'bottom-full mb-2' : 'top-full mt-1'}`}
         >
           <button
             type="button"
