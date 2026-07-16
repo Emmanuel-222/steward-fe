@@ -145,12 +145,15 @@ function MeetingsPage() {
         />
 
         <section className="space-y-4">
-          <MeetingsTabs
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={(tab) => { setActiveTab(tab); resetPage() }}
-          />
+          <div className="animate-stagger-fade" style={{ animationDelay: '0ms' }}>
+            <MeetingsTabs
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={(tab) => { setActiveTab(tab); resetPage() }}
+            />
+          </div>
 
+          <div className="animate-stagger-fade" style={{ animationDelay: '100ms' }}>
           {meetingsQuery.isLoading ? (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -220,8 +223,10 @@ function MeetingsPage() {
               </div>
             </>
           )}
+        </div>
         </section>
 
+        <div className="animate-stagger-fade" style={{ animationDelay: '200ms' }}>
         {pagination && (
           <Pagination
             page={pagination.page}
@@ -238,6 +243,7 @@ function MeetingsPage() {
           label="Schedule meeting"
           onClick={() => setIsScheduleModalOpen(true)}
         />
+        </div>
       </div>
 
       {editingMeeting ? (

@@ -7,7 +7,7 @@ type ErrorStateProps = {
 
 function ErrorState({ message = 'Something went wrong', onRetry }: ErrorStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-card border border-rose-100 bg-rose-50/50 px-6 py-12 text-center shadow-sm">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-card border border-rose-100 bg-rose-50/50 px-6 py-12 text-center shadow-sm animate-fade-in">
       <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-500">
         <AlertTriangle className="h-6 w-6" />
       </div>

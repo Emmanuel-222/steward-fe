@@ -256,15 +256,20 @@ function AttendancePage() {
 
   return (
     <div className="space-y-8 pb-20">
-      <AttendanceHero 
-        meeting={activeMeeting} 
-        onFinalize={handleFinalize}
-        isFinalizing={finalizeMutation.isPending}
-        isFinalized={activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
-      />
+      <div className="animate-stagger-fade" style={{ animationDelay: '0ms' }}>
+        <AttendanceHero 
+          meeting={activeMeeting} 
+          onFinalize={handleFinalize}
+          isFinalizing={finalizeMutation.isPending}
+          isFinalized={activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
+        />
+      </div>
 
-      {isAdminOrLeader && <PendingExcusesBanner />}
+      <div className="animate-stagger-fade" style={{ animationDelay: '100ms' }}>
+        {isAdminOrLeader && <PendingExcusesBanner />}
+      </div>
       
+      <div className="animate-stagger-fade" style={{ animationDelay: '200ms' }}>
       {isAdminOrLeader ? (
         <>
           <AttendanceStatsSection stats={stats} />
@@ -412,6 +417,7 @@ function AttendancePage() {
           </div>
         </div>
       )}
+      </div>
 
       <ExcuseRequestModal 
         isOpen={isExcuseModalOpen}

@@ -37,7 +37,7 @@ function ExcuseRequestsPage() {
           title="Excuse Requests"
           description="Review and manage excuse requests from stewards."
         />
-        <div className="flex flex-col items-center justify-center py-24 text-center">
+        <div className="animate-stagger-fade flex flex-col items-center justify-center py-24 text-center" style={{ animationDelay: '0ms' }}>
           <MessageSquare className="h-12 w-12 text-slate-300" />
           <p className="mt-4 text-lg font-semibold text-slate-500">No pending excuses</p>
           <p className="mt-1 text-sm text-slate-400">All excuse requests have been reviewed.</p>
@@ -57,7 +57,7 @@ function ExcuseRequestsPage() {
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="animate-stagger-fade grid gap-4 sm:grid-cols-2 lg:grid-cols-3" style={{ animationDelay: '0ms' }}>
         {requests.map((req: {
           id: number
           reason: string

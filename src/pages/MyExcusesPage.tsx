@@ -27,7 +27,7 @@ function MyExcusesPage() {
           title="My Excuses"
           description="Track your submitted excuse requests."
         />
-        <div className="flex flex-col items-center justify-center py-24 text-center">
+        <div className="animate-stagger-fade flex flex-col items-center justify-center py-24 text-center" style={{ animationDelay: '0ms' }}>
           <XCircle className="h-12 w-12 text-slate-300" />
           <p className="mt-4 text-lg font-semibold text-slate-500">No excuse requests yet</p>
           <p className="mt-1 text-sm text-slate-400">If you miss a session, you can submit an excuse from the attendance page.</p>
@@ -43,7 +43,7 @@ function MyExcusesPage() {
         description="Review the status of your submitted excuse requests."
       />
 
-      <div className="space-y-3">
+      <div className="animate-stagger-fade space-y-3" style={{ animationDelay: '0ms' }}>
         {(excuses as MyExcuseRequest[]).map((excuse) => {
           const config = statusConfig[excuse.status as keyof typeof statusConfig] ?? statusConfig.Pending
           return (

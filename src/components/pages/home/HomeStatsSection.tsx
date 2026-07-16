@@ -19,7 +19,7 @@ type HomeStatsSectionProps = {
 function HomeStatsSection({ stats, isLoading }: HomeStatsSectionProps) {
   return (
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat) => (
+      {stats.map((stat, index) => (
         <StatCard
           key={stat.label}
           label={stat.label}
@@ -28,6 +28,8 @@ function HomeStatsSection({ stats, isLoading }: HomeStatsSectionProps) {
           detailClassName={stat.tone}
           trend={stat.trend}
           isLoading={isLoading}
+          className="animate-stagger-fade"
+          style={{ animationDelay: `${index * 80}ms` }}
         />
       ))}
     </section>
