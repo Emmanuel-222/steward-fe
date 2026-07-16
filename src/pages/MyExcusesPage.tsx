@@ -49,11 +49,11 @@ function MyExcusesPage() {
           return (
             <div
               key={excuse.id}
-              className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)]"
+              className="rounded-card border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)]"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1 min-w-0">
-                  <h3 className="text-lg font-bold text-[#0f2d52] truncate">
+                  <h3 className="text-lg font-bold text-brand truncate">
                     {excuse.meeting.title || `${excuse.meeting.type} Meeting`}
                   </h3>
                   <p className="text-sm font-medium text-slate-400">
@@ -90,3 +90,5 @@ function MyExcusesPage() {
 }
 
 export default MyExcusesPage
+
+

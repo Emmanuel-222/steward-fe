@@ -39,7 +39,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
           <select
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold text-slate-700 outline-none focus:border-[#0f2d52]"
+            className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold text-slate-700 outline-none focus:border-brand"
           >
             {PAGE_SIZE_OPTIONS.map((size) => (
               <option key={size} value={size}>
@@ -58,7 +58,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
           type="button"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-[#0f2d52] disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
           aria-label="Previous page"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -74,10 +74,10 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
               key={p}
               type="button"
               onClick={() => onPageChange(p)}
-              className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold transition ${
+              className={`flex h-9 w-9 items-center justify-center rounded-xl font-sans text-xs font-bold transition ${
                 p === page
-                  ? 'bg-white text-[#0f2d52] shadow-[0_4px_12px_rgba(15,45,82,0.08)]'
-                  : 'text-slate-500 hover:bg-white/70 hover:text-[#0f2d52]'
+                  ? 'bg-white text-brand shadow-[0_4px_12px_rgba(15,45,82,0.08)]'
+                  : 'text-slate-500 hover:bg-white/70 hover:text-brand'
               }`}
               aria-label={`Page ${p}`}
               aria-current={p === page ? 'page' : undefined}
@@ -91,7 +91,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
           type="button"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-[#0f2d52] disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
           aria-label="Next page"
         >
           <ChevronRight className="h-4 w-4" />
@@ -99,11 +99,12 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
       </nav>
 
       <p className="text-xs text-slate-500 whitespace-nowrap">
-        Page <span className="font-semibold text-slate-700">{page}</span> of{' '}
-        <span className="font-semibold text-slate-700">{totalPages}</span>
+        Page <span className="font-sans font-semibold text-slate-700">{page}</span> of{' '}
+        <span className="font-sans font-semibold text-slate-700">{totalPages}</span>
       </p>
     </div>
   )
 }
 
 export default Pagination
+

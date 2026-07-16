@@ -75,7 +75,7 @@ function AddUserModal({
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 id="add-user-title" className="text-xl font-semibold text-[#0f2d52]">
+            <h3 id="add-user-title" className="text-xl font-semibold text-brand">
               Add New User
             </h3>
             <p className="mt-1 text-sm text-slate-500">
@@ -112,7 +112,7 @@ function AddUserModal({
               <input
                 type="text"
                 placeholder="e.g. Julian Pierce"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52] placeholder:text-slate-400"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
                 {...register('name')}
               />
               {errors.name ? (
@@ -127,7 +127,7 @@ function AddUserModal({
               <input
                 type="email"
                 placeholder="name@steward.org"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52] placeholder:text-slate-400"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
                 {...register('email')}
               />
               {errors.email ? (
@@ -142,7 +142,7 @@ function AddUserModal({
               <input
                 type="tel"
                 placeholder="+1 (555) 000-0000"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52] placeholder:text-slate-400"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
                 {...register('phone')}
               />
               {errors.phone ? (
@@ -158,7 +158,7 @@ function AddUserModal({
                 <input
                   type={isPasswordVisible ? 'text' : 'password'}
                   placeholder="Create a secure password"
-                  className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52] placeholder:text-slate-400"
+                  className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
                   {...register('password')}
                 />
                 <button
@@ -185,7 +185,7 @@ function AddUserModal({
               </span>
               <div className="relative">
                 <select
-                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
                   {...register('department')}
                 >
                   <option value="">Select Department</option>
@@ -206,7 +206,7 @@ function AddUserModal({
               </span>
               <div className="relative">
                 <select
-                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
                   {...register('role')}
                 >
                   {stewardRoleOptions.map((role) => (
@@ -242,7 +242,7 @@ function AddUserModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-xl bg-[#0f2d52] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#173c67] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+              className="w-full rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
             >
               {isSubmitting ? 'Adding...' : 'Add User'}
             </button>
@@ -254,3 +254,4 @@ function AddUserModal({
 }
 
 export default AddUserModal
+

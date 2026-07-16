@@ -11,13 +11,13 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-[32px] border border-slate-200 bg-white p-6 text-center shadow-[0_20px_70px_rgba(15,23,42,0.06)] sm:p-8">
+      <div className="rounded-card border border-slate-200 bg-white p-6 text-center shadow-[0_20px_70px_rgba(15,23,42,0.06)] sm:p-8">
         <div className="mx-auto flex max-w-xl flex-col items-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#eef4ff] text-[#0f2d52]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#eef4ff] text-brand">
             <Clock3 className="h-7 w-7" />
           </div>
 
-          <h2 className="mt-6 text-2xl font-semibold tracking-tight text-[#0f2d52] sm:text-3xl">
+          <h2 className="mt-6 text-2xl font-semibold tracking-tight text-brand sm:text-3xl">
             No Active Session
           </h2>
           <p className="mt-3 max-w-lg text-sm leading-7 text-slate-500 sm:text-base">
@@ -28,7 +28,7 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               to="/dashboard/meetings"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0f2d52] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-[#173c67]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-brand-hover"
             >
               <CalendarDays className="h-4 w-4 text-white" />
               <span>Go To Meetings</span>
@@ -40,7 +40,7 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
       {recentMeetings.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-lg font-semibold text-[#0f2d52]">Recent Sessions</h3>
+            <h3 className="text-lg font-semibold text-brand">Recent Sessions</h3>
             <Link to="/dashboard/meetings" className="text-sm font-medium text-blue-600 hover:underline">
               View all
             </Link>
@@ -60,7 +60,7 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
                   <Eye className="h-4 w-4 text-slate-300 group-hover:text-blue-500" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-[#0f2d52]">{meeting.title}</h4>
+                  <h4 className="font-semibold text-brand">{meeting.title}</h4>
                   <p className="text-xs text-slate-500">{meeting.date}</p>
                 </div>
                 <div className="flex items-center gap-4 border-t border-slate-50 pt-3 text-xs font-medium">
@@ -83,3 +83,5 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
 }
 
 export default AttendanceEmptyState
+
+

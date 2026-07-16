@@ -197,11 +197,11 @@ function HomePage() {
 
       {isSteward ? (
         <section className="grid gap-6 xl:grid-cols-[1.5fr_0.9fr]">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)]">
+          <div className="rounded-card border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)]">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-[#0f2d52]">Recent Sessions</h3>
+              <h3 className="text-sm font-bold text-brand">Recent Sessions</h3>
               {myAttendance.length > 5 && (
-                <button onClick={() => navigate('/dashboard/attendance')} className="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-[#0f2d52] transition">
+                <button onClick={() => navigate('/dashboard/attendance')} className="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-brand transition">
                   View all <ArrowRight className="h-3 w-3" />
                 </button>
               )}
@@ -213,7 +213,7 @@ function HomePage() {
                 {recentMyAttendance.map((record) => (
                   <div key={record.id} className="flex items-center justify-between rounded-2xl bg-slate-50/70 px-4 py-3">
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-[#0f2d52] truncate">
+                      <p className="text-sm font-bold text-brand truncate">
                         {record.meeting.title || `${record.meeting.type} Meeting`}
                       </p>
                       <p className="text-xs font-medium text-slate-400">
@@ -230,10 +230,10 @@ function HomePage() {
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)]">
+            <div className="rounded-card border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)]">
               <div className="mb-4 flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-[#0f2d52]" />
-                <h3 className="text-sm font-bold text-[#0f2d52]">Upcoming Meetings</h3>
+                <Calendar className="h-4 w-4 text-brand" />
+                <h3 className="text-sm font-bold text-brand">Upcoming Meetings</h3>
               </div>
               {upcomingMeetings.length === 0 ? (
                 <p className="py-6 text-center text-sm font-medium text-slate-400">No upcoming meetings scheduled.</p>
@@ -246,7 +246,7 @@ function HomePage() {
                       <div key={meeting.id} className="rounded-2xl bg-slate-50/70 p-4">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="text-sm font-bold text-[#0f2d52] truncate">
+                            <p className="text-sm font-bold text-brand truncate">
                               {meeting.title || `${meeting.type} Meeting`}
                             </p>
                             <p className="text-xs font-medium text-slate-400">
@@ -261,7 +261,7 @@ function HomePage() {
                           ) : (
                             <button
                               onClick={() => setExcuseModalMeeting({ id: meeting.id, title: meeting.title || `${meeting.type} Meeting` })}
-                              className="shrink-0 rounded-xl bg-[#0f2d52] px-4 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-[#173c67] transition active:scale-95"
+                              className="shrink-0 rounded-xl bg-brand px-4 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-brand-hover transition active:scale-95"
                             >
                               Request Excuse
                             </button>
@@ -311,3 +311,5 @@ function HomePage() {
 }
 
 export default HomePage
+
+

@@ -22,7 +22,7 @@ function RushModeBanner({
   if (!isActive) return null
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] bg-[#0f2d52] p-5 text-white shadow-[0_20px_50px_rgba(15,45,82,0.25)] sm:p-6">
+    <div className="relative overflow-hidden rounded-card bg-brand p-5 text-white shadow-[0_20px_50px_rgba(15,45,82,0.25)] sm:p-6">
       <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md">
@@ -73,3 +73,5 @@ function RushModeBanner({
 }
 
 export default RushModeBanner
+
+

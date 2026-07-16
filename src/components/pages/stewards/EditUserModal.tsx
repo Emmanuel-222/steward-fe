@@ -83,7 +83,7 @@ function EditUserModal({
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 id="edit-user-title" className="text-xl font-semibold text-[#0f2d52]">
+            <h3 id="edit-user-title" className="text-xl font-semibold text-brand">
               Edit User Profile
             </h3>
             <p className="mt-1 text-sm text-slate-500">
@@ -102,7 +102,7 @@ function EditUserModal({
         </div>
 
         <div className="mt-6 flex items-center gap-4 rounded-2xl bg-[#f8fbff] p-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#0f2d52] text-base font-semibold text-white">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand text-base font-semibold text-white">
             {steward.initials}
           </div>
           <div>
@@ -129,7 +129,7 @@ function EditUserModal({
             </span>
             <input
               type="text"
-              className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+              className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
               {...register('name')}
             />
             {errors.name ? (
@@ -143,7 +143,7 @@ function EditUserModal({
             </span>
             <input
               type="email"
-              className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+              className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
               {...register('email')}
             />
             {errors.email ? (
@@ -158,7 +158,7 @@ function EditUserModal({
               </span>
               <input
                 type="tel"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
                 {...register('phone')}
               />
               {errors.phone ? (
@@ -172,7 +172,7 @@ function EditUserModal({
               </span>
               <div className="relative">
                 <select
-                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
                   {...register('department')}
                 >
                   <option value="">Select Department</option>
@@ -194,7 +194,7 @@ function EditUserModal({
             </span>
             <div className="relative">
               <select
-                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
                 {...register('role')}
               >
                 {stewardRoleOptions.map((role) => (
@@ -221,7 +221,7 @@ function EditUserModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-xl bg-[#0f2d52] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#173c67] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+              className="w-full rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
             >
               {isSubmitting ? 'Saving...' : 'Save Changes'}
             </button>
@@ -233,3 +233,4 @@ function EditUserModal({
 }
 
 export default EditUserModal
+

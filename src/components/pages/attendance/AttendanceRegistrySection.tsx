@@ -151,11 +151,11 @@ function AttendanceRegistrySection({
                 className={[
                   'rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-200',
                   activeFilter === filter
-                    ? 'bg-[#0f2d52] text-white shadow-[0_10px_25px_rgba(15,45,82,0.15)]'
+                    ? 'bg-brand text-white shadow-[0_10px_25px_rgba(15,45,82,0.15)]'
                     : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300 hover:text-slate-800',
                 ].join(' ')}
               >
-                {filter} {filter !== 'All Stewards' && <span className="ml-1.5 opacity-50">{count}</span>}
+                {filter} {filter !== 'All Stewards' && <span className="font-sans ml-1.5 opacity-50">{count}</span>}
               </button>
             )
           })}
@@ -163,13 +163,13 @@ function AttendanceRegistrySection({
 
         <div className="flex items-center gap-3">
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0f2d52] transition-colors" />
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 group-focus-within:text-brand transition-colors" />
             <input
               type="text"
               placeholder="Search stewards..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-4 text-sm font-medium text-slate-800 outline-none ring-slate-400/20 transition focus:border-[#0f2d52] focus:ring-4 lg:w-80"
+              className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-4 font-sans text-sm font-medium text-slate-800 outline-none ring-slate-400/20 transition focus:border-brand focus:ring-4 lg:w-80"
             />
           </div>
           <button
@@ -180,7 +180,7 @@ function AttendanceRegistrySection({
             className={[
               'p-3.5 rounded-2xl border transition',
               departmentSort !== 'none'
-                ? 'bg-[#0f2d52] text-white border-[#0f2d52]'
+                ? 'bg-brand text-white border-brand'
                 : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50',
             ].join(' ')}
           >
@@ -196,7 +196,7 @@ function AttendanceRegistrySection({
         <div className={`hidden lg:grid ${!isReadOnly ? 'lg:grid-cols-[auto_2fr_1.5fr_auto]' : 'lg:grid-cols-[2fr_1.5fr_auto]'} gap-4 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 border-b border-slate-50`}>
           {!isReadOnly && (
             <button onClick={toggleSelectAll} aria-label={isAllSelected ? 'Deselect all' : 'Select all'} className="p-1 text-left">
-              <div className={`h-4 w-4 rounded border-2 transition ${isAllSelected ? 'bg-[#0f2d52] border-[#0f2d52]' : 'border-slate-300 hover:border-slate-400'}`}>
+              <div className={`h-4 w-4 rounded border-2 transition ${isAllSelected ? 'bg-brand border-brand' : 'border-slate-300 hover:border-slate-400'}`}>
                 {isAllSelected && <Check className="h-3 w-3 text-white stroke-4" />}
               </div>
             </button>
@@ -238,7 +238,7 @@ function AttendanceRegistrySection({
                     'group flex flex-col gap-3 rounded-2xl p-3 transition-all duration-200',
                     !isReadOnly ? 'lg:grid lg:grid-cols-[auto_2fr_1.5fr_auto]' : 'lg:grid lg:grid-cols-[2fr_1.5fr_auto]',
                     'lg:items-center',
-                    isFocused ? 'bg-blue-50 ring-2 ring-[#0f2d52]/10' : 'hover:bg-slate-50',
+                    isFocused ? 'bg-blue-50 ring-2 ring-brand/10' : 'hover:bg-slate-50',
                     isPresent && !isLate ? 'bg-emerald-50/30' : isLate ? 'bg-amber-50/30' : ''
                   ].join(' ')}
                 >
@@ -249,7 +249,7 @@ function AttendanceRegistrySection({
                         aria-label={selectedIds.has(entry.steward.id) ? 'Deselect' : 'Select'}
                         className="p-1 -ml-1"
                       >
-                        <div className={`h-4 w-4 rounded border-2 transition ${selectedIds.has(entry.steward.id) ? 'bg-[#0f2d52] border-[#0f2d52]' : 'border-slate-300 hover:border-slate-400'}`}>
+                        <div className={`h-4 w-4 rounded border-2 transition ${selectedIds.has(entry.steward.id) ? 'bg-brand border-brand' : 'border-slate-300 hover:border-slate-400'}`}>
                           {selectedIds.has(entry.steward.id) && <Check className="h-3 w-3 text-white stroke-4" />}
                         </div>
                       </button>
@@ -267,17 +267,17 @@ function AttendanceRegistrySection({
                        )}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-[#0f2d52] truncate">
+                      <p className="font-bold text-brand truncate">
                         {entry.steward.name}
                       </p>
                       {!isRushMode && (
-                        <p className="text-[11px] font-medium text-slate-400 truncate">
+                        <p className="font-sans text-[11px] font-medium text-slate-400 truncate">
                           {entry.steward.email}
                         </p>
                       )}
-                      <p className="text-[10px] font-medium text-slate-400 truncate mt-0.5">
+                      <p className="font-sans text-[10px] font-medium text-slate-400 truncate mt-0.5">
                         {entry.steward.department}
-                        <span className="inline-flex ml-1.5 rounded-lg bg-indigo-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-indigo-600 border border-indigo-100 align-middle">
+                        <span className="inline-flex ml-1.5 rounded-lg bg-indigo-50 px-2 py-0.5 font-sans text-[9px] font-bold uppercase tracking-wider text-indigo-600 border border-indigo-100 align-middle">
                           {entry.steward.role}
                         </span>
                       </p>
@@ -288,40 +288,40 @@ function AttendanceRegistrySection({
                     <div className="flex items-center gap-2">
                        {isPresent ? (
                          <div className="flex flex-col">
-                            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold ${isLate ? 'bg-amber-100/80 text-amber-700' : 'bg-emerald-100/80 text-emerald-700'}`}>
-                               {isLate ? 'LATE' : 'PRESENT'}
-                            </span>
-                            <span className="mt-1 text-[9px] font-bold text-slate-400 flex items-center gap-1">
-                               <History className="h-3 w-3" />
-                               {entry.markedAt ? `Checked in at ${entry.markedAt}` : 'Confirmed'}
-                            </span>
+                             <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-sans text-[10px] font-bold ${isLate ? 'bg-amber-100/80 text-amber-700' : 'bg-emerald-100/80 text-emerald-700'}`}>
+                                {isLate ? 'LATE' : 'PRESENT'}
+                             </span>
+                             <span className="mt-1 font-sans text-[9px] font-bold text-slate-400 flex items-center gap-1">
+                                <History className="h-3 w-3" />
+                                {entry.markedAt ? `Checked in at ${entry.markedAt}` : 'Confirmed'}
+                             </span>
                          </div>
                        ) : entry.status === 'Excused' ? (
                           <div className="flex flex-col">
-                             <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100/80 px-3 py-1 text-[10px] font-bold text-sky-700">
-                                EXCUSED
-                             </span>
-                             {entry.excuseReason && (
-                               <span className="mt-1 text-[9px] font-medium text-sky-600/70 italic px-1 truncate max-w-37.5">
-                                 "{entry.excuseReason}"
-                               </span>
-                             )}
+                              <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100/80 px-3 py-1 font-sans text-[10px] font-bold text-sky-700">
+                                 EXCUSED
+                              </span>
+                              {entry.excuseReason && (
+                                <span className="mt-1 font-sans text-[9px] font-medium text-sky-600/70 italic px-1 truncate max-w-37.5">
+                                  "{entry.excuseReason}"
+                                </span>
+                              )}
                           </div>
                        ) : meetingIsFinalized ? (
                           <div className="flex flex-col">
-                             <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-3 py-1 text-[10px] font-bold text-rose-700">
-                                ABSENT
-                             </span>
-                             <span className="mt-1 text-[9px] font-bold text-slate-400 flex items-center gap-1">
-                                <History className="h-3 w-3" />
-                                Finalized as absent
-                             </span>
+                              <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-3 py-1 font-sans text-[10px] font-bold text-rose-700">
+                                 ABSENT
+                              </span>
+                              <span className="mt-1 font-sans text-[9px] font-bold text-slate-400 flex items-center gap-1">
+                                 <History className="h-3 w-3" />
+                                 Finalized as absent
+                              </span>
                           </div>
                        ) : (
-                         <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-500">
-                            <div className="h-1 w-1 rounded-full bg-slate-400" />
-                            UNMARKED
-                         </span>
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 font-sans text-[10px] font-bold text-slate-500">
+                             <div className="h-1 w-1 rounded-full bg-slate-400" />
+                             UNMARKED
+                          </span>
                        )}
                     </div>
 
@@ -415,8 +415,8 @@ function AttendanceRegistrySection({
       </div>
       
       {!isReadOnly && selectedIds.size > 0 && (
-        <div className="sticky bottom-4 z-10 mx-auto flex w-fit items-center gap-4 rounded-3xl bg-[#0f2d52] px-6 py-3 shadow-[0_15px_50px_rgba(15,45,82,0.3)]">
-          <span className="text-xs font-bold text-white/80 whitespace-nowrap">{selectedIds.size} selected</span>
+        <div className="sticky bottom-4 z-10 mx-auto flex w-fit items-center gap-4 rounded-3xl bg-brand px-6 py-3 shadow-[0_15px_50px_rgba(15,45,82,0.3)]">
+          <span className="font-sans text-xs font-bold text-white/80 whitespace-nowrap">{selectedIds.size} selected</span>
           <div className="h-4 w-px bg-white/20" />
           <button
             onClick={() => bulkMark('present')}
@@ -448,3 +448,4 @@ function AttendanceRegistrySection({
 }
 
 export default AttendanceRegistrySection
+

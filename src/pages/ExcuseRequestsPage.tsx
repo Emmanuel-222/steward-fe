@@ -67,11 +67,11 @@ function ExcuseRequestsPage() {
         }) => (
           <div
             key={req.id}
-            className="group relative flex flex-col rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)] transition hover:shadow-lg hover:border-slate-300"
+            className="group relative flex flex-col rounded-card border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(15,23,42,0.06)] transition hover:shadow-lg hover:border-slate-300"
           >
             <div className="mb-4 flex items-start justify-between gap-4">
               <div className="space-y-1 min-w-0">
-                <p className="text-sm font-bold text-[#0f2d52] truncate">{req.steward.fullName}</p>
+                <p className="text-sm font-bold text-brand truncate">{req.steward.fullName}</p>
                 <p className="text-[10px] font-medium text-slate-400">
                   {req.meeting.title || `${req.meeting.type} Session`} &middot; {req.meeting.date.split('T')[0]}
                 </p>
@@ -114,3 +114,5 @@ function ExcuseRequestsPage() {
 }
 
 export default ExcuseRequestsPage
+
+

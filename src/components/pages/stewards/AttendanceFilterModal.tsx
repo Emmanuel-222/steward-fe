@@ -28,7 +28,7 @@ function AttendanceFilterModal({
         <div className="flex items-start justify-between gap-4">
           <h3
             id="attendance-filter-title"
-            className="text-xl font-semibold text-[#0f2d52]"
+            className="text-xl font-semibold text-brand"
           >
             Filter Attendance History
           </h3>
@@ -57,7 +57,7 @@ function AttendanceFilterModal({
             <div className="relative">
               <select
                 defaultValue="All"
-                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
               >
                 <option>All</option>
                 <option>Sunday Service</option>
@@ -75,7 +75,7 @@ function AttendanceFilterModal({
             <div className="relative">
               <select
                 defaultValue="All"
-                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52]"
+                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
               >
                 <option>All</option>
                 <option>Present</option>
@@ -97,7 +97,7 @@ function AttendanceFilterModal({
                   <input
                     type="text"
                     placeholder="mm/dd/yyyy"
-                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52] placeholder:text-slate-400"
+                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
                   />
                   <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 </div>
@@ -109,7 +109,7 @@ function AttendanceFilterModal({
                   <input
                     type="text"
                     placeholder="mm/dd/yyyy"
-                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-[#0f2d52] placeholder:text-slate-400"
+                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
                   />
                   <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 </div>
@@ -128,7 +128,7 @@ function AttendanceFilterModal({
             </button>
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#0f2d52] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#173c67] sm:w-auto"
+              className="w-full rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover sm:w-auto"
             >
               Apply Filters
             </button>
@@ -140,3 +140,4 @@ function AttendanceFilterModal({
 }
 
 export default AttendanceFilterModal
+

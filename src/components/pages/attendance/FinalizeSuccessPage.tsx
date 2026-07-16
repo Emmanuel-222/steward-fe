@@ -25,7 +25,7 @@ function FinalizeSuccessPage({
         <CheckCircle2 className="h-12 w-12" />
       </div>
 
-      <h1 className="text-4xl font-bold tracking-tight text-[#0f2d52]">
+      <h1 className="text-4xl font-bold tracking-tight text-brand">
         Session Successfully Finalized
       </h1>
       <p className="mt-4 max-w-lg text-lg text-slate-500">
@@ -33,37 +33,37 @@ function FinalizeSuccessPage({
       </p>
 
       <div className="mt-12 grid w-full max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-[28px] border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Final Present</p>
-          <p className="mt-2 text-4xl font-bold text-[#0f2d52]">{stats.present}</p>
+          <p className="mt-2 text-4xl font-bold text-brand">{stats.present}</p>
           <span className="mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-600">CONFIRMED</span>
         </div>
 
-        <div className="rounded-[28px] border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-rose-400">Final Absent</p>
-          <p className="mt-2 text-4xl font-bold text-[#0f2d52]">{stats.absent}</p>
+          <p className="mt-2 text-4xl font-bold text-brand">{stats.absent}</p>
           <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.absent} marked as absent</span>
         </div>
 
-        <div className="rounded-[28px] border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-400">Final Excused</p>
-          <p className="mt-2 text-4xl font-bold text-[#0f2d52]">{stats.excused}</p>
+          <p className="mt-2 text-4xl font-bold text-brand">{stats.excused}</p>
           <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.excused} stewards excused</span>
         </div>
 
-        <div className="rounded-[28px] border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
+        <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)]">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Performance</p>
-          <p className="mt-2 text-4xl font-bold text-[#0f2d52]">{stats.performance}%</p>
+          <p className="mt-2 text-4xl font-bold text-brand">{stats.performance}%</p>
           <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
              <div 
-               className="h-full bg-[#0f2d52] transition-all duration-1000" 
+               className="h-full bg-brand transition-all duration-1000" 
                style={{ width: `${stats.performance}%` }}
              />
           </div>
         </div>
       </div>
 
-      <div className="mt-10 w-full max-w-4xl rounded-[32px] bg-slate-50 border border-slate-200/60 p-8 flex flex-col sm:flex-row items-center gap-6">
+      <div className="mt-10 w-full max-w-4xl rounded-card bg-slate-50 border border-slate-200/60 p-8 flex flex-col sm:flex-row items-center gap-6">
          <div className="h-20 w-24 rounded-2xl bg-slate-800 flex items-center justify-center text-white/20">
             <FileText className="h-10 w-10" />
          </div>
@@ -92,7 +92,7 @@ function FinalizeSuccessPage({
         <button
           type="button"
           onClick={onViewReport}
-          className="inline-flex items-center gap-2 rounded-2xl bg-[#0f2d52] px-8 py-4 text-sm font-bold text-white shadow-[0_15px_45px_rgba(15,45,82,0.25)] transition hover:bg-[#173c67]"
+          className="inline-flex items-center gap-2 rounded-2xl bg-brand px-8 py-4 text-sm font-bold text-white shadow-[0_15px_45px_rgba(15,45,82,0.25)] transition hover:bg-brand-hover"
         >
           <FileText className="h-4 w-4" />
           View Detailed Report
@@ -115,3 +115,5 @@ function FinalizeSuccessPage({
 }
 
 export default FinalizeSuccessPage
+
+

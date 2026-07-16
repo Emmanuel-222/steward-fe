@@ -21,7 +21,7 @@ function DashboardPageHeader({
             {eyebrow}
           </p>
         ) : null}
-        <h2 className="text-3xl font-semibold tracking-tight text-[#0f2d52] sm:text-4xl">
+        <h2 className="text-3xl font-semibold tracking-tight text-brand sm:text-4xl">
           {title}
         </h2>
         {description ? (
@@ -37,3 +37,4 @@ function DashboardPageHeader({
 }
 
 export default DashboardPageHeader
+

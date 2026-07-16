@@ -42,17 +42,17 @@ function StatCard({
           {label}
         </p>
         {trend && (
-          <div className={`flex items-center gap-1 text-[10px] font-bold ${trend.isUpward ? 'text-emerald-500' : 'text-rose-500'}`}>
+          <div className={`flex items-center gap-1 font-sans text-[10px] font-bold ${trend.isUpward ? 'text-emerald-500' : 'text-rose-500'}`}>
             {trend.isUpward ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
             {trend.value}%
           </div>
         )}
       </div>
       <div className="mt-4 flex items-end gap-2">
-        <p className="text-3xl font-semibold tracking-tight text-[#0f2d52] sm:text-4xl">
+        <p className="font-sans text-3xl font-semibold tracking-tight text-brand sm:text-4xl">
           {value}
         </p>
-        <span className={`pb-1 text-xs font-semibold ${detailClassName}`}>
+        <span className={`font-sans pb-1 text-xs font-semibold ${detailClassName}`}>
           {detail}
         </span>
       </div>
@@ -61,3 +61,4 @@ function StatCard({
 }
 
 export default StatCard
+

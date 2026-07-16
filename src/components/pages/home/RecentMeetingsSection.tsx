@@ -16,7 +16,7 @@ function RecentMeetingsSection({
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h3 className="text-xl font-semibold text-[#0f2d52]">Recent Meetings</h3>
+        <h3 className="text-xl font-semibold text-brand">Recent Meetings</h3>
         <button
           type="button"
           onClick={onViewAll}
@@ -26,7 +26,7 @@ function RecentMeetingsSection({
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+      <div className="overflow-hidden rounded-card border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
         {isLoading ? (
           <div className="divide-y divide-slate-100">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -52,7 +52,7 @@ function RecentMeetingsSection({
                 className="flex flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between"
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#eff4fb] text-[#0f2d52]">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#eff4fb] text-brand">
                     <CalendarDays className="h-5 w-5" />
                   </div>
                   <div>
@@ -94,3 +94,5 @@ function RecentMeetingsSection({
 }
 
 export default RecentMeetingsSection
+
+
