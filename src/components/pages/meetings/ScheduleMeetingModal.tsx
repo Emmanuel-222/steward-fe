@@ -4,6 +4,7 @@ import { Info, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { meetingSchema } from '../../../features/meetings/schema'
+import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
 import type {
   CreateMeetingValues,
   Meeting,
@@ -37,6 +38,8 @@ function ScheduleMeetingModal({
   meeting,
 }: ScheduleMeetingModalProps) {
   const [serverError, setServerError] = useState('')
+  const { mounted, phase } = useAnimatedMount(open)
+  if (!mounted) return null
 
   const schema = mode === 'create' ? meetingSchema : meetingSchema.partial()
 
@@ -84,8 +87,6 @@ function ScheduleMeetingModal({
       location: meeting.location === 'Location not set' ? '' : meeting.location,
     })
   }, [meeting, open, reset])
-
-  if (!open) return null
 
   const handleFormSubmit = async (
     values: CreateMeetingValues | UpdateMeetingValues,
@@ -145,11 +146,11 @@ function ScheduleMeetingModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 px-4 py-4 backdrop-blur-[2px] sm:px-6 sm:py-6"
+      className={`fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 px-4 py-4 backdrop-blur-[2px] sm:px-6 sm:py-6 ${phase === 'enter' ? 'animate-fade-in' : ''}`}
       onClick={onClose}
     >
       <div
-        className="mx-auto my-4 w-full max-w-md rounded-2xl bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:my-8 sm:p-6"
+        className={`mx-auto my-4 w-full max-w-md rounded-2xl bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:my-8 sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"

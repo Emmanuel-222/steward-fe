@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { stewardRoleOptions, updateStewardSchema } from '../../../features/stewards/schema'
 import type { Steward, CreateStewardValues, UpdateStewardValues } from '../../../features/stewards/types'
 import { DEPARTMENTS } from '../../../constants/departments'
+import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
 
 type EditUserModalProps = {
   steward: Steward | null
@@ -23,6 +24,9 @@ function EditUserModal({
   isSubmitting,
 }: EditUserModalProps) {
   const [serverError, setServerError] = useState('')
+  const { mounted, phase } = useAnimatedMount(open)
+  if (!mounted || !steward) return null
+
   const {
     register,
     handleSubmit,
@@ -46,10 +50,6 @@ function EditUserModal({
     })
   }, [reset, steward])
 
-  if (!open || !steward) {
-    return null
-  }
-
   const handleFormSubmit = async (
     values: UpdateStewardValues,
   ) => {
@@ -71,11 +71,11 @@ function EditUserModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/35 px-3 py-4 backdrop-blur-[2px] sm:px-4 sm:py-6"
+      className={`fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/35 px-3 py-4 backdrop-blur-[2px] sm:px-4 sm:py-6 ${phase === 'enter' ? 'animate-fade-in' : ''}`}
       onClick={onClose}
     >
       <div
-        className="my-auto max-h-[calc(100vh-2rem)] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:max-h-[calc(100vh-3rem)] sm:p-6"
+        className={`my-auto max-h-[calc(100vh-2rem)] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:max-h-[calc(100vh-3rem)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
