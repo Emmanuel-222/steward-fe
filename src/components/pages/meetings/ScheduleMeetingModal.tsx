@@ -37,9 +37,8 @@ function ScheduleMeetingModal({
   mode,
   meeting,
 }: ScheduleMeetingModalProps) {
-  const [serverError, setServerError] = useState('')
   const { mounted, phase } = useAnimatedMount(open)
-  if (!mounted) return null
+  const [serverError, setServerError] = useState('')
 
   const schema = mode === 'create' ? meetingSchema : meetingSchema.partial()
 
@@ -143,6 +142,8 @@ function ScheduleMeetingModal({
       setServerError('Unable to save meeting right now.')
     }
   }
+
+  if (!mounted) return null
 
   return (
     <div

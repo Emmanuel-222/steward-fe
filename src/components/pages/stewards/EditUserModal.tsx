@@ -23,9 +23,8 @@ function EditUserModal({
   onSubmit,
   isSubmitting,
 }: EditUserModalProps) {
-  const [serverError, setServerError] = useState('')
   const { mounted, phase } = useAnimatedMount(open)
-  if (!mounted || !steward) return null
+  const [serverError, setServerError] = useState('')
 
   const {
     register,
@@ -68,6 +67,8 @@ function EditUserModal({
       setServerError('Unable to update user right now.')
     }
   }
+
+  if (!mounted || !steward) return null
 
   return (
     <div

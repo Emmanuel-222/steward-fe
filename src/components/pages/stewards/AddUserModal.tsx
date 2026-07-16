@@ -21,10 +21,9 @@ function AddUserModal({
   onSubmit,
   isSubmitting,
 }: AddUserModalProps) {
+  const { mounted, phase } = useAnimatedMount(open)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [serverError, setServerError] = useState('')
-  const { mounted, phase } = useAnimatedMount(open)
-  if (!mounted) return null
 
   const {
     register,
@@ -60,6 +59,8 @@ function AddUserModal({
       setServerError('Unable to add user right now.')
     }
   }
+
+  if (!mounted) return null
 
   return (
     <div
