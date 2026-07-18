@@ -271,7 +271,7 @@ function AttendancePage() {
       
       <div className="animate-stagger-fade" style={{ animationDelay: '200ms' }}>
       {isAdminOrLeader ? (
-        <>
+        <div className="space-y-8">
           <AttendanceStatsSection stats={stats} />
           
           <RushModeBanner 
@@ -285,7 +285,7 @@ function AttendancePage() {
           />
 
           {showReport && (
-            <div className="mb-6 flex items-center justify-between rounded-3xl bg-brand p-6 text-white shadow-xl shadow-slate-200/50">
+            <div className="flex items-center justify-between rounded-3xl bg-brand p-6 text-white shadow-xl shadow-slate-200/50">
               <div className="space-y-1">
                 <h2 className="text-xl font-bold">Detailed Session Report</h2>
                 <p className="text-xs font-medium text-slate-300">Viewing finalized attendance for {activeMeeting.title}</p>
@@ -314,7 +314,7 @@ function AttendancePage() {
             meetingIsFinalized={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
             justMarkedUserId={justMarkedUserId}
           />
-        </>
+        </div>
       ) : (
         <div className="mx-auto max-w-2xl space-y-6">
           <div className="rounded-card border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
