@@ -11,7 +11,7 @@ function AttendanceEmptyState({ meetings = [] }: AttendanceEmptyStateProps) {
 
   return (
     <section className="space-y-6 animate-stagger-fade">
-      <div className="rounded-card border border-slate-200 bg-white p-6 text-center shadow-[0_20px_70px_rgba(15,23,42,0.06)] sm:p-8">
+      <div className="rounded-card border border-slate-200 bg-white p-6 text-center shadow-section sm:p-8">
         <div className="mx-auto flex max-w-xl flex-col items-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#eef4ff] text-brand">
             <Clock3 className="h-7 w-7" />

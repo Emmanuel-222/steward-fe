@@ -9,11 +9,16 @@ import StewardsPage from '../../pages/StewardsPage'
 import StewardDetailPage from '../../pages/StewardDetailPage'
 import MyExcusesPage from '../../pages/MyExcusesPage'
 import ExcuseRequestsPage from '../../pages/ExcuseRequestsPage'
+import CheckInPage from '../../pages/CheckInPage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <LoginPage />,
+  },
+  {
+    path: '/check-in/:token',
+    element: <CheckInPage />,
   },
   {
     path: '/dashboard',

@@ -286,7 +286,29 @@ function normalizeMeeting(raw: Record<string, unknown>): Meeting {
 
 ---
 
-## 13. Token Refresh Flow — Short-Lived Access Tokens with DB-Stored Refresh Token Rotation
+## 13. QR Code Check-in — Public Route with Signed JWT Tokens
+
+**Concept:** Check-in system architecture, security token design, public route patterns
+
+**The Problem:** Stewards need to mark themselves present at the venue entrance without logging in. Options considered:
+- **Public authenticated route (PIN):** Steward enters a meeting PIN on a login-like page. Requires PIN distribution, rotation, and secure storage — operational overhead for every meeting.
+- **Email-only public route (Option A — chosen):** QR encodes a signed JWT; steward scans, enters email, gets marked present. No PIN, no password, no login session.
+- **Dedicated subdomain (Option B — deferred to Phase 2):** `checkin.example.com` with separate deployment, DNS, CORS config. Too much infra overhead for current scale (single church, single dev).
+
+**Decision:** Public route `/check-in/:token` inside the same app (no MainLayout wrapper). The QR encodes a signed HS256 JWT with `{ meetingId, purpose: "check-in", exp: 1h, nonce }`. This prevents:
+- Replay attacks (screenshotting QR and checking in from home) — 1h time bound
+- Meeting enumeration (raw meeting IDs never appear in QR)
+- Auth token reuse (`purpose: "check-in"` claim differentiates from auth JWTs)
+
+**Why not PIN (noted for future):** Not needed at current scale. PINs introduce distribution friction (how do 50 stewards each get a unique PIN at the door?) and require the admin to generate/rotate them per meeting. Email identification is simpler — the steward already knows their email. Added to the spec's future notes section.
+
+**Trade-off:** The check-in endpoint is public (no auth middleware). Security relies entirely on the JWT signature + short expiry + email lookup. If the JWT secret is leaked, all check-in tokens are forgeable. Mitigated by using the same secret as auth tokens (no new secrets to manage).
+
+**Future (Phase 2):** Dedicated subdomain with Cloudflare WAF, Redis rate limiting, per-email rate limits, and QR download as PNG.
+
+---
+
+## 14. Token Refresh Flow — Short-Lived Access Tokens with DB-Stored Refresh Token Rotation
 
 **Concept:** JWT token lifecycle, rotation-based invalidation, silent authentication refresh
 

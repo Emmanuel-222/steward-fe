@@ -1,6 +1,7 @@
 import { CalendarDays, Check, ChevronDown, Clock3, Shield, Lock } from 'lucide-react'
 import type { Meeting } from '../../../features/meetings/types'
 import useAuth from '../../../hooks/useAuth'
+import MeetingQR from '../checkin/MeetingQR'
 
 type AttendanceHeroProps = {
   meeting: Meeting
@@ -66,6 +67,8 @@ function AttendanceHero({
             </div>
             <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />
           </div>
+
+          <MeetingQR meeting={meeting} />
 
           {!isFinalized && (
             canFinalize ? (
