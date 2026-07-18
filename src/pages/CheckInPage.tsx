@@ -6,7 +6,6 @@ type PageState =
   | { status: 'form' }
   | { status: 'loading' }
   | { status: 'success'; name: string }
-  | { status: 'error'; message: string }
 
 function DiamondRule() {
   return (
@@ -24,11 +23,12 @@ function CheckInPage() {
   const { token } = useParams<{ token: string }>()
   const [email, setEmail] = useState('')
   const [pageState, setPageState] = useState<PageState>({ status: 'form' })
+  const [error, setError] = useState<string | null>(null)
   const checkInMutation = useCheckInMutation()
 
   useEffect(() => {
     if (!token) {
-      setPageState({ status: 'error', message: 'This check-in link is not valid.' })
+      setError('This check-in link is not valid.')
     }
   }, [token])
 
@@ -36,6 +36,7 @@ function CheckInPage() {
     e.preventDefault()
     if (!token || !email.trim()) return
 
+    setError(null)
     setPageState({ status: 'loading' })
 
     try {
@@ -50,15 +51,19 @@ function CheckInPage() {
           ? (err as { response: { data: { message?: string } } }).response.data
               ?.message ?? 'Could not reach the server. Check your connection.'
           : 'Could not reach the server. Check your connection.'
-      setPageState({ status: 'error', message })
+      setError(message)
+      setPageState({ status: 'form' })
     }
   }
+
+  const showForm = pageState.status === 'form'
+  const showLoading = pageState.status === 'loading'
+  const showSuccess = pageState.status === 'success'
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f6f3ee] px-4 py-10">
       <div className="w-full max-w-sm animate-fade-in-up">
         <div className="overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
-          {/* subtle warm tint at the top, like a letterhead */}
           <div className="bg-gradient-to-b from-amber-50/60 to-white px-7 pb-2 pt-9">
             <h1 className="font-serif text-[28px] font-semibold leading-tight tracking-tight text-brand">
               Registration
@@ -73,7 +78,13 @@ function CheckInPage() {
           </div>
 
           <div className="px-7 pb-9 pt-5">
-            {pageState.status === 'form' && (
+            {error && (
+              <div className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-center font-sans text-[13px] font-medium text-rose-700 border border-rose-200">
+                {error}
+              </div>
+            )}
+
+            {showForm && (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label htmlFor="email" className="sr-only">
@@ -84,7 +95,10 @@ function CheckInPage() {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      if (error) setError(null)
+                    }}
                     placeholder="you@email.com"
                     autoFocus
                     autoComplete="email"
@@ -103,13 +117,13 @@ function CheckInPage() {
               </form>
             )}
 
-            {pageState.status === 'loading' && (
+            {showLoading && (
               <div className="flex items-center justify-center py-8">
                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand/20 border-t-brand" />
               </div>
             )}
 
-            {pageState.status === 'success' && (
+            {showSuccess && (
               <div className="flex flex-col items-center gap-4 py-4 text-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 animate-scale-in">
                   <svg
@@ -129,14 +143,6 @@ function CheckInPage() {
                 </p>
                 <p className="font-sans text-[13px] text-slate-500">
                   You're signed in.
-                </p>
-              </div>
-            )}
-
-            {pageState.status === 'error' && (
-              <div className="flex flex-col items-center gap-4 py-4 text-center">
-                <p className="font-sans text-sm leading-relaxed text-slate-600">
-                  {pageState.message}
                 </p>
               </div>
             )}
