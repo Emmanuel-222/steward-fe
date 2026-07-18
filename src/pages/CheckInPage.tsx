@@ -24,6 +24,7 @@ function CheckInPage() {
   const [email, setEmail] = useState('')
   const [pageState, setPageState] = useState<PageState>({ status: 'form' })
   const [error, setError] = useState<string | null>(null)
+  const [isDuplicate, setIsDuplicate] = useState(false)
   const checkInMutation = useCheckInMutation()
 
   useEffect(() => {
@@ -37,6 +38,7 @@ function CheckInPage() {
     if (!token || !email.trim()) return
 
     setError(null)
+    setIsDuplicate(false)
     setPageState({ status: 'loading' })
 
     try {
@@ -44,6 +46,7 @@ function CheckInPage() {
         token,
         email: email.trim(),
       })
+      setIsDuplicate(result.isDuplicate ?? false)
       setPageState({ status: 'success', name: result.stewardName })
     } catch (err: unknown) {
       const message: string =
@@ -125,24 +128,24 @@ function CheckInPage() {
 
             {showSuccess && (
               <div className="flex flex-col items-center gap-4 py-4 text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 animate-scale-in">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-7 w-7 text-emerald-600"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+                <div className={`flex h-14 w-14 items-center justify-center rounded-full animate-scale-in ${isDuplicate ? 'bg-amber-100' : 'bg-emerald-100'}`}>
+                  {isDuplicate ? (
+                    <svg viewBox="0 0 24 24" className="h-7 w-7 text-amber-600" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" className="h-7 w-7 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
                 </div>
                 <p className="font-serif text-[22px] font-semibold leading-tight text-brand">
-                  Welcome, {pageState.name}
+                  {isDuplicate ? 'Already checked in' : `Welcome, ${pageState.name}`}
                 </p>
                 <p className="font-sans text-[13px] text-slate-500">
-                  You're signed in.
+                  {isDuplicate ? `You were already checked in, ${pageState.name}.` : "You're signed in."}
                 </p>
               </div>
             )}
