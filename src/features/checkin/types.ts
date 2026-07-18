@@ -1,5 +1,6 @@
 export type CheckInResponse = {
   stewardName: string
+  isDuplicate?: boolean
 }
 
 export type QrTokenResponse = {
