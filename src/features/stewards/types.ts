@@ -10,6 +10,7 @@ export type Steward = {
   roleTone: string
   phone: string
   dateAdded: string
+  birthday?: string
 }
 
 export type StewardAttendanceSummary = {
@@ -39,9 +40,23 @@ export type CreateStewardValues = {
   password: string
   department: string
   role: StewardRole
+  birthday?: string
 }
 
 export type UpdateStewardValues = Omit<CreateStewardValues, 'password'>
+
+export type ImportFailure = {
+  row: number
+  field: string
+  message: string
+}
+
+export type ImportResult = {
+  imported: number
+  skipped: number
+  defaultPassword: string
+  failures: ImportFailure[]
+}
 
 export type StewardsResponse = {
   items?: unknown[]

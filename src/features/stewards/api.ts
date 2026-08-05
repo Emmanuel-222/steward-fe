@@ -2,6 +2,7 @@ import api from '../../services/axios'
 import type { PaginationData } from '../../types'
 import type {
   CreateStewardValues,
+  ImportResult,
   Steward,
   StewardAttendanceRecord,
   StewardAttendanceReport,
@@ -35,6 +36,15 @@ function createInitials(name: string) {
     .join('')
 
   return initials || 'ST'
+}
+
+function formatBirthday(value: unknown) {
+  if (!value) return undefined
+  const date = new Date(String(value))
+  if (Number.isNaN(date.getTime())) return String(value)
+  const day = String(date.getUTCDate()).padStart(2, '0')
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0')
+  return `${day}/${month}/${date.getUTCFullYear()}`
 }
 
 function formatDate(value: unknown) {
@@ -77,6 +87,7 @@ function normalizeSteward(rawSteward: Record<string, unknown>): Steward {
   const dateAdded = formatDate(
     rawSteward.createdAt ?? rawSteward.dateAdded ?? rawSteward.created_at,
   )
+  const birthday = formatBirthday(rawSteward.birthday)
 
   return {
     id,
@@ -88,6 +99,7 @@ function normalizeSteward(rawSteward: Record<string, unknown>): Steward {
     roleTone: roleToneMap[role] ?? 'bg-slate-100 text-slate-700',
     phone,
     dateAdded,
+    birthday,
   }
 }
 
@@ -250,6 +262,7 @@ export async function getStewardAttendanceReport(id: string) {
 export async function createSteward(payload: CreateStewardValues) {
   const requestBody = {
     ...payload,
+    ...(payload.birthday ? { birthday: payload.birthday } : {}),
     fullName: payload.name,
     phoneNumber: payload.phone,
   }
@@ -267,6 +280,7 @@ export async function updateSteward({
 }) {
   const requestBody = {
     ...payload,
+    ...(payload.birthday ? { birthday: payload.birthday } : {}),
     fullName: payload.name,
     phoneNumber: payload.phone,
   }
@@ -278,4 +292,11 @@ export async function updateSteward({
 export async function deleteSteward(id: string) {
   await api.delete(`/users/${id}`)
   return id
+}
+
+export async function importStewards(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  const { data } = await api.post('/users/import', formData)
+  return data as ImportResult
 }
