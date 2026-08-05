@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   Building2,
+  Cake,
   CalendarDays,
   Clock3,
   Download,
@@ -105,6 +106,12 @@ function StewardProfileView({
                     <Phone className="h-4 w-4 shrink-0 text-slate-400" />
                     <span>{steward.phone}</span>
                   </span>
+                  {steward.birthday ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Cake className="h-4 w-4 shrink-0 text-slate-400" />
+                      <span>Birthday: {steward.birthday}</span>
+                    </span>
+                  ) : null}
                   <span className="inline-flex items-center gap-2">
                     <CalendarDays className="h-4 w-4 shrink-0 text-slate-400" />
                     <span>Joined: {steward.dateAdded}</span>

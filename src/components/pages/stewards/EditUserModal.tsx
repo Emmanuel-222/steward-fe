@@ -46,6 +46,7 @@ function EditUserModal({
       phone: steward.phone === 'N/A' ? '' : steward.phone,
       department: steward.department as CreateStewardValues['department'],
       role: steward.role as CreateStewardValues['role'],
+      birthday: steward.birthday ?? '',
     })
   }, [reset, steward])
 
@@ -169,6 +170,21 @@ function EditUserModal({
 
             <label className="block space-y-2">
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Birthday
+              </span>
+              <input
+                type="text"
+                placeholder="DD/MM/YYYY (optional)"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
+                {...register('birthday')}
+              />
+              {errors.birthday ? (
+                <p className="text-sm text-rose-600">{errors.birthday.message}</p>
+              ) : null}
+            </label>
+
+            <label className="block space-y-2">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Department
               </span>
               <div className="relative">
@@ -187,29 +203,29 @@ function EditUserModal({
                 <p className="text-sm text-rose-600">{errors.department.message}</p>
               ) : null}
             </label>
-          </div>
 
-          <label className="block space-y-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              System Role
-            </span>
-            <div className="relative">
-              <select
-                className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
-                {...register('role')}
-              >
-                {stewardRoleOptions.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            </div>
-            {errors.role ? (
-              <p className="text-sm text-rose-600">{errors.role.message}</p>
-            ) : null}
-          </label>
+            <label className="block space-y-2">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                System Role
+              </span>
+              <div className="relative">
+                <select
+                  className="h-11 w-full appearance-none rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand"
+                  {...register('role')}
+                >
+                  {stewardRoleOptions.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              </div>
+              {errors.role ? (
+                <p className="text-sm text-rose-600">{errors.role.message}</p>
+              ) : null}
+            </label>
+          </div>
 
           <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-end">
             <button
