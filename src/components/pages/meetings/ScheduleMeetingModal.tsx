@@ -3,7 +3,10 @@ import { isAxiosError } from 'axios'
 import { Info, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { meetingSchema } from '../../../features/meetings/schema'
+import {
+  meetingSchema,
+  meetingTypeOptions,
+} from '../../../features/meetings/schema'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
 import type {
   CreateMeetingValues,
@@ -28,6 +31,13 @@ type ScheduleMeetingModalProps =
       onSubmit: (values: UpdateMeetingValues) => Promise<void>
       meeting: Meeting
     })
+
+const MEETING_TYPE_LABELS: Record<string, string> = {
+  'Sunday': 'Sunday Service',
+  'Special': 'Special Meeting',
+  'Prayer Meeting': 'Prayer Meeting',
+  'Bible study': 'Bible Study',
+}
 
 function ScheduleMeetingModal({
   open,
@@ -217,9 +227,11 @@ function ScheduleMeetingModal({
                 {...register('type')}
               >
                 <option value="">Select Type</option>
-                <option value="Sunday">Sunday Service</option>
-                <option value="Special">Special Meeting</option>
-                <option value="Prayer Meeting">Prayer Meeting</option>
+                {meetingTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {MEETING_TYPE_LABELS[type] ?? type}
+                  </option>
+                ))}
               </select>
               {errors.type ? (
                 <p className="text-sm text-rose-600">{errors.type.message}</p>
