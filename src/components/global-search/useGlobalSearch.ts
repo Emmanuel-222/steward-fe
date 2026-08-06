@@ -15,6 +15,7 @@ const meetingTypeLabels: Record<string, string> = {
   Sunday: 'Sunday Service',
   Special: 'Special Meeting',
   'Prayer Meeting': 'Prayer Meeting',
+  'Bible study': 'Bible Study',
 }
 
 function countBy<T extends Record<string, unknown>>(items: T[], key: string): Record<string, number> {

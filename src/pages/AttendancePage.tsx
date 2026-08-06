@@ -216,14 +216,18 @@ function AttendancePage() {
 
   const handleMarkPresent = async (userId: string) => {
     try {
-      await markPresentMutation.mutateAsync({
+      const result = await markPresentMutation.mutateAsync({
         userId,
         meetingId: activeMeeting.id,
         status: 'present',
       })
       setJustMarkedUserId(userId)
       setTimeout(() => setJustMarkedUserId(null), 800)
-      showToast('Steward marked as present', 'success')
+      const isLate = result?.attendance?.status === 'late'
+      showToast(
+        isLate ? 'Steward is present but late' : 'Steward marked as present',
+        isLate ? 'warning' : 'success',
+      )
     } catch {
       showToast('Failed to mark attendance', 'error')
     }
