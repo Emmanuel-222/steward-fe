@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import {
   meetingSchema,
   meetingTypeOptions,
+  updateMeetingSchema,
 } from '../../../features/meetings/schema'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
 import type {
@@ -50,7 +51,7 @@ function ScheduleMeetingModal({
   const { mounted, phase } = useAnimatedMount(open)
   const [serverError, setServerError] = useState('')
 
-  const schema = mode === 'create' ? meetingSchema : meetingSchema.partial()
+  const schema = mode === 'create' ? meetingSchema : updateMeetingSchema
 
   const {
     register,
