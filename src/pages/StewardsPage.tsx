@@ -1,7 +1,8 @@
-import { UserPlus } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import AddUserDropdown from '../components/pages/stewards/AddUserDropdown'
 import AddUserModal from '../components/pages/stewards/AddUserModal'
+import ImportStewardsModal from '../components/pages/stewards/ImportStewardsModal'
 import DeleteUserModal from '../components/pages/stewards/DeleteUserModal'
 import DirectoryFooter from '../components/pages/stewards/DirectoryFooter'
 import EditUserModal from '../components/pages/stewards/EditUserModal'
@@ -11,6 +12,7 @@ import StewardsToolbar from '../components/pages/stewards/StewardsToolbar'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import useCreateStewardMutation from '../features/stewards/hooks/useCreateStewardMutation'
 import useDeleteStewardMutation from '../features/stewards/hooks/useDeleteStewardMutation'
+import useImportStewardsMutation from '../features/stewards/hooks/useImportStewardsMutation'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import useUpdateStewardMutation from '../features/stewards/hooks/useUpdateStewardMutation'
 import useAuth from '../hooks/useAuth'
@@ -43,6 +45,7 @@ function StewardsPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const [modalStewardId, setModalStewardId] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -50,6 +53,7 @@ function StewardsPage() {
   const createStewardMutation = useCreateStewardMutation()
   const updateStewardMutation = useUpdateStewardMutation()
   const deleteStewardMutation = useDeleteStewardMutation()
+  const importMutation = useImportStewardsMutation()
 
   const resetPage = useCallback(() => setPage(1), [])
 
@@ -94,7 +98,7 @@ function StewardsPage() {
   }, [searchTerm, resetPage])
 
   useEffect(() => {
-    if (!isAddUserModalOpen && !isEditModalOpen && !isDeleteModalOpen) {
+    if (!isAddUserModalOpen && !isEditModalOpen && !isDeleteModalOpen && !isImportModalOpen) {
       return undefined
     }
 
@@ -103,6 +107,7 @@ function StewardsPage() {
         setIsAddUserModalOpen(false)
         setIsEditModalOpen(false)
         setIsDeleteModalOpen(false)
+        setIsImportModalOpen(false)
         setModalStewardId(null)
       }
     }
@@ -110,7 +115,7 @@ function StewardsPage() {
     window.addEventListener('keydown', handleKeyDown)
 
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isAddUserModalOpen, isDeleteModalOpen, isEditModalOpen])
+  }, [isAddUserModalOpen, isDeleteModalOpen, isEditModalOpen, isImportModalOpen])
 
   if (isAuthenticated && !currentUser) {
     return (
@@ -210,6 +215,12 @@ function StewardsPage() {
     }
   }
 
+  const handleImportStewards = async (file: File) => {
+    const result = await importMutation.mutateAsync(file)
+    stewardsQuery.refetch()
+    return result
+  }
+
   return (
     <>
       <div className="space-y-8">
@@ -218,14 +229,10 @@ function StewardsPage() {
           description="Manage personnel records, roles, and departmental assignments."
           actions={
             isAdmin && (
-              <button
-                type="button"
-                onClick={() => setIsAddUserModalOpen(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-brand-hover"
-              >
-                <UserPlus className="h-4 w-4" />
-                Add New User
-              </button>
+              <AddUserDropdown
+                onAddSingle={() => setIsAddUserModalOpen(true)}
+                onImportCsv={() => setIsImportModalOpen(true)}
+              />
             )
           }
         />
@@ -276,6 +283,12 @@ function StewardsPage() {
         onClose={() => setIsAddUserModalOpen(false)}
         onSubmit={handleCreateSteward}
         isSubmitting={createStewardMutation.isPending}
+      />
+      <ImportStewardsModal
+        open={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSubmit={handleImportStewards}
+        isSubmitting={importMutation.isPending}
       />
       <EditUserModal
         steward={modalSteward}

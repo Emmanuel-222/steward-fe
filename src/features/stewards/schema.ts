@@ -15,6 +15,13 @@ export const createStewardSchema = z.object({
   role: z.enum(stewardRoleOptions, {
     message: 'Select a system role',
   }),
+  birthday: z
+    .string()
+    .refine(
+      (value) => value === '' || /^\d{2}\/\d{2}\/\d{4}$/.test(value),
+      'Use DD/MM/YYYY format',
+    )
+    .optional(),
 })
 
 export const updateStewardSchema = createStewardSchema.omit({

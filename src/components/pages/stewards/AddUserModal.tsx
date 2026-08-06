@@ -39,6 +39,7 @@ function AddUserModal({
       password: '',
       department: '',
       role: 'Steward',
+      birthday: '',
     },
   })
 
@@ -153,30 +154,16 @@ function AddUserModal({
 
             <label className="block space-y-2">
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Security Password
+                Birthday
               </span>
-              <div className="relative">
-                <input
-                  type={isPasswordVisible ? 'text' : 'password'}
-                  placeholder="Create a secure password"
-                  className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
-                  {...register('password')}
-                />
-                <button
-                  type="button"
-                  onClick={() => setIsPasswordVisible((current) => !current)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
-                  aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
-                >
-                  {isPasswordVisible ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-              {errors.password ? (
-                <p className="text-sm text-rose-600">{errors.password.message}</p>
+              <input
+                type="text"
+                placeholder="DD/MM/YYYY (optional)"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
+                {...register('birthday')}
+              />
+              {errors.birthday ? (
+                <p className="text-sm text-rose-600">{errors.birthday.message}</p>
               ) : null}
             </label>
 
@@ -220,6 +207,35 @@ function AddUserModal({
               </div>
               {errors.role ? (
                 <p className="text-sm text-rose-600">{errors.role.message}</p>
+              ) : null}
+            </label>
+
+            <label className="block space-y-2">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Security Password
+              </span>
+              <div className="relative">
+                <input
+                  type={isPasswordVisible ? 'text' : 'password'}
+                  placeholder="Create a secure password"
+                  className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
+                  {...register('password')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsPasswordVisible((current) => !current)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
+                  aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
+                >
+                  {isPasswordVisible ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+              {errors.password ? (
+                <p className="text-sm text-rose-600">{errors.password.message}</p>
               ) : null}
             </label>
           </div>
