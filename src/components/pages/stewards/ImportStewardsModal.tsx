@@ -3,16 +3,45 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
 import type { ImportResult } from '../../../features/stewards/types'
+import { DEPARTMENTS } from '../../../constants/departments'
 
 const MAX_FILE_SIZE = 1024 * 1024
 
-const TEMPLATE_CSV = [
-  'fullName,email,phone,department,birthday',
-  'John Doe,john.doe@example.com,+2348012345678,Protocol Dept.,25/12/1995',
-].join('\n')
+const SAMPLE_NAMES = [
+  'Chiamaka Okafor',
+  'Tobi Adeleke',
+  'Kehinde Balogun',
+  'Ngozi Eze',
+  'Emeka Obi',
+  'Fumni Alabi',
+  'Bolanle Adeyemi',
+  'Ifeanyi Nwosu',
+  'Zainab Abdullahi',
+  'Segun Ogunleye',
+  'Amaka Nnamdi',
+  'Tunde Akin',
+] as const
+
+function departmentSlug(department: string) {
+  return department
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function buildTemplateCsv() {
+  const rows = DEPARTMENTS.map((department, index) => {
+    const email = `${departmentSlug(department)}@example.com`
+    const phone = `+2348012345${String(index + 1).padStart(3, '0')}`
+    const birthday = index % 2 === 0 ? '25/12/1995' : ''
+    return [SAMPLE_NAMES[index], email, phone, department, birthday].join(',')
+  })
+
+  return ['fullName,email,phone,department,birthday', ...rows].join('\n')
+}
 
 function downloadTemplate() {
-  const blob = new Blob([TEMPLATE_CSV], { type: 'text/csv' })
+  const blob = new Blob([buildTemplateCsv()], { type: 'text/csv' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
@@ -194,7 +223,8 @@ function ImportStewardsModal({
             <p className="text-sm leading-6 text-slate-500">
               Upload a CSV file containing steward records to create multiple users at
               once. The first row must contain the column headers and every other row is
-              a new steward.
+              a new steward. The template has one sample row per department — replace them
+              with your stewards and delete the rows you do not need.
             </p>
 
             <button
@@ -227,7 +257,8 @@ function ImportStewardsModal({
               </label>
               <p className="mt-1.5 text-xs text-slate-400">
                 Accepts .csv files up to 1MB. Required columns: fullName, email, phone,
-                department, birthday.
+                department, birthday. Failure row numbers match your spreadsheet (header
+                is row 1, first steward row 2).
               </p>
             </div>
 
