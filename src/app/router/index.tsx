@@ -10,6 +10,7 @@ import StewardDetailPage from '../../pages/StewardDetailPage'
 import MyExcusesPage from '../../pages/MyExcusesPage'
 import ExcuseRequestsPage from '../../pages/ExcuseRequestsPage'
 import CheckInPage from '../../pages/CheckInPage'
+import OnboardingPage from '../../pages/OnboardingPage'
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
   {
     path: '/check-in/:token',
     element: <CheckInPage />,
+  },
+  {
+    path: '/onboarding',
+    element: <OnboardingPage />,
   },
   {
     path: '/dashboard',
