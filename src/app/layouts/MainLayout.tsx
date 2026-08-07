@@ -68,6 +68,10 @@ function MainLayout() {
     return <Navigate to="/" replace />
   }
 
+  if (isAuthenticated && currentUser?.onboarding?.required) {
+    return <Navigate to="/onboarding" replace />
+  }
+
   const handleLogout = () => {
     logout()
     navigate('/', { replace: true })
