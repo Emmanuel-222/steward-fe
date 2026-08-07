@@ -13,7 +13,7 @@ function MeetingsTabs({ tabs, activeTab, onTabChange }: MeetingsTabsProps) {
           type="button"
           onClick={() => onTabChange(tab)}
           className={[
-            'rounded-full px-4 py-2 text-sm font-semibold transition',
+            'rounded-full px-4 py-2 text-sm font-semibold transition cursor-pointer',
             activeTab === tab
               ? 'bg-brand text-white'
               : 'bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-700',

@@ -323,7 +323,7 @@ function AttendancePage() {
         <div className="mx-auto max-w-2xl space-y-6">
           <div className="rounded-card border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
             <div className="flex items-center gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand text-2xl font-bold text-white shadow-xl shadow-[#0f2d52]/20">
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand text-2xl font-bold text-white shadow-xl shadow-brand/20">
                 {currentUser?.initials || currentUser?.name?.[0] || 'S'}
               </div>
               <div className="space-y-1">

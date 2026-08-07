@@ -135,7 +135,7 @@ function MeetingsPage() {
               <button
                 type="button"
                 onClick={() => setIsScheduleModalOpen(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-brand-hover"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(15,45,82,0.18)] transition hover:bg-brand-hover cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
                 Create Meeting
@@ -157,7 +157,7 @@ function MeetingsPage() {
           {meetingsQuery.isLoading ? (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="animate-pulse rounded-card border border-slate-200 bg-white p-6 shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+                <div key={i} className="animate-pulse rounded-card border border-slate-200 bg-white p-6 shadow-card">
                   <Skeleton className="mb-3 h-4 w-20" />
                   <Skeleton className="mb-2 h-6 w-40" />
                   <Skeleton className="mb-4 h-3 w-32" />
@@ -175,7 +175,7 @@ function MeetingsPage() {
             />
           ) : filteredMeetings.length === 0 ? (
             <div className="grid gap-5 xl:grid-cols-3">
-              <div className="xl:col-span-2 rounded-card border border-slate-200 bg-white px-6 py-10 text-center shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+              <div className="xl:col-span-2 rounded-card border border-slate-200 bg-white px-6 py-10 text-center shadow-card">
                 <p className="text-lg font-semibold text-brand">
                   No meetings found for {activeTab.toLowerCase()}.
                 </p>
