@@ -300,3 +300,8 @@ export async function importStewards(file: File) {
   const { data } = await api.post('/users/import', formData)
   return data as ImportResult
 }
+
+export async function resetUserPassword(id: string) {
+  const { data } = await api.post(`/users/${id}/reset-password`)
+  return data
+}
