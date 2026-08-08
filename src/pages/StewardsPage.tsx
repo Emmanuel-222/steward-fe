@@ -17,6 +17,7 @@ import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import useUpdateStewardMutation from '../features/stewards/hooks/useUpdateStewardMutation'
 import useAuth from '../hooks/useAuth'
 import useMeQuery from '../features/auth/hooks/useMeQuery'
+import { resetUserPassword } from '../features/stewards/api'
 import { useToast } from '../hooks/useToast'
 import type { PaginationData } from '../types'
 import type {
@@ -168,6 +169,20 @@ function StewardsPage() {
     setIsEditModalOpen(true)
   }
 
+  const handleResetPassword = async (steward: Steward | null) => {
+    if (!steward) return
+
+    try {
+      await resetUserPassword(steward.id)
+      showToast(
+        'Password reset \u2014 the steward must set a new one on next login',
+        'success',
+      )
+    } catch {
+      showToast('Failed to reset password', 'error')
+    }
+  }
+
   const handleDeleteSteward = (steward: Steward) => {
     setModalStewardId(steward.id)
     setIsDeleteModalOpen(true)
@@ -295,6 +310,7 @@ function StewardsPage() {
         open={isEditModalOpen}
         onSubmit={handleUpdateSteward}
         isSubmitting={updateStewardMutation.isPending}
+        onResetPassword={() => handleResetPassword(modalSteward)}
         onClose={() => {
           setIsEditModalOpen(false)
           setModalStewardId(null)

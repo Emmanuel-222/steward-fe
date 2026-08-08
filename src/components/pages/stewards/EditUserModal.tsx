@@ -14,6 +14,7 @@ type EditUserModalProps = {
   onClose: () => void
   onSubmit: (values: UpdateStewardValues) => Promise<void>
   isSubmitting: boolean
+  onResetPassword?: () => Promise<void>
 }
 
 function EditUserModal({
@@ -22,6 +23,7 @@ function EditUserModal({
   onClose,
   onSubmit,
   isSubmitting,
+  onResetPassword,
 }: EditUserModalProps) {
   const { mounted, phase } = useAnimatedMount(open)
   const [serverError, setServerError] = useState('')
@@ -228,6 +230,18 @@ function EditUserModal({
           </div>
 
           <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-end">
+            {onResetPassword && (
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!window.confirm('Reset this user to the default password? They will need to set a new one on next login.')) return
+                  await onResetPassword()
+                }}
+                className="w-full rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-100 sm:w-auto"
+              >
+                Reset to default password
+              </button>
+            )}
             <button
               type="button"
               onClick={onClose}

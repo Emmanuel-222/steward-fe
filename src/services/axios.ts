@@ -45,6 +45,9 @@ async function refreshAccessToken(): Promise<string | null> {
     const result = data.data ?? data
     localStorage.setItem('token', result.token)
     localStorage.setItem('refreshToken', result.refreshToken)
+    if (result.user) {
+      localStorage.setItem('user', JSON.stringify(result.user))
+    }
     return result.token
   } catch {
     localStorage.clear()

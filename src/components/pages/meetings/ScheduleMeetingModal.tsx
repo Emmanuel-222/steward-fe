@@ -335,14 +335,14 @@ function ScheduleMeetingModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-red-500 hover:text-white cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70"
+              className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
             >
               {isSubmitting
                 ? mode === 'create'
