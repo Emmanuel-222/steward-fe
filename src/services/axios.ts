@@ -1,13 +1,15 @@
 import axios from 'axios'
+import { clearAccessToken, getAccessToken, setAccessToken } from './tokenStore'
 
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_BASE_URL ??
     'https://steward-api-nlga.onrender.com',
+  withCredentials: true,
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
+  const token = getAccessToken()
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -33,25 +35,20 @@ function processQueue(error: unknown, token: string | null = null) {
   failedQueue = []
 }
 
-async function refreshAccessToken(): Promise<string | null> {
-  const refreshToken = localStorage.getItem('refreshToken')
-  if (!refreshToken) return null
-
+export async function refreshAccessToken(): Promise<string | null> {
   try {
     const { data } = await axios.post(
       `${api.defaults.baseURL}/auth/refresh`,
-      { refreshToken },
+      {},
+      { withCredentials: true },
     )
     const result = data.data ?? data
-    localStorage.setItem('token', result.token)
-    localStorage.setItem('refreshToken', result.refreshToken)
+    setAccessToken(result.token)
     if (result.user) {
       localStorage.setItem('user', JSON.stringify(result.user))
     }
     return result.token
   } catch {
-    localStorage.clear()
-    window.location.href = '/'
     return null
   }
 }
@@ -94,6 +91,9 @@ api.interceptors.response.use(
         return api(originalRequest)
       }
       processQueue(new Error('Refresh failed'))
+      clearAccessToken()
+      localStorage.clear()
+      window.location.href = '/'
       return Promise.reject(error)
     } catch (refreshError) {
       processQueue(refreshError)
