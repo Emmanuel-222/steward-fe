@@ -2,11 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { ChevronDown, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { stewardRoleOptions, updateStewardSchema } from '../../../features/stewards/schema'
 import type { Steward, CreateStewardValues, UpdateStewardValues } from '../../../features/stewards/types'
 import { DEPARTMENTS } from '../../../constants/departments'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
+import PhoneInput, { toE164Phone } from '../../ui/PhoneInput'
 
 type EditUserModalProps = {
   steward: Steward | null
@@ -32,6 +33,7 @@ function EditUserModal({
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<UpdateStewardValues>({
     resolver: zodResolver(updateStewardSchema),
@@ -45,7 +47,7 @@ function EditUserModal({
     reset({
       name: steward.name,
       email: steward.email,
-      phone: steward.phone === 'N/A' ? '' : steward.phone,
+      phone: steward.phone === 'N/A' ? '' : toE164Phone(steward.phone),
       department: steward.department as CreateStewardValues['department'],
       role: steward.role as CreateStewardValues['role'],
       birthday: steward.birthday ?? '',
@@ -160,10 +162,16 @@ function EditUserModal({
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Phone Number
               </span>
-              <input
-                type="tel"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand"
-                {...register('phone')}
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                  <PhoneInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                  />
+                )}
               />
               {errors.phone ? (
                 <p className="text-sm text-rose-600">{errors.phone.message}</p>

@@ -34,10 +34,11 @@ function buildTemplateCsv() {
     const email = `${departmentSlug(department)}@example.com`
     const phone = `+2348012345${String(index + 1).padStart(3, '0')}`
     const birthday = index % 2 === 0 ? '25/12/1995' : ''
-    return [SAMPLE_NAMES[index], email, phone, department, birthday].join(',')
+    const role = index === 0 ? 'Leader' : index === 1 ? 'Pastor' : ''
+    return [SAMPLE_NAMES[index], email, phone, department, birthday, role].join(',')
   })
 
-  return ['fullName,email,phone,department,birthday', ...rows].join('\n')
+  return ['fullName,email,phone,department,birthday,role', ...rows].join('\n')
 }
 
 function downloadTemplate() {
@@ -164,7 +165,7 @@ function ImportStewardsModal({
         {status === 'done' && result ? (
           <div className="mt-5 space-y-4 sm:mt-6">
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              {result.imported} steward(s) imported successfully
+              {result.imported} user(s) imported successfully
               {result.skipped > 0 ? `, ${result.skipped} row(s) skipped` : ''}.
             </div>
             <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">

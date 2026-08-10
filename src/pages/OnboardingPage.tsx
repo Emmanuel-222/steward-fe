@@ -5,6 +5,7 @@ import useAuth from '../hooks/useAuth'
 import { useToast } from '../hooks/useToast'
 import useSendVerificationCode from '../features/auth/hooks/useSendVerificationCode'
 import useCompleteOnboarding from '../features/auth/hooks/useCompleteOnboarding'
+import PasswordRequirements, { PASSWORD_POLICY_ERROR, PASSWORD_POLICY_REGEX } from '../components/ui/PasswordRequirements'
 
 function OnboardingPage() {
   const { isAuthenticated, user } = useAuth()
@@ -55,8 +56,8 @@ function OnboardingPage() {
       setError('Enter the 6-digit code from your email.')
       return
     }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.')
+    if (!PASSWORD_POLICY_REGEX.test(password)) {
+      setError(PASSWORD_POLICY_ERROR)
       return
     }
     if (password.toLowerCase() === 'steward@123') {
@@ -164,6 +165,7 @@ function OnboardingPage() {
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
+            <PasswordRequirements password={password} />
             <div className="relative">
               <input
                 type={showConfirm ? 'text' : 'password'}
