@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 import { login } from '../api'
+import { setAccessToken } from '../../../services/tokenStore'
 
 function useLoginMutation() {
   return useMutation({
     mutationFn: login,
     onSuccess: (response) => {
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('refreshToken', response.refreshToken)
+      setAccessToken(response.token)
       if (response.user) {
         localStorage.setItem('user', JSON.stringify(response.user))
       }

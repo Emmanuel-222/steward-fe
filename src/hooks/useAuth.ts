@@ -1,4 +1,7 @@
 import { useNavigate } from 'react-router-dom'
+import { getAccessToken, setAccessToken } from '../services/tokenStore'
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://steward-api-nlga.onrender.com'
 
 function isTokenExpired(token: string): boolean {
   try {
@@ -10,7 +13,7 @@ function isTokenExpired(token: string): boolean {
 }
 
 function useAuth() {
-  const rawToken = localStorage.getItem('token')
+  const rawToken = getAccessToken()
   const userJson = localStorage.getItem('user')
 
   let token = rawToken
@@ -20,13 +23,18 @@ function useAuth() {
   if (token && !isTokenExpired(token)) {
     isAuthenticated = true
   } else if (token) {
-    localStorage.clear()
+    setAccessToken(null)
     token = null
     user = null
   }
 
   const navigate = useNavigate()
   const logout = () => {
+    void fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    }).catch(() => {})
+    setAccessToken(null)
     localStorage.clear()
     navigate('/')
   }

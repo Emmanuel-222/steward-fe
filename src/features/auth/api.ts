@@ -16,8 +16,8 @@ export async function getMe() {
   return data
 }
 
-export async function refresh(refreshToken: string) {
-  const { data } = await api.post<AuthResponse>('/auth/refresh', { refreshToken })
+export async function refresh() {
+  const { data } = await api.post<AuthResponse>('/auth/refresh')
   return data
 }
 
