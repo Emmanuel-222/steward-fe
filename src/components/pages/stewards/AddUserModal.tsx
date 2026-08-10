@@ -2,11 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { ChevronDown, Eye, EyeOff, Info, X } from 'lucide-react'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { createStewardSchema, stewardRoleOptions } from '../../../features/stewards/schema'
 import type { CreateStewardValues } from '../../../features/stewards/types'
 import { DEPARTMENTS } from '../../../constants/departments'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
+import PhoneInput from '../../ui/PhoneInput'
+import PasswordRequirements from '../../ui/PasswordRequirements'
 
 type AddUserModalProps = {
   open: boolean
@@ -29,6 +31,8 @@ function AddUserModal({
     register,
     handleSubmit,
     reset,
+    control,
+    watch,
     formState: { errors },
   } = useForm<CreateStewardValues>({
     resolver: zodResolver(createStewardSchema),
@@ -141,11 +145,16 @@ function AddUserModal({
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Phone Number
               </span>
-              <input
-                type="tel"
-                placeholder="+1 (555) 000-0000"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
-                {...register('phone')}
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                  <PhoneInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                  />
+                )}
               />
               {errors.phone ? (
                 <p className="text-sm text-rose-600">{errors.phone.message}</p>
@@ -234,6 +243,7 @@ function AddUserModal({
                   )}
                 </button>
               </div>
+              <PasswordRequirements password={watch('password')} />
               {errors.password ? (
                 <p className="text-sm text-rose-600">{errors.password.message}</p>
               ) : null}
