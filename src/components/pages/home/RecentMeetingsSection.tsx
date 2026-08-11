@@ -55,9 +55,9 @@ function RecentMeetingsSection({
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#eff4fb] text-brand">
                     <CalendarDays className="h-5 w-5" />
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-800">{meeting.title}</h4>
-                    <p className="text-sm text-slate-500">{meeting.date} · {meeting.location}</p>
+                  <div className="min-w-0">
+                    <h4 className="truncate font-semibold text-slate-800">{meeting.title}</h4>
+                    <p className="truncate text-sm text-slate-500">{meeting.date} · {meeting.location}</p>
                   </div>
                 </div>
 

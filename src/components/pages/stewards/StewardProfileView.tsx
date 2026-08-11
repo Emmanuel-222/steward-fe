@@ -262,7 +262,7 @@ function StewardProfileView({
           </div>
         ) : (
           <>
-            <div className="space-y-3 p-4 sm:hidden">
+            <div className="space-y-3 p-4 md:hidden">
               {attendanceHistory.map((entry) => (
                 <article
                   key={entry.id}
@@ -288,9 +288,9 @@ function StewardProfileView({
               ))}
             </div>
 
-            <div className="hidden overflow-x-auto sm:block">
+            <div className="hidden overflow-x-auto md:block">
               <div className="min-w-[680px]">
-                <div className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 bg-[#f8fbff] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:px-6">
+                <div className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 bg-[#f8fbff] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400 md:px-6">
                   <p>Date</p>
                   <p>Meeting Type</p>
                   <p>Status</p>
@@ -301,7 +301,7 @@ function StewardProfileView({
                   {attendanceHistory.map((entry) => (
                     <div
                       key={entry.id}
-                      className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 px-4 py-4 text-sm text-slate-600 sm:px-6"
+                      className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 px-4 py-4 text-sm text-slate-600 md:px-6"
                     >
                       <p>{entry.date}</p>
                       <p>{entry.meeting}</p>

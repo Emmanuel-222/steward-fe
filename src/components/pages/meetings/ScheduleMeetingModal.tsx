@@ -158,11 +158,12 @@ function ScheduleMeetingModal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 px-4 py-4 backdrop-blur-[2px] sm:px-6 sm:py-6 ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}
+      className={`fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px] ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}
       onClick={onClose}
     >
+      <div className="flex min-h-full items-center justify-center px-4 py-4 sm:px-6 sm:py-6">
       <div
-        className={`mx-auto my-4 w-full max-w-md rounded-2xl bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:my-8 sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
+        className={`max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -186,10 +187,10 @@ function ScheduleMeetingModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close schedule meeting dialog"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
@@ -354,6 +355,7 @@ function ScheduleMeetingModal({
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   )

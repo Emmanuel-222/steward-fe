@@ -151,7 +151,7 @@ function AttendanceRegistrySection({
                    setFocusedIndex(-1)
                 }}
                 className={[
-                  'rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-200',
+                  'rounded-xl px-5 py-3 text-sm font-bold transition-all duration-200',
                   activeFilter === filter
                     ? 'bg-brand text-white shadow-[0_10px_25px_rgba(15,45,82,0.15)]'
                     : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300 hover:text-slate-800',
@@ -197,7 +197,7 @@ function AttendanceRegistrySection({
       <div className="rounded-4xl border border-slate-200 bg-white p-2 shadow-[0_20px_70px_rgba(15,23,42,0.04)]">
         <div className={`hidden lg:grid ${!isReadOnly ? 'lg:grid-cols-[auto_2fr_1.5fr_auto]' : 'lg:grid-cols-[2fr_1.5fr_auto]'} gap-4 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 border-b border-slate-50`}>
           {!isReadOnly && (
-            <button onClick={toggleSelectAll} aria-label={isAllSelected ? 'Deselect all' : 'Select all'} className="p-1 text-left">
+            <button onClick={toggleSelectAll} aria-label={isAllSelected ? 'Deselect all' : 'Select all'} className="p-2.5 text-left">
               <div className={`h-4 w-4 rounded border-2 transition ${isAllSelected ? 'bg-brand border-brand' : 'border-slate-300 hover:border-slate-400'}`}>
                 {isAllSelected && <Check className="h-3 w-3 text-white stroke-4" />}
               </div>
@@ -250,7 +250,7 @@ function AttendanceRegistrySection({
                       <button
                         onClick={() => toggleSelected(entry.steward.id)}
                         aria-label={selectedIds.has(entry.steward.id) ? 'Deselect' : 'Select'}
-                        className="p-1 -ml-1"
+                        className="p-2.5 -ml-2.5"
                       >
                         <div className={`h-4 w-4 rounded border-2 transition ${selectedIds.has(entry.steward.id) ? 'bg-brand border-brand' : 'border-slate-300 hover:border-slate-400'}`}>
                           {selectedIds.has(entry.steward.id) && <Check className="h-3 w-3 text-white stroke-4" />}
@@ -345,7 +345,7 @@ function AttendanceRegistrySection({
                                  type="button"
                                  disabled={isMarking || isAbsent || entry.status === 'Excused'}
                                  onClick={() => onMarkPresent(entry.steward.id)}
-                                 className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-[10px] font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
+                                 className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-700 border border-emerald-200 transition hover:bg-emerald-500 hover:text-white hover:border-emerald-600 disabled:opacity-50"
                                >
                                  {isMarking ? (
                                    <Loader2 className="h-3 w-3 animate-spin" />
@@ -360,7 +360,7 @@ function AttendanceRegistrySection({
                                  onClick={() => onMarkAbsent?.(entry.steward.id)}
                                  title="Mark as Absent"
                                  aria-label="Mark as absent"
-                                 className="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
+                                 className="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-500 hover:text-white transition disabled:opacity-50"
                                >
                                   <Check className="h-3.5 w-3.5 rotate-45" />
                                </button>
@@ -418,27 +418,37 @@ function AttendanceRegistrySection({
       </div>
       
       {!isReadOnly && selectedIds.size > 0 && (
-        <div className="sticky bottom-4 z-10 mx-auto flex w-fit items-center gap-4 rounded-3xl bg-brand px-6 py-3 shadow-[0_15px_50px_rgba(15,45,82,0.3)]">
-          <span className="font-sans text-xs font-bold text-white/80 whitespace-nowrap">{selectedIds.size} selected</span>
-          <div className="h-4 w-px bg-white/20" />
-          <button
-            onClick={() => bulkMark('present')}
-            className="rounded-xl bg-emerald-500 px-4 py-2 text-[10px] font-bold text-white transition hover:bg-emerald-400 active:scale-95"
-          >
-            Mark Present
-          </button>
-          <button
-            onClick={() => bulkMark('absent')}
-            className="rounded-xl bg-rose-500 px-4 py-2 text-[10px] font-bold text-white transition hover:bg-rose-400 active:scale-95"
-          >
-            Mark Absent
-          </button>
-          <button
-            onClick={() => setSelectedIds(new Set())}
-            className="rounded-xl bg-white/10 px-3 py-2 text-[10px] font-bold text-white/70 transition hover:bg-white/20"
-          >
-            Cancel
-          </button>
+        <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-3xl bg-brand px-5 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-4 shadow-[0_-15px_50px_rgba(15,45,82,0.3)] animate-slide-down sm:sticky sm:inset-x-auto sm:bottom-4 sm:z-10 sm:mx-auto sm:flex sm:w-fit sm:items-center sm:gap-4 sm:rounded-3xl sm:px-6 sm:py-3 sm:pb-3 sm:pt-3 sm:shadow-[0_15px_50px_rgba(15,45,82,0.3)] sm:animate-none">
+          <div className="flex items-center justify-between sm:contents">
+            <span className="font-sans text-xs font-bold text-white/80 whitespace-nowrap">{selectedIds.size} selected</span>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              className="rounded-xl bg-white/10 px-3 py-2 text-xs font-bold text-white/70 transition hover:bg-white/20 sm:hidden"
+            >
+              Cancel
+            </button>
+            <div className="hidden h-4 w-px bg-white/20 sm:block" />
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2 sm:mt-0">
+            <button
+              onClick={() => bulkMark('present')}
+              className="flex-1 min-w-[110px] rounded-xl bg-emerald-500 px-4 py-3 text-xs font-bold text-white transition hover:bg-emerald-400 active:scale-95 sm:flex-none sm:px-4 sm:py-2 sm:text-[10px]"
+            >
+              Mark Present
+            </button>
+            <button
+              onClick={() => bulkMark('absent')}
+              className="flex-1 min-w-[110px] rounded-xl bg-rose-500 px-4 py-3 text-xs font-bold text-white transition hover:bg-rose-400 active:scale-95 sm:flex-none sm:px-4 sm:py-2 sm:text-[10px]"
+            >
+              Mark Absent
+            </button>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              className="hidden rounded-xl bg-white/10 px-3 py-2 text-[10px] font-bold text-white/70 transition hover:bg-white/20 sm:block"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
       <div className="pt-4 flex items-center justify-center">

@@ -152,7 +152,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 sm:p-1"
+            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 sm:p-1"
             aria-label="Close search"
           >
             <X className="h-5 w-5 sm:h-4 sm:w-4" />

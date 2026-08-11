@@ -54,7 +54,7 @@ function ActionMenu({ steward, onView, onEdit, onDelete, isAdmin }: {
         ref={buttonRef}
         type="button"
         onClick={handleToggle}
-        className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-brand"
+        className="rounded-xl p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-brand"
         aria-label="Actions"
       >
         <EllipsisVertical className="h-4 w-4" />
@@ -62,7 +62,7 @@ function ActionMenu({ steward, onView, onEdit, onDelete, isAdmin }: {
 
       {open && (
         <div
-          className={`absolute right-0 z-10 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.12)] sm:right-0 sm:top-full sm:bottom-auto sm:mb-0 sm:mt-1 animate-slide-down ${openUp ? 'bottom-full mb-2' : 'top-full mt-1'}`}
+          className={`absolute right-0 z-10 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.12)] md:right-0 md:top-full md:bottom-auto md:mb-0 md:mt-1 animate-slide-down ${openUp ? 'bottom-full mb-2' : 'top-full mt-1'}`}
         >
           <button
             type="button"
@@ -112,7 +112,7 @@ function StewardsTableSection({
   return (
     <section className="rounded-card border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
       <div className="overflow-x-auto">
-        <div className="hidden min-w-[640px] grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:grid">
+        <div className="hidden min-w-[680px] grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 md:grid">
           <p>Full Name</p>
           <p>Department</p>
           <p>Role</p>
@@ -122,7 +122,7 @@ function StewardsTableSection({
         </div>
 
         {isLoading ? (
-          <div className="divide-y divide-slate-100 sm:min-w-[640px]">
+          <div className="divide-y divide-slate-100 md:min-w-[680px]">
             <SkeletonRow cols={6} />
             <SkeletonRow cols={6} />
             <SkeletonRow cols={6} />
@@ -132,19 +132,19 @@ function StewardsTableSection({
         ) : errorMessage ? (
           <ErrorState message={errorMessage} onRetry={onRetry} />
         ) : stewards.length === 0 ? (
-          <div className="px-4 py-10 text-center text-sm text-slate-500 sm:px-6">
+          <div className="px-4 py-10 text-center text-sm text-slate-500 md:px-6">
             No stewards matched your current filters.
           </div>
         ) : (
-          <div className="divide-y divide-slate-100 sm:min-w-[640px]">
+          <div className="divide-y divide-slate-100 md:min-w-[680px]">
             {stewards.map((steward) => (
               <article
                 key={steward.id}
-                className="relative flex flex-col gap-3 px-4 py-5 sm:grid sm:px-6 sm:grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] sm:items-center sm:gap-4"
+                className="relative flex flex-col gap-3 px-4 py-5 md:grid md:px-6 md:grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] md:items-center md:gap-4"
               >
                 {/* ---- Mobile layout ---- */}
 
-                <div className="flex items-center gap-4 min-w-0 sm:hidden">
+                <div className="flex items-center gap-4 min-w-0 md:hidden">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dfeafa] text-sm font-semibold text-brand">
                     {steward.initials}
                   </div>
@@ -156,7 +156,7 @@ function StewardsTableSection({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 sm:hidden">
+                <div className="flex items-center gap-2 md:hidden">
                   <span className="inline-flex rounded-full bg-[#eaf1ff] px-3 py-1 text-xs font-medium text-[#5471a8]">
                     {steward.department}
                   </span>
@@ -167,7 +167,7 @@ function StewardsTableSection({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-slate-600 sm:hidden">
+                <div className="flex items-center gap-2 text-sm text-slate-600 md:hidden">
                   <span>{steward.phone}</span>
                   <span className="text-slate-300">·</span>
                   <span>{steward.dateAdded}</span>
@@ -175,7 +175,7 @@ function StewardsTableSection({
 
                 {/* ---- Desktop layout ---- */}
 
-                <div className="hidden sm:flex sm:items-center sm:gap-4 sm:min-w-0">
+                <div className="hidden md:flex md:items-center md:gap-4 md:min-w-0">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dfeafa] text-sm font-semibold text-brand">
                     {steward.initials}
                   </div>
@@ -187,13 +187,13 @@ function StewardsTableSection({
                   </div>
                 </div>
 
-                <div className="hidden sm:block">
+                <div className="hidden md:block">
                   <span className="inline-flex rounded-full bg-[#eaf1ff] px-3 py-1 text-xs font-medium text-[#5471a8]">
                     {steward.department}
                   </span>
                 </div>
 
-                <div className="hidden sm:block">
+                <div className="hidden md:block">
                   <span
                     className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${steward.roleTone}`}
                   >
@@ -201,11 +201,11 @@ function StewardsTableSection({
                   </span>
                 </div>
 
-                <p className="hidden sm:block sm:text-sm sm:text-slate-600">{steward.phone}</p>
-                <p className="hidden sm:block sm:text-sm sm:text-slate-600">{steward.dateAdded}</p>
+                <p className="hidden md:block md:text-sm md:text-slate-600">{steward.phone}</p>
+                <p className="hidden md:block md:text-sm md:text-slate-600">{steward.dateAdded}</p>
 
                 {/* ActionMenu - absolute on mobile, grid on desktop */}
-                <div className="absolute right-4 top-4 sm:static sm:col-start-6">
+                <div className="absolute right-4 top-4 md:static md:col-start-6">
                   <ActionMenu
                     steward={steward}
                     onView={onView}
@@ -220,7 +220,7 @@ function StewardsTableSection({
         )}
       </div>
 
-      <div className="border-t border-slate-100 px-4 py-5 text-sm text-slate-500 sm:px-6">
+      <div className="border-t border-slate-100 px-4 py-5 text-sm text-slate-500 md:px-6">
         <p>
           {stewards.length === 0
             ? 'No entries to display'

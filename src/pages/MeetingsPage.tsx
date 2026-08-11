@@ -274,11 +274,12 @@ function MeetingsPage() {
 
       {deletingMeeting ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4 py-6 backdrop-blur-[2px]"
+          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
           onClick={() => setDeletingMeeting(null)}
         >
+          <div className="flex min-h-full items-center justify-center px-4 py-6">
           <div
-            className="w-full max-w-md rounded-2xl bg-white p-5 text-center shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:p-6"
+            className="max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-5 text-center shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:p-6"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -316,6 +317,7 @@ function MeetingsPage() {
               </button>
             </div>
           </div>
+        </div>
         </div>
       ) : null}
     </>
