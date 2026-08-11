@@ -1,9 +1,9 @@
 function LoginShowcase() {
   return (
-    <section className={`flex flex-col justify-between bg-[#0d2f57] p-8 text-white sm:p-10 animate-stagger-fade`}>
+    <section className={`flex flex-col justify-between bg-brand p-8 text-white sm:p-10 animate-stagger-fade`}>
       <div className="space-y-10">
-        <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#0d2f57]">
+        <div className="inline-flex items-center gap-3 rounded-full border border-signature/30 bg-white/5 px-4 py-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-signature text-brand">
             <svg
               aria-hidden="true"
               className="h-4 w-4"
@@ -26,8 +26,8 @@ function LoginShowcase() {
         </div>
 
         <div className="max-w-xs space-y-5">
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight">
-            The Digital Registrar.
+          <h1 className="font-serif text-4xl font-semibold leading-tight tracking-tight">
+            The Digital <span className="text-signature">Registrar.</span>
           </h1>
           <p className="text-sm leading-7 text-slate-300">
             Precision attendance management for the modern ministry. Secure,
@@ -36,9 +36,9 @@ function LoginShowcase() {
         </div>
       </div>
 
-      <div className="mt-12 rounded-2xl border border-white/10 bg-white/6 p-4 backdrop-blur">
+      <div className="mt-12 rounded-2xl border border-signature/40 bg-white/[0.04] p-4 backdrop-blur">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-[#0d2f57]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-signature/40 bg-signature/15 text-signature">
             <svg
               aria-hidden="true"
               className="h-5 w-5"
@@ -55,7 +55,7 @@ function LoginShowcase() {
           </div>
           <div>
             <p className="text-sm font-semibold text-white">Verified Access Only</p>
-            <p className="text-xs text-slate-300">System ID 836-024-ALPHA</p>
+            <p className="text-xs text-signature/90">System ID 836-024-ALPHA</p>
           </div>
         </div>
       </div>
