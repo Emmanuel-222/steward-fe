@@ -418,27 +418,37 @@ function AttendanceRegistrySection({
       </div>
       
       {!isReadOnly && selectedIds.size > 0 && (
-        <div className="sticky bottom-4 z-10 mx-auto flex w-fit items-center gap-4 rounded-3xl bg-brand px-6 py-3 shadow-[0_15px_50px_rgba(15,45,82,0.3)]">
-          <span className="font-sans text-xs font-bold text-white/80 whitespace-nowrap">{selectedIds.size} selected</span>
-          <div className="h-4 w-px bg-white/20" />
-          <button
-            onClick={() => bulkMark('present')}
-            className="rounded-xl bg-emerald-500 px-4 py-2 text-[10px] font-bold text-white transition hover:bg-emerald-400 active:scale-95"
-          >
-            Mark Present
-          </button>
-          <button
-            onClick={() => bulkMark('absent')}
-            className="rounded-xl bg-rose-500 px-4 py-2 text-[10px] font-bold text-white transition hover:bg-rose-400 active:scale-95"
-          >
-            Mark Absent
-          </button>
-          <button
-            onClick={() => setSelectedIds(new Set())}
-            className="rounded-xl bg-white/10 px-3 py-2 text-[10px] font-bold text-white/70 transition hover:bg-white/20"
-          >
-            Cancel
-          </button>
+        <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-3xl bg-brand px-5 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-4 shadow-[0_-15px_50px_rgba(15,45,82,0.3)] animate-slide-down sm:sticky sm:inset-x-auto sm:bottom-4 sm:z-10 sm:mx-auto sm:flex sm:w-fit sm:items-center sm:gap-4 sm:rounded-3xl sm:px-6 sm:py-3 sm:pb-3 sm:pt-3 sm:shadow-[0_15px_50px_rgba(15,45,82,0.3)] sm:animate-none">
+          <div className="flex items-center justify-between sm:contents">
+            <span className="font-sans text-xs font-bold text-white/80 whitespace-nowrap">{selectedIds.size} selected</span>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              className="rounded-xl bg-white/10 px-3 py-2 text-xs font-bold text-white/70 transition hover:bg-white/20 sm:hidden"
+            >
+              Cancel
+            </button>
+            <div className="hidden h-4 w-px bg-white/20 sm:block" />
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2 sm:mt-0">
+            <button
+              onClick={() => bulkMark('present')}
+              className="flex-1 min-w-[110px] rounded-xl bg-emerald-500 px-4 py-3 text-xs font-bold text-white transition hover:bg-emerald-400 active:scale-95 sm:flex-none sm:px-4 sm:py-2 sm:text-[10px]"
+            >
+              Mark Present
+            </button>
+            <button
+              onClick={() => bulkMark('absent')}
+              className="flex-1 min-w-[110px] rounded-xl bg-rose-500 px-4 py-3 text-xs font-bold text-white transition hover:bg-rose-400 active:scale-95 sm:flex-none sm:px-4 sm:py-2 sm:text-[10px]"
+            >
+              Mark Absent
+            </button>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              className="hidden rounded-xl bg-white/10 px-3 py-2 text-[10px] font-bold text-white/70 transition hover:bg-white/20 sm:block"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
       <div className="pt-4 flex items-center justify-center">
