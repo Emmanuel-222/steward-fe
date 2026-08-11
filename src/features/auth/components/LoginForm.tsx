@@ -112,12 +112,16 @@ function LoginForm() {
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="space-y-2 animate-stagger-fade" style={{ animationDelay: '0ms' }}>
-        <h2 className="text-[2rem] font-semibold tracking-tight text-slate-900">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-signature">
+          Attendance Management
+        </p>
+        <h2 className="font-serif text-[2rem] font-semibold tracking-tight text-brand">
           Welcome Back
         </h2>
         <p className="text-sm text-slate-500">
           Please enter your registrar credentials to continue.
         </p>
+        <div className="h-px w-12 bg-signature" />
       </div>
 
       <form className="mt-8 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -153,13 +157,11 @@ function LoginForm() {
         ) : null}
 
         <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '200ms' }}>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Email address
-            </span>
-          </div>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+            Email address
+          </span>
 
-          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 transition focus-within:border-slate-400 focus-within:bg-white">
+          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-signature/30">
             <svg
               aria-hidden="true"
               className="h-4 w-4 text-slate-400"
@@ -174,7 +176,7 @@ function LoginForm() {
             <input
               className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
               type="email"
-              placeholder="admin@stewardregistry.org"
+              placeholder="you@example.com"
               {...register('email')}
             />
           </div>
@@ -185,19 +187,11 @@ function LoginForm() {
         </label>
 
         <label className="block space-y-2 animate-stagger-fade" style={{ animationDelay: '400ms' }}>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Password
-            </span>
-            <button
-              className="text-xs font-medium text-slate-500 transition hover:text-slate-700"
-              type="button"
-            >
-              Forgot?
-            </button>
-          </div>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+            Password
+          </span>
 
-          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 transition focus-within:border-slate-400 focus-within:bg-white">
+          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-signature/30">
             <svg
               aria-hidden="true"
               className="h-4 w-4 text-slate-400"
@@ -237,7 +231,7 @@ function LoginForm() {
 
         <div className="animate-stagger-fade" style={{ animationDelay: '600ms' }}>
           <button
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d2f57] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#133a6a] disabled:cursor-not-allowed disabled:opacity-70"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70"
             type="submit"
             disabled={loginMutation.isPending || isRateLimited}
           >
@@ -269,7 +263,7 @@ function LoginForm() {
       </form>
 
       <div className="mt-8 flex flex-col items-start justify-between gap-2 text-[11px] text-slate-400 sm:flex-row sm:items-center">
-        <span>&copy; 2024 Steward Attendance Management.</span>
+        <span>&copy; 2026 Steward Attendance Management.</span>
         <span>Privacy Policy &amp; Security Protocol</span>
       </div>
     </div>
