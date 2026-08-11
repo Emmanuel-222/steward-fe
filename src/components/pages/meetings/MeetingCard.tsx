@@ -40,8 +40,8 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
       </div>
 
       <div className="mt-5 space-y-2">
-        <h3 className="text-xl font-semibold text-brand">{meeting.title}</h3>
-        <p className="text-sm text-slate-500">{meeting.subtitle}</p>
+        <h3 className="truncate text-xl font-semibold text-brand">{meeting.title}</h3>
+        <p className="truncate text-sm text-slate-500">{meeting.subtitle}</p>
       </div>
 
       <div className="mt-6 space-y-3 text-sm text-slate-500">

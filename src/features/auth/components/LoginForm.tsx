@@ -268,7 +268,7 @@ function LoginForm() {
         </div>
       </form>
 
-      <div className="mt-8 flex items-center justify-between gap-4 text-[11px] text-slate-400">
+      <div className="mt-8 flex flex-col items-start justify-between gap-2 text-[11px] text-slate-400 sm:flex-row sm:items-center">
         <span>&copy; 2024 Steward Attendance Management.</span>
         <span>Privacy Policy &amp; Security Protocol</span>
       </div>
