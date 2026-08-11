@@ -11,18 +11,23 @@ A React-based attendance management platform for church stewards. Tracks steward
 - **API Layer**: TanStack React Query + Axios
 - **Forms**: React Hook Form + Zod
 - **Icons**: Lucide React
+- **QR Codes**: qrcode.react
+- **Fuzzy Search**: Fuse.js
+- **Toasts**: react-hot-toast
 
 ## Features
 
 - Role-based dashboards (Admin, Leader, Pastor, Steward)
 - Real-time attendance marking with optimistic UI updates
-- Bulk mark present/absent with multi-select
+- Bulk mark present/absent with multi-select (bottom-sheet actions on mobile)
 - Rush mode for high-volume check-in (keyboard navigation)
+- QR/barcode check-in codes for meetings (scan or enter a code)
 - Meeting lifecycle management (create, finalize, report)
 - Excuse request workflow (submit, approve, reject)
+- Bulk steward import from CSV (single-user or CSV via the Add New User menu)
 - Global search across stewards, departments, meetings, and pages
-- Rate-limited login with JWT + refresh token auth
-- Responsive design (mobile-first)
+- Rate-limited login: access token held in memory + rotating refresh token in an httpOnly cookie
+- Fully responsive, mobile-first UI (touch-target sizing, safe-area insets, fixed menus)
 
 ## Getting Started
 
@@ -50,6 +55,11 @@ VITE_API_BASE_URL=http://localhost:3000
 
 The production build uses `https://steward-api-nlga.onrender.com` as the default API base URL.
 
+## Live Sites
+
+- **Frontend**: <https://dc-attendance-gray.vercel.app>
+- **API**: <https://steward-api-nlga.onrender.com> (OpenAPI docs at `/api-docs`)
+
 ## Project Structure
 
 ```
@@ -60,6 +70,7 @@ src/
 │   ├── global-search/    # Global search overlay
 │   ├── pages/            # Page-specific components
 │   │   ├── attendance/
+│   │   ├── checkin/      # Meeting QR code and check-in flow
 │   │   ├── stewards/
 │   │   ├── meetings/
 │   │   └── login/
@@ -89,5 +100,5 @@ src/
 - Every page fetches its own data via TanStack Query hooks — no global state store
 - Attendance mutations use optimistic updates with rollback on error
 - The attendance page polls every 10 seconds for multi-user sync
-- Auth tokens are stored in localStorage with automatic refresh on 401
-- Stale tokens are detected on app load by decoding the JWT `exp` claim
+- The access token is held in memory only and is refreshed on 401 via a rotating httpOnly-cookie refresh token; the signed-in user profile is cached in localStorage
+- Stale in-memory tokens are detected on app load by decoding the JWT `exp` claim, and the session is restored via `GET /auth/me`
