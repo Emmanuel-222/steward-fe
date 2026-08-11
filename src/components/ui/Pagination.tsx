@@ -58,7 +58,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
           type="button"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
           aria-label="Previous page"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -66,7 +66,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
 
         {getPageNumbers(page, totalPages).map((p, i) =>
           p === 'ellipsis' ? (
-            <span key={`e-${i}`} className="flex h-9 w-9 items-center justify-center text-xs text-slate-400">
+            <span key={`e-${i}`} className="flex h-10 w-10 items-center justify-center text-xs text-slate-400">
               ...
             </span>
           ) : (
@@ -74,7 +74,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
               key={p}
               type="button"
               onClick={() => onPageChange(p)}
-              className={`flex h-9 w-9 items-center justify-center rounded-xl font-sans text-xs font-bold transition ${
+              className={`flex h-10 w-10 items-center justify-center rounded-xl font-sans text-xs font-bold transition ${
                 p === page
                   ? 'bg-white text-brand shadow-[0_4px_12px_rgba(15,45,82,0.08)]'
                   : 'text-slate-500 hover:bg-white/70 hover:text-brand'
@@ -91,7 +91,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
           type="button"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
           aria-label="Next page"
         >
           <ChevronRight className="h-4 w-4" />
