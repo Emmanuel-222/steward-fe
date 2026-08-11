@@ -39,12 +39,13 @@ function MeetingQR({ meeting }: MeetingQRProps) {
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 py-6 backdrop-blur-sm"
+          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/40 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
           ref={modalRef}
         >
+          <div className="flex min-h-full items-center justify-center px-4 py-6">
           <div
-            className="relative flex w-full max-w-sm flex-col items-center rounded-3xl bg-white px-8 pb-10 pt-9 shadow-[0_40px_120px_rgba(15,23,42,0.2)] animate-modal-enter"
+            className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col items-center overflow-y-auto rounded-3xl bg-white px-8 pb-10 pt-9 shadow-[0_40px_120px_rgba(15,23,42,0.2)] animate-modal-enter"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -53,10 +54,10 @@ function MeetingQR({ meeting }: MeetingQRProps) {
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute right-4 top-4 rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+              className="absolute right-4 top-4 rounded-xl p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
               aria-label="Close"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
 
             <h2 className="font-serif text-[20px] font-semibold text-brand">
@@ -65,7 +66,7 @@ function MeetingQR({ meeting }: MeetingQRProps) {
 
             <div className="mt-6 flex flex-col items-center gap-3">
               {qrQuery.isLoading ? (
-                <div className="flex h-64 w-64 items-center justify-center rounded-2xl bg-slate-50">
+                <div className="flex aspect-square w-full max-w-[240px] items-center justify-center rounded-2xl bg-slate-50">
                   <div className="h-7 w-7 animate-spin rounded-full border-2 border-brand/20 border-t-brand" />
                 </div>
               ) : qrQuery.data ? (
@@ -74,10 +75,11 @@ function MeetingQR({ meeting }: MeetingQRProps) {
                     value={qrQuery.data.url}
                     level="H"
                     size={240}
+                    className="h-auto w-full max-w-[240px]"
                   />
                 </div>
               ) : (
-                <div className="flex h-64 w-64 items-center justify-center rounded-2xl bg-slate-50 text-sm text-slate-400">
+                <div className="flex aspect-square w-full max-w-[240px] items-center justify-center rounded-2xl bg-slate-50 text-sm text-slate-400">
                   Failed to load
                 </div>
               )}
@@ -99,6 +101,7 @@ function MeetingQR({ meeting }: MeetingQRProps) {
               Stewards scan this QR at the entrance to sign in with their email.
             </p>
           </div>
+        </div>
         </div>
       )}
     </>
