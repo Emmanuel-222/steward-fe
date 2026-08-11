@@ -33,11 +33,12 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
   }
 
   return (
-    <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}>
-      <div className={`w-full max-w-md rounded-card bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.2)] ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}>
+    <div className={`fixed inset-0 z-[100] overflow-y-auto bg-slate-900/60 backdrop-blur-sm ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}>
+      <div className="flex min-h-full items-center justify-center p-4">
+      <div className={`max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-card bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.2)] ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-brand">Request Excuse</h3>
-          <button onClick={onClose} aria-label="Close excuse request dialog" className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition">
+          <button onClick={onClose} aria-label="Close excuse request dialog" className="p-2.5 rounded-xl hover:bg-slate-100 text-slate-400 transition">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -70,6 +71,7 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
             {submitMutation.isPending ? 'Submitting...' : 'Submit Request'}
           </button>
         </form>
+      </div>
       </div>
     </div>
   )

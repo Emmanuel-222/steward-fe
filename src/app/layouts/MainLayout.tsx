@@ -183,9 +183,9 @@ function MainLayout() {
   )
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-page-bg text-slate-900">
+    <div className="flex h-screen supports-[height:100dvh]:h-dvh flex-col overflow-hidden bg-page-bg text-slate-900">
       {/* Mobile Header */}
-      <header className="flex-none border-b border-slate-200 bg-sidebar-bg px-4 py-4 lg:hidden">
+      <header className="flex-none border-b border-slate-200 bg-sidebar-bg px-4 py-4 pt-[calc(env(safe-area-inset-top)+1rem)] lg:hidden">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold tracking-tight text-brand">
@@ -240,7 +240,7 @@ function MainLayout() {
         <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px]" onClick={closeMobileNav} />
         
         <aside 
-          className={`relative flex h-full w-[86%] max-w-[320px] flex-col bg-sidebar-bg shadow-[0_24px_60px_rgba(15,23,42,0.24)] transition-transform duration-300 ease-out ${
+          className={`relative flex h-full w-[86%] max-w-[320px] flex-col bg-sidebar-bg pb-[env(safe-area-inset-bottom)] shadow-[0_24px_60px_rgba(15,23,42,0.24)] transition-transform duration-300 ease-out ${
             isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >

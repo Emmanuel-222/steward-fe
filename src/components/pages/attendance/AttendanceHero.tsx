@@ -30,7 +30,7 @@ function AttendanceHero({
       <section className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-4xl font-bold tracking-tight text-brand">
+            <h2 className="break-words text-4xl font-bold tracking-tight text-brand">
               {meeting.title}
             </h2>
             <div className="flex items-center gap-2 rounded-full bg-[#eff4fb] px-3 py-1.5 border border-[#dbe6f5]">

@@ -264,7 +264,7 @@ function HomePage() {
                           ) : (
                             <button
                               onClick={() => setExcuseModalMeeting({ id: meeting.id, title: meeting.title || `${meeting.type} Meeting` })}
-                              className="shrink-0 rounded-xl bg-brand px-4 py-2 text-[10px] font-bold text-white shadow-sm hover:bg-brand-hover transition active:scale-95"
+                              className="shrink-0 rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-brand-hover transition active:scale-95"
                             >
                               Request Excuse
                             </button>

@@ -132,11 +132,12 @@ function ImportStewardsModal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/35 px-3 py-4 backdrop-blur-[2px] sm:px-4 sm:py-6 ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}
+      className={`fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px] ${phase === 'enter' ? 'animate-fade-in' : ''} ${phase === 'exit' ? 'animate-modal-exit' : ''}`}
       onClick={handleClose}
     >
+      <div className="flex min-h-full items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
       <div
-        className={`my-auto max-h-[calc(100vh-2rem)] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:max-h-[calc(100vh-3rem)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
+        className={`max-h-[calc(100vh-2rem)] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:max-h-[calc(100vh-3rem)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -155,10 +156,10 @@ function ImportStewardsModal({
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close import stewards dialog"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
@@ -294,6 +295,7 @@ function ImportStewardsModal({
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   )

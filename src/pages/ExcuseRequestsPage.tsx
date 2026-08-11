@@ -86,18 +86,20 @@ function ExcuseRequestsPage() {
                 <button
                   onClick={() => handleResolve(req.id, 'Approved')}
                   disabled={resolveMutation.isPending}
-                  className="p-2.5 rounded-xl text-emerald-600 hover:bg-emerald-50 transition active:scale-90 disabled:opacity-40"
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-xl p-2.5 text-emerald-600 hover:bg-emerald-50 transition active:scale-90 disabled:opacity-40"
                   title="Approve"
                 >
-                  <Check className="h-4 w-4 stroke-[3]" />
+                  <Check className="h-4 w-4 shrink-0 stroke-[3]" />
+                  <span className="hidden text-xs font-bold sm:inline">Approve</span>
                 </button>
                 <button
                   onClick={() => handleResolve(req.id, 'Rejected')}
                   disabled={resolveMutation.isPending}
-                  className="p-2.5 rounded-xl text-rose-600 hover:bg-rose-50 transition active:scale-90 disabled:opacity-40"
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-xl p-2.5 text-rose-600 hover:bg-rose-50 transition active:scale-90 disabled:opacity-40"
                   title="Reject"
                 >
-                  <X className="h-4 w-4 stroke-[3]" />
+                  <X className="h-4 w-4 shrink-0 stroke-[3]" />
+                  <span className="hidden text-xs font-bold sm:inline">Reject</span>
                 </button>
               </div>
             </div>

@@ -23,7 +23,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
   const today = new Date().toISOString().split('T')[0]
   const isToday = meeting.rawDate === today
   return (
-    <article className={["rounded-card border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]", isToday ? 'border-brand/20 ring-2 ring-brand/10' : 'border-slate-200'].join(' ')}>
+    <article className={["min-w-0 rounded-card border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)]", isToday ? 'border-brand/20 ring-2 ring-brand/10' : 'border-slate-200'].join(' ')}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-wrap gap-2">
           <span
@@ -40,8 +40,8 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
       </div>
 
       <div className="mt-5 space-y-2">
-        <h3 className="text-xl font-semibold text-brand">{meeting.title}</h3>
-        <p className="text-sm text-slate-500">{meeting.subtitle}</p>
+        <h3 className="truncate text-xl font-semibold text-brand">{meeting.title}</h3>
+        <p className="truncate text-sm text-slate-500">{meeting.subtitle}</p>
       </div>
 
       <div className="mt-6 space-y-3 text-sm text-slate-500">
