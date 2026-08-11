@@ -95,8 +95,9 @@ function AttendancePage() {
     if (modifier === 'PM' && hours < 12) hours += 12
     if (modifier === 'AM' && hours === 12) hours = 0
     
-    const date = new Date(dateStr)
-    date.setHours(hours, minutes, 0, 0)
+    const [year, month, day] = dateStr.split('T')[0].split('-').map(Number)
+    const date = new Date(year, month - 1, day, hours, minutes, 0, 0)
+    if (Number.isNaN(date.getTime())) return null
     return date
   }
 
