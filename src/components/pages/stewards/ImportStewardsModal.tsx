@@ -173,6 +173,39 @@ function ImportStewardsModal({
               Imported users log in with the default password: {result.defaultPassword}
               {' \u2014 '}ask them to change it after first login.
             </div>
+            {result.corrections.length > 0 ? (
+              <div className="overflow-hidden rounded-xl border border-emerald-200">
+                <p className="border-b border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+                  {result.corrections.length} value(s) auto-corrected to the standard spelling:
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="bg-emerald-50/60 text-xs uppercase tracking-[0.15em] text-emerald-600">
+                        <th className="px-4 py-2 font-semibold">Row</th>
+                        <th className="px-4 py-2 font-semibold">Field</th>
+                        <th className="px-4 py-2 font-semibold">Corrected</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {result.corrections.map((correction) => (
+                        <tr
+                          key={`${correction.row}-${correction.field}`}
+                          className="border-t border-emerald-100 text-slate-600"
+                        >
+                          <td className="px-4 py-2.5">{correction.row}</td>
+                          <td className="px-4 py-2.5">{correction.field}</td>
+                          <td className="px-4 py-2.5">
+                            &lsquo;{correction.from}&rsquo; <span className="text-emerald-600">&rarr;</span>{' '}
+                            &lsquo;{correction.to}&rsquo;
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : null}
             {result.failures.length > 0 ? (
               <div className="overflow-hidden rounded-xl border border-rose-200">
                 <p className="border-b border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
@@ -260,7 +293,9 @@ function ImportStewardsModal({
               <p className="mt-1.5 text-xs text-slate-400">
                 Accepts .csv files up to 1MB. Required columns: fullName, email, phone,
                 department, birthday. Failure row numbers match your spreadsheet (header
-                is row 1, first steward row 2).
+                is row 1, first steward row 2). Roles and departments are auto-corrected
+                to the standard spelling; incomplete phone numbers and invalid emails are
+                skipped and listed below.
               </p>
             </div>
 
