@@ -1,7 +1,20 @@
 import type { z } from 'zod'
-import type { loginSchema } from './schema'
+import type { loginSchema, signupSchema } from './schema'
 
 export type LoginPayload = z.infer<typeof loginSchema>
+
+export type SignupFormValues = z.infer<typeof signupSchema>
+
+export type SignupPayload = Omit<SignupFormValues, 'confirmPassword'>
+
+export type SignupResponse = {
+  message?: string
+  email?: string
+}
+
+export type VerifyEmailResponse = {
+  message?: string
+}
 
 export type OnboardingState = {
   required: boolean

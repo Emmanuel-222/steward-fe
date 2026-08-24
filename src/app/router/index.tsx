@@ -11,11 +11,21 @@ import MyExcusesPage from '../../pages/MyExcusesPage'
 import ExcuseRequestsPage from '../../pages/ExcuseRequestsPage'
 import CheckInPage from '../../pages/CheckInPage'
 import OnboardingPage from '../../pages/OnboardingPage'
+import SignupPage from '../../pages/SignupPage'
+import VerifyEmailPage from '../../pages/VerifyEmailPage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <LoginPage />,
+  },
+  {
+    path: '/signup',
+    element: <SignupPage />,
+  },
+  {
+    path: '/verify-email/:token',
+    element: <VerifyEmailPage />,
   },
   {
     path: '/check-in/:token',

@@ -1,16 +1,16 @@
 export const DEPARTMENTS = [
-  'Children Dept.',
-  'Teens Dept.',
+  'Children',
+  'Teens',
   'TeamOne',
-  'Light Team',
-  'Sanitation Dept.',
-  'Edification Team',
-  'Protocol Dept.',
-  'Welfare Dept.',
-  'Security Dept.',
-  'Programs Dept.',
-  'Alpha Team',
-  'Logistics And Technical Dept.',
+  'Ushering',
+  'Sanitation',
+  'Edification',
+  'Protocol',
+  'Welfare',
+  'Security',
+  'Programs',
+  'Alpha',
+  'Logistics And Technical',
 ] as const
 
 export type Department = (typeof DEPARTMENTS)[number]

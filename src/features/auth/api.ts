@@ -4,6 +4,9 @@ import type {
   AuthUser,
   CompleteOnboardingPayload,
   LoginPayload,
+  SignupPayload,
+  SignupResponse,
+  VerifyEmailResponse,
 } from './types'
 
 export async function login(payload: LoginPayload) {
@@ -28,5 +31,18 @@ export async function sendVerificationCode() {
 
 export async function completeOnboarding(payload: CompleteOnboardingPayload) {
   const { data } = await api.patch<AuthUser>('/auth/onboarding', payload)
+  return data
+}
+
+// NOTE: the backend doesn't expose signup/verification routes yet — this is
+// the contract the UI is built against. Update the URL/payload/response
+// shape here once the API is ready; nothing else should need to change.
+export async function signup(payload: SignupPayload) {
+  const { data } = await api.post<SignupResponse>('/auth/signup', payload)
+  return data
+}
+
+export async function verifyEmail(token: string) {
+  const { data } = await api.post<VerifyEmailResponse>(`/auth/verify-email/${token}`)
   return data
 }

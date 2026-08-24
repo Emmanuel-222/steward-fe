@@ -1,10 +1,9 @@
 import { Navigate } from 'react-router-dom'
 import LoginShowcase from '../components/pages/login/LoginShowcase'
-import LoginStatusPill from '../components/pages/login/LoginStatusPill'
-import LoginForm from '../features/auth/components/LoginForm'
+import SignupForm from '../features/auth/components/SignupForm'
 import useAuth from '../hooks/useAuth'
 
-function LoginPage() {
+function SignupPage() {
   const { isAuthenticated } = useAuth()
 
   if (isAuthenticated) {
@@ -20,15 +19,12 @@ function LoginPage() {
 
         <section className="flex items-center p-5 sm:p-8 lg:p-10">
           <div className="w-full">
-            <LoginForm />
+            <SignupForm />
           </div>
         </section>
       </div>
-
-      <LoginStatusPill />
     </div>
   )
 }
 
-export default LoginPage
-
+export default SignupPage
