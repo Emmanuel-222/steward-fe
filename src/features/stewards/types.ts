@@ -51,19 +51,11 @@ export type ImportFailure = {
   message: string
 }
 
-export type ImportCorrection = {
-  row: number
-  field: string
-  from: string
-  to: string
-}
-
 export type ImportResult = {
   imported: number
   skipped: number
   defaultPassword: string
   failures: ImportFailure[]
-  corrections: ImportCorrection[]
 }
 
 export type StewardsResponse = {

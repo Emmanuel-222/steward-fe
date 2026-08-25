@@ -4,10 +4,9 @@ import { ChevronDown, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { stewardRoleOptions, updateStewardSchema } from '../../../features/stewards/schema'
-import type { Steward, UpdateStewardValues } from '../../../features/stewards/types'
+import type { Steward, CreateStewardValues, UpdateStewardValues } from '../../../features/stewards/types'
 import { DEPARTMENTS } from '../../../constants/departments'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
-import { matchDepartment, matchRole } from '../../../utils/normalize'
 import PhoneInput, { toE164Phone } from '../../ui/PhoneInput'
 
 type EditUserModalProps = {
@@ -49,8 +48,8 @@ function EditUserModal({
       name: steward.name,
       email: steward.email,
       phone: steward.phone === 'N/A' ? '' : toE164Phone(steward.phone),
-      department: matchDepartment(steward.department ?? '').value ?? '',
-      role: (matchRole(steward.role ?? '').value ?? 'Steward') as UpdateStewardValues['role'],
+      department: steward.department as CreateStewardValues['department'],
+      role: steward.role as CreateStewardValues['role'],
       birthday: steward.birthday ?? '',
     })
   }, [reset, steward])
@@ -214,11 +213,6 @@ function EditUserModal({
               {errors.department ? (
                 <p className="text-sm text-rose-600">{errors.department.message}</p>
               ) : null}
-              {!errors.department && steward.department && !matchDepartment(steward.department).value ? (
-                <p className="text-xs text-amber-600">
-                  Saved value &ldquo;{steward.department}&rdquo; is not in the list — pick the correct department.
-                </p>
-              ) : null}
             </label>
 
             <label className="block space-y-2">
@@ -240,11 +234,6 @@ function EditUserModal({
               </div>
               {errors.role ? (
                 <p className="text-sm text-rose-600">{errors.role.message}</p>
-              ) : null}
-              {!errors.role && steward.role && !matchRole(steward.role).value ? (
-                <p className="text-xs text-amber-600">
-                  Saved value &ldquo;{steward.role}&rdquo; is not in the list — pick the correct role.
-                </p>
               ) : null}
             </label>
           </div>
