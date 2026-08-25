@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Clock, Eye, EyeOff, ShieldAlert } from 'lucide-react'
 import useLoginMutation from '../hooks/useLoginMutation'
 import { loginSchema } from '../schema'
@@ -261,6 +261,13 @@ function LoginForm() {
           </button>
         </div>
       </form>
+
+      <p className="mt-6 text-center text-sm text-slate-500">
+        New steward?{' '}
+        <Link to="/signup" className="font-semibold text-brand hover:text-brand-hover">
+          Create an account
+        </Link>
+      </p>
 
       <div className="mt-8 flex flex-col items-start justify-between gap-2 text-[11px] text-slate-400 sm:flex-row sm:items-center">
         <span>&copy; 2026 Steward Attendance Management.</span>

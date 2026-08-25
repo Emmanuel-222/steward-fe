@@ -140,7 +140,7 @@ function MainLayout() {
               <div className="relative shrink-0">
                 <Icon className={`h-5 w-5 ${isActive ? 'text-signature' : ''}`} />
                 {showBadge && collapsed && (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[8px] font-bold leading-none text-white shadow-sm">
+                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[8px] font-bold leading-none text-white shadow-sm">
                     {excuseCount > 9 ? '9+' : excuseCount}
                   </span>
                 )}

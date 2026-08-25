@@ -36,7 +36,7 @@ function LoginShowcase() {
         </div>
       </div>
 
-      <div className="mt-12 rounded-2xl border border-signature/40 bg-white/[0.04] p-4 backdrop-blur">
+      <div className="mt-12 rounded-2xl border border-signature/40 bg-white/4 p-4 backdrop-blur">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-signature/40 bg-signature/15 text-signature">
             <svg
