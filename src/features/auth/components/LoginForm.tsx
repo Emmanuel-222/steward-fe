@@ -269,9 +269,9 @@ function LoginForm() {
         </Link>
       </p>
 
-      <div className="mt-8 flex flex-col items-start justify-between gap-2 text-[11px] text-slate-400 sm:flex-row sm:items-center">
+<div className="mt-8 flex flex-col items-start justify-between gap-2 text-[11px] text-slate-400 sm:flex-row sm:items-center">
         <span>&copy; 2026 Steward Attendance Management.</span>
-        <span>Privacy Policy &amp; Security Protocol</span>
+        <a href="mailto:privacy@stewardattendance.com" className="hover:underline">Privacy Policy & Security Protocol</a>
       </div>
     </div>
   )

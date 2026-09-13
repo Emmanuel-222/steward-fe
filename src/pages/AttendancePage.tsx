@@ -26,7 +26,7 @@ function AttendancePage() {
   const navigate = useNavigate()
   const { showToast } = useToast()
   const [activeFilter, setActiveFilter] = useState('All Stewards')
-  const [isRushMode] = useState(true)
+  const [isRushMode] = useState(false)
   const [justMarkedUserId, setJustMarkedUserId] = useState<string | null>(null)
   const [finalizedData, setFinalizedData] = useState<{
     total: number
@@ -101,7 +101,33 @@ function AttendancePage() {
     return date
   }
 
-  const cutoffDate = parseTime(activeMeeting?.rawCutoffTime, activeMeeting?.rawDate)
+  const timeTo24h = (timeStr: string | undefined): number => {
+    if (!timeStr) return -1
+    const [time, modifier] = timeStr.split(' ')
+    const [strHours, strMinutes] = time.split(':')
+    let hours = Number(strHours)
+    const minutes = Number(strMinutes)
+    if (modifier === 'PM' && hours < 12) hours += 12
+    if (modifier === 'AM' && hours === 12) hours = 0
+    return hours * 60 + minutes
+  }
+
+  const crossesMidnight = (meeting: { rawStartTime?: string; rawEndTime?: string }) => {
+    const start = timeTo24h(meeting.rawStartTime)
+    const end = timeTo24h(meeting.rawEndTime)
+    return start >= 0 && end >= 0 && end < start
+  }
+
+  const getCutoffDate = (meeting: { rawCutoffTime?: string; rawDate?: string; rawStartTime?: string; rawEndTime?: string }) => {
+    const base = parseTime(meeting.rawCutoffTime, meeting.rawDate)
+    if (!base) return null
+    if (crossesMidnight(meeting)) {
+      base.setDate(base.getDate() + 1)
+    }
+    return base
+  }
+
+  const cutoffDate = activeMeeting ? getCutoffDate(activeMeeting) : null
 
   // Calculate throughput (check-ins per minute in the last 15 minutes)
   const recentCheckins = entries.filter(e => {

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAccessToken, setAccessToken } from '../services/tokenStore'
 
@@ -14,10 +15,17 @@ function isTokenExpired(token: string): boolean {
 
 function useAuth() {
   const rawToken = getAccessToken()
-  const userJson = localStorage.getItem('user')
+
+  const user = useMemo(() => {
+    try {
+      const userJson = localStorage.getItem('user')
+      return userJson ? JSON.parse(userJson) : null
+    } catch {
+      return null
+    }
+  }, [])
 
   let token = rawToken
-  let user = userJson ? JSON.parse(userJson) : null
   let isAuthenticated = false
 
   if (token && !isTokenExpired(token)) {
@@ -25,7 +33,6 @@ function useAuth() {
   } else if (token) {
     setAccessToken(null)
     token = null
-    user = null
   }
 
   const navigate = useNavigate()

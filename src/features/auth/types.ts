@@ -26,6 +26,7 @@ export type AuthUser = {
   id: string
   email: string
   name?: string
+  initials?: string
   role?: string
   department?: string
   onboarding?: OnboardingState
