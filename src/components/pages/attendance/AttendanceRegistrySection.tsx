@@ -87,16 +87,35 @@ function AttendanceRegistrySection({
   const bulkMark = async (status: 'present' | 'absent') => {
     const ids = [...selectedIds]
     setSelectedIds(new Set())
+    let failedCount = 0
     for (const id of ids) {
       try {
         if (status === 'present') await onMarkPresent(id)
         else await onMarkAbsent?.(id)
-      } catch { /* toast handled by caller */ }
+      } catch {
+        failedCount++
+      }
+    }
+    if (failedCount > 0) {
+      console.warn(`bulkMark: ${failedCount}/${ids.length} marks failed`)
     }
   }
 
+  const prevEntriesRef = useRef(entries)
+  const prevSearchRef = useRef(searchTerm)
+  const prevFilterRef = useRef(activeFilter)
+
   useEffect(() => {
-    setSelectedIds(new Set())
+    if (
+      entries !== prevEntriesRef.current ||
+      searchTerm !== prevSearchRef.current ||
+      activeFilter !== prevFilterRef.current
+    ) {
+      setSelectedIds(new Set()) // eslint-disable-line react-hooks/set-state-in-effect -- clearing selection when filter deps change
+      prevEntriesRef.current = entries
+      prevSearchRef.current = searchTerm
+      prevFilterRef.current = activeFilter
+    }
   }, [entries, searchTerm, activeFilter])
 
   useEffect(() => {
@@ -123,10 +142,6 @@ function AttendanceRegistrySection({
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isRushMode, searched, focusedIndex, markingUserId, onMarkPresent])
-
-  useEffect(() => {
-    setSelectedIds(new Set())
-  }, [entries, searchTerm, activeFilter])
 
 
   return (

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useWatch, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { ChevronDown, Eye, EyeOff, MailCheck } from 'lucide-react'
 import useSignupMutation from '../hooks/useSignupMutation'
@@ -20,7 +20,7 @@ function SignupForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -34,6 +34,8 @@ function SignupForm() {
       confirmPassword: '',
     },
   })
+
+  const passwordValue = useWatch({ name: 'password', control })
 
   const onSubmit = async (values: SignupFormValues) => {
     try {
@@ -234,7 +236,7 @@ function SignupForm() {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          <PasswordRequirements password={watch('password')} />
+          <PasswordRequirements password={passwordValue} />
           {errors.password ? (
             <p className="text-sm text-rose-600">{errors.password.message}</p>
           ) : null}

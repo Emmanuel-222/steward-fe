@@ -58,9 +58,12 @@ export async function getMeetingAttendance(meetingId: string) {
 }
 
 export async function markPresent(userId: string, meetingId: string, status: string = 'present') {
+  const numericUserId = Number(userId)
+  const numericMeetingId = Number(meetingId)
+
   const { data } = await api.post('/attendance', {
-    userId: Number(userId),
-    meetingId: Number(meetingId),
+    userId: Number.isNaN(numericUserId) ? userId : numericUserId,
+    meetingId: Number.isNaN(numericMeetingId) ? meetingId : numericMeetingId,
     status,
   })
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useCheckInMutation from '../features/checkin/hooks/useCheckInMutation'
 
@@ -23,15 +23,11 @@ function CheckInPage() {
   const { token } = useParams<{ token: string }>()
   const [email, setEmail] = useState('')
   const [pageState, setPageState] = useState<PageState>({ status: 'form' })
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(
+    !token ? 'This check-in link is not valid.' : null,
+  )
   const [isDuplicate, setIsDuplicate] = useState(false)
   const checkInMutation = useCheckInMutation()
-
-  useEffect(() => {
-    if (!token) {
-      setError('This check-in link is not valid.')
-    }
-  }, [token])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

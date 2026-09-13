@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { ChevronDown, Eye, EyeOff, Info, X } from 'lucide-react'
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useWatch, useForm } from 'react-hook-form'
 import { createStewardSchema, stewardRoleOptions } from '../../../features/stewards/schema'
 import type { CreateStewardValues } from '../../../features/stewards/types'
 import { DEPARTMENTS } from '../../../constants/departments'
@@ -32,7 +32,6 @@ function AddUserModal({
     handleSubmit,
     reset,
     control,
-    watch,
     formState: { errors },
   } = useForm<CreateStewardValues>({
     resolver: zodResolver(createStewardSchema),
@@ -46,6 +45,8 @@ function AddUserModal({
       birthday: '',
     },
   })
+
+  const passwordValue = useWatch({ name: 'password', control })
 
   const handleFormSubmit = async (values: CreateStewardValues) => {
     try {
@@ -244,7 +245,7 @@ function AddUserModal({
                   )}
                 </button>
               </div>
-              <PasswordRequirements password={watch('password')} />
+              <PasswordRequirements password={passwordValue} />
               {errors.password ? (
                 <p className="text-sm text-rose-600">{errors.password.message}</p>
               ) : null}

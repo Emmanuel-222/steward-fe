@@ -7,7 +7,8 @@ import { stewardRoleOptions, updateStewardSchema } from '../../../features/stewa
 import type { Steward, CreateStewardValues, UpdateStewardValues } from '../../../features/stewards/types'
 import { DEPARTMENTS } from '../../../constants/departments'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
-import PhoneInput, { toE164Phone } from '../../ui/PhoneInput'
+import PhoneInput from '../../ui/PhoneInput'
+import { toE164Phone } from '../../../utils/phone'
 
 type EditUserModalProps = {
   steward: Steward | null
