@@ -51,7 +51,9 @@ function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
         </p>
         <button
           type="button"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-brand transition hover:bg-emerald-300"
+          disabled
+          title="Coming soon"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-400 cursor-not-allowed"
         >
           <Download className="h-4 w-4" />
           Download PDF
