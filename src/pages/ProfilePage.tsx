@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Loader2, Save, User, Lock, CheckCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import useAuth from '../hooks/useAuth'
 import useChangePasswordMutation from '../features/auth/hooks/useChangePasswordMutation'
@@ -32,6 +33,7 @@ function PasswordRequirements({ password }: { password: string }) {
 function ProfilePage() {
   const { user } = useAuth()
   const { showToast } = useToast()
+  const navigate = useNavigate()
   const updateProfile = useUpdateProfileMutation()
   const changePassword = useChangePasswordMutation()
 
@@ -46,19 +48,14 @@ function ProfilePage() {
   const [showNew, setShowNew] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
-  const [profileSuccess, setProfileSuccess] = useState(false)
-  const [passwordSuccess, setPasswordSuccess] = useState(false)
-
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setProfileSuccess(false)
     updateProfile.mutate(
       { fullName, phone },
       {
         onSuccess: () => {
           showToast('Profile updated', 'success')
-          setProfileSuccess(true)
-          setTimeout(() => setProfileSuccess(false), 3000)
+          setTimeout(() => navigate('/dashboard'), 800)
         },
         onError: (err: Error & { response?: { data?: { message?: string } } }) => {
           showToast(err?.response?.data?.message || 'Failed to update profile', 'error')
@@ -69,7 +66,6 @@ function ProfilePage() {
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setPasswordSuccess(false)
 
     if (newPassword !== confirmPassword) {
       showToast('Passwords do not match', 'error')
@@ -85,11 +81,7 @@ function ProfilePage() {
       {
         onSuccess: () => {
           showToast('Password changed successfully', 'success')
-          setPasswordSuccess(true)
-          setCurrentPassword('')
-          setNewPassword('')
-          setConfirmPassword('')
-          setTimeout(() => setPasswordSuccess(false), 3000)
+          setTimeout(() => navigate('/dashboard'), 800)
         },
         onError: (err: Error & { response?: { data?: { message?: string } } }) => {
           showToast(err?.response?.data?.message || 'Failed to change password', 'error')
@@ -171,9 +163,6 @@ function ProfilePage() {
               {updateProfile.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               {updateProfile.isPending ? 'Saving...' : 'Save Changes'}
             </button>
-            {profileSuccess && (
-              <p className="text-center text-sm font-medium text-emerald-600">Profile updated successfully</p>
-            )}
           </form>
         </div>
 
@@ -263,9 +252,6 @@ function ProfilePage() {
               {changePassword.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
               {changePassword.isPending ? 'Changing...' : 'Change Password'}
             </button>
-            {passwordSuccess && (
-              <p className="text-center text-sm font-medium text-emerald-600">Password changed successfully</p>
-            )}
           </form>
         </div>
       </div>
