@@ -7,7 +7,7 @@ import { ChevronDown, Eye, EyeOff, MailCheck } from 'lucide-react'
 import useSignupMutation from '../hooks/useSignupMutation'
 import { signupSchema } from '../schema'
 import type { SignupFormValues } from '../types'
-import { DEPARTMENTS } from '../../../constants/departments'
+import { DEPARTMENTS, DEPARTMENT_LABELS } from '../../../constants/departments'
 import PasswordRequirements from '../../../components/ui/PasswordRequirements'
 
 function SignupForm() {
@@ -194,7 +194,7 @@ function SignupForm() {
               </option>
               {DEPARTMENTS.map((dept) => (
                 <option key={dept} value={dept}>
-                  {dept}
+                  {DEPARTMENT_LABELS[dept]}
                 </option>
               ))}
             </select>
