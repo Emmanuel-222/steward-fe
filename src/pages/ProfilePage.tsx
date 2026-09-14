@@ -1,10 +1,33 @@
 import { useState } from 'react'
-import { Loader2, Save, User, Lock } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Save, User, Lock, CheckCircle } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import useAuth from '../hooks/useAuth'
 import useChangePasswordMutation from '../features/auth/hooks/useChangePasswordMutation'
 import useUpdateProfileMutation from '../features/stewards/hooks/useUpdateProfileMutation'
 import { useToast } from '../hooks/useToast'
+
+function PasswordRequirements({ password }: { password: string }) {
+  const checks = [
+    { label: 'At least 8 characters', met: password.length >= 8 },
+    { label: 'Contains uppercase letter', met: /[A-Z]/.test(password) },
+    { label: 'Contains lowercase letter', met: /[a-z]/.test(password) },
+    { label: 'Contains number', met: /[0-9]/.test(password) },
+    { label: 'Contains special character', met: /[^A-Za-z0-9]/.test(password) },
+  ]
+
+  if (!password) return null
+
+  return (
+    <div className="mt-2 space-y-1">
+      {checks.map(({ label, met }) => (
+        <div key={label} className="flex items-center gap-1.5">
+          <CheckCircle className={`h-3 w-3 ${met ? 'text-emerald-500' : 'text-slate-300'}`} />
+          <span className={`text-xs ${met ? 'text-emerald-600' : 'text-slate-400'}`}>{label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 function ProfilePage() {
   const { user } = useAuth()
@@ -19,6 +42,10 @@ function ProfilePage() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
+  const [showCurrent, setShowCurrent] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+
   const [profileSuccess, setProfileSuccess] = useState(false)
   const [passwordSuccess, setPasswordSuccess] = useState(false)
 
@@ -29,12 +56,12 @@ function ProfilePage() {
       { fullName, phone },
       {
         onSuccess: () => {
-          showToast({ title: 'Profile updated', type: 'success' })
+          showToast('Profile updated', 'success')
           setProfileSuccess(true)
           setTimeout(() => setProfileSuccess(false), 3000)
         },
         onError: (err: Error & { response?: { data?: { message?: string } } }) => {
-          showToast({ title: err?.response?.data?.message || 'Failed to update profile', type: 'error' })
+          showToast(err?.response?.data?.message || 'Failed to update profile', 'error')
         },
       }
     )
@@ -45,11 +72,11 @@ function ProfilePage() {
     setPasswordSuccess(false)
 
     if (newPassword !== confirmPassword) {
-      showToast({ title: 'Passwords do not match', type: 'error' })
+      showToast('Passwords do not match', 'error')
       return
     }
     if (newPassword.length < 8) {
-      showToast({ title: 'Password must be at least 8 characters', type: 'error' })
+      showToast('Password must be at least 8 characters', 'error')
       return
     }
 
@@ -57,7 +84,7 @@ function ProfilePage() {
       { currentPassword, newPassword },
       {
         onSuccess: () => {
-          showToast({ title: 'Password changed successfully', type: 'success' })
+          showToast('Password changed successfully', 'success')
           setPasswordSuccess(true)
           setCurrentPassword('')
           setNewPassword('')
@@ -65,7 +92,7 @@ function ProfilePage() {
           setTimeout(() => setPasswordSuccess(false), 3000)
         },
         onError: (err: Error & { response?: { data?: { message?: string } } }) => {
-          showToast({ title: err?.response?.data?.message || 'Failed to change password', type: 'error' })
+          showToast(err?.response?.data?.message || 'Failed to change password', 'error')
         },
       }
     )
@@ -162,34 +189,70 @@ function ProfilePage() {
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Current Password</label>
-              <input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
-              />
+              <div className="relative">
+                <input
+                  type={showCurrent ? 'text' : 'password'}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 pr-11 text-sm text-slate-700 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
+                  placeholder="Enter current password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrent(s => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                  tabIndex={-1}
+                >
+                  {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">New Password</label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
-              />
-              <p className="mt-1 text-xs text-slate-400">Minimum 8 characters</p>
+              <div className="relative">
+                <input
+                  type={showNew ? 'text' : 'password'}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 pr-11 text-sm text-slate-700 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
+                  placeholder="Enter new password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNew(s => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                  tabIndex={-1}
+                >
+                  {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              <PasswordRequirements password={newPassword} />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Confirm New Password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 pr-11 text-sm text-slate-700 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
+                  placeholder="Re-enter new password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(s => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                  tabIndex={-1}
+                >
+                  {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {confirmPassword && newPassword !== confirmPassword && (
+                <p className="mt-1 text-xs text-rose-500">Passwords do not match</p>
+              )}
             </div>
 
             <button
