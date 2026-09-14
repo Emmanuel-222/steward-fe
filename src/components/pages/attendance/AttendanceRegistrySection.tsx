@@ -12,6 +12,7 @@ type AttendanceRegistrySectionProps = {
   markingUserId: string | null
   cutoffDate?: Date | null
   isRushMode?: boolean
+  onToggleRushMode?: () => void
   meetingTitle?: string
   isReadOnly?: boolean
   meetingIsFinalized?: boolean
@@ -28,6 +29,7 @@ function AttendanceRegistrySection({
   markingUserId,
   cutoffDate = null,
   isRushMode = false,
+  onToggleRushMode,
   meetingTitle = 'Meeting',
   isReadOnly = false,
   meetingIsFinalized = false,
@@ -203,7 +205,7 @@ function AttendanceRegistrySection({
           >
              {departmentSort === 'asc' ? <ArrowDownAZ className="h-5 w-5" /> : <ArrowUpAZ className="h-5 w-5" />}
           </button>
-          <button aria-label="Toggle rush mode" className="p-3.5 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition">
+           <button onClick={onToggleRushMode} aria-label="Toggle rush mode" className={`p-3.5 rounded-2xl border transition ${isRushMode ? 'border-amber-400 bg-amber-50 text-amber-600' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'}`}>
              <Bolt className="h-5 w-5" />
           </button>
         </div>

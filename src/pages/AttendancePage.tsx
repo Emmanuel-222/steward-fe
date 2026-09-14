@@ -26,7 +26,7 @@ function AttendancePage() {
   const navigate = useNavigate()
   const { showToast } = useToast()
   const [activeFilter, setActiveFilter] = useState('All Stewards')
-  const [isRushMode] = useState(false)
+  const [isRushMode, setIsRushMode] = useState(false)
   const [justMarkedUserId, setJustMarkedUserId] = useState<string | null>(null)
   const [finalizedData, setFinalizedData] = useState<{
     total: number
@@ -340,6 +340,7 @@ function AttendancePage() {
             markingUserId={markPresentMutation.isPending ? (markPresentMutation.variables?.userId ?? null) : null}
             cutoffDate={cutoffDate}
             isRushMode={isRushMode}
+            onToggleRushMode={() => setIsRushMode(r => !r)}
             meetingTitle={activeMeeting.title}
             isReadOnly={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed' || !canMarkAttendance}
             meetingIsFinalized={showReport || activeMeeting.status === 'Finalized' || activeMeeting.status === 'Completed'}
