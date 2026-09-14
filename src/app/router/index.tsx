@@ -13,6 +13,8 @@ import CheckInPage from '../../pages/CheckInPage'
 import OnboardingPage from '../../pages/OnboardingPage'
 import SignupPage from '../../pages/SignupPage'
 import VerifyEmailPage from '../../pages/VerifyEmailPage'
+import ProfilePage from '../../pages/ProfilePage'
+import ForgotPasswordPage from '../../pages/ForgotPasswordPage'
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +36,10 @@ export const router = createBrowserRouter([
   {
     path: '/onboarding',
     element: <OnboardingPage />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage />,
   },
   {
     path: '/dashboard',
@@ -67,6 +73,10 @@ export const router = createBrowserRouter([
       {
         path: 'excuse-requests',
         element: <ExcuseRequestsPage />,
+      },
+      {
+        path: 'profile',
+        element: <ProfilePage />,
       },
     ],
   },
