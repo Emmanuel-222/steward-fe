@@ -243,8 +243,7 @@ function AttendanceRegistrySection({
                   const minutes = Number(mStr)
                   if (modifier === 'PM' && hours < 12) hours += 12
                   if (modifier === 'AM' && hours === 12) hours = 0
-                  const markedTime = new Date(cutoffDate)
-                  markedTime.setHours(hours, minutes, 0, 0)
+                  const markedTime = new Date(cutoffDate.getFullYear(), cutoffDate.getMonth(), cutoffDate.getDate(), hours, minutes, 0, 0)
                   return markedTime > cutoffDate
                 } catch { return false }
               })()

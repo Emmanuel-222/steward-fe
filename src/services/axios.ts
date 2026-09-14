@@ -67,7 +67,7 @@ api.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    if (originalRequest.url === '/auth/refresh') {
+    if (originalRequest.url === '/auth/refresh' || originalRequest.url === '/auth/login') {
       return Promise.reject(error)
     }
 
