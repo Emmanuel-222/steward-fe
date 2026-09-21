@@ -232,7 +232,6 @@ function StewardsPage() {
 
   const handleImportStewards = async (file: File) => {
     const result = await importMutation.mutateAsync(file)
-    stewardsQuery.refetch()
     return result
   }
 
