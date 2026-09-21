@@ -1,0 +1,21 @@
+name: CI
+
+on:                 # 1. WHEN it runs
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  verify:           # 2. WHAT runs (one job named "verify")
+    runs-on: ubuntu-latest
+    steps:          # 3. the ordered steps
+      - uses: actions/checkout@v6      # get the code onto the runner
+      - uses: actions/setup-node@v7    # install Node
+        with:
+          node-version: 24
+          cache: npm                   # cache ~/.npm for speed
+      - run: npm ci                    # clean install from package-lock.json
+      - run: npm run lint              # your existing checks...
+      - run: npm test                  # ...including the suite you just wrote
+      - run: npm run build
