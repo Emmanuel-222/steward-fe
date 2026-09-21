@@ -1,10 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { login } from '../api'
-import { setAccessToken } from '../../../services/tokenStore'
+import { clearAccessToken, setAccessToken } from '../../../services/tokenStore'
 
 function useLoginMutation() {
   return useMutation({
-    mutationFn: login,
+    mutationFn: (payload: { email: string; password: string }) => {
+      clearAccessToken()
+      return login(payload)
+    },
     onSuccess: (response) => {
       setAccessToken(response.token)
       if (response.user) {

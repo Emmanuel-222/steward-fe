@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { stewardRoleOptions, updateStewardSchema } from '../../../features/stewards/schema'
 import type { Steward, CreateStewardValues, UpdateStewardValues } from '../../../features/stewards/types'
-import { DEPARTMENTS } from '../../../constants/departments'
+import { DEPARTMENTS, DEPARTMENT_LABELS } from '../../../constants/departments'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
 import PhoneInput from '../../ui/PhoneInput'
 import { toE164Phone } from '../../../utils/phone'
@@ -206,7 +206,7 @@ function EditUserModal({
                 >
                   <option value="">Select Department</option>
                   {DEPARTMENTS.map((dept) => (
-                    <option key={dept} value={dept}>{dept}</option>
+                    <option key={dept} value={dept}>{DEPARTMENT_LABELS[dept]}</option>
                   ))}
                 </select>
                 <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />

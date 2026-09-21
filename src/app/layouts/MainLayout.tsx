@@ -159,8 +159,14 @@ function MainLayout() {
       </nav>
 
       <div className="px-4 py-6 space-y-2">
-        {/* Profile Info */}
-        <div className={`flex items-center gap-3 px-4 py-2 ${collapsed ? 'lg:justify-center' : ''}`}>
+        {/* Profile Info - clickable */}
+        <NavLink
+          to="/dashboard/profile"
+          onClick={closeMobileNav}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-2 rounded-xl transition ${collapsed ? 'lg:justify-center' : ''} ${isActive ? 'bg-white shadow-sm ring-1 ring-brand/10' : 'hover:bg-white/50'}`
+          }
+        >
           <div className="h-10 w-10 shrink-0 rounded-xl bg-orange-100 flex items-center justify-center text-lg font-bold text-orange-700 shadow-sm border border-orange-200/50 uppercase">
              {currentUser?.name ? currentUser.name.charAt(0) : '👤'}
           </div>
@@ -168,7 +174,7 @@ function MainLayout() {
              <p className="text-sm font-bold text-brand truncate">{currentUser?.name || (meQuery.isLoading ? 'Fetching...' : 'Loading...')}</p>
              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{currentUser?.role || 'User'}</p>
           </div>
-        </div>
+        </NavLink>
 
         <button
           type="button"

@@ -5,7 +5,7 @@ import useCheckInMutation from '../features/checkin/hooks/useCheckInMutation'
 type PageState =
   | { status: 'form' }
   | { status: 'loading' }
-  | { status: 'success'; name: string }
+  | { status: 'success'; name: string; isLate: boolean }
 
 function DiamondRule() {
   return (
@@ -43,7 +43,11 @@ function CheckInPage() {
         email: email.trim(),
       })
       setIsDuplicate(result.isDuplicate ?? false)
-      setPageState({ status: 'success', name: result.stewardName })
+      setPageState({
+        status: 'success',
+        name: result.stewardName,
+        isLate: result.status === 'late',
+      })
     } catch (err: unknown) {
       const message: string =
         err && typeof err === 'object' && 'response' in err
@@ -124,12 +128,17 @@ function CheckInPage() {
 
             {showSuccess && (
               <div className="flex flex-col items-center gap-4 py-4 text-center">
-                <div className={`flex h-14 w-14 items-center justify-center rounded-full animate-scale-in ${isDuplicate ? 'bg-amber-100' : 'bg-emerald-100'}`}>
+                <div className={`flex h-14 w-14 items-center justify-center rounded-full animate-scale-in ${isDuplicate ? 'bg-amber-100' : pageState.isLate ? 'bg-amber-100' : 'bg-emerald-100'}`}>
                   {isDuplicate ? (
                     <svg viewBox="0 0 24 24" className="h-7 w-7 text-amber-600" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="12" />
                       <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                  ) : pageState.isLate ? (
+                    <svg viewBox="0 0 24 24" className="h-7 w-7 text-amber-600" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
                     </svg>
                   ) : (
                     <svg viewBox="0 0 24 24" className="h-7 w-7 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -138,10 +147,14 @@ function CheckInPage() {
                   )}
                 </div>
                 <p className="font-serif text-[22px] font-semibold leading-tight text-brand">
-                  {isDuplicate ? 'Already checked in' : `Welcome, ${pageState.name}`}
+                  {isDuplicate ? 'Already checked in' : pageState.isLate ? 'Checked in (Late)' : `Welcome, ${pageState.name}`}
                 </p>
                 <p className="font-sans text-[13px] text-slate-500">
-                  {isDuplicate ? `You were already checked in, ${pageState.name}.` : "You're signed in."}
+                  {isDuplicate
+                    ? `You were already checked in, ${pageState.name}.`
+                    : pageState.isLate
+                      ? `You're signed in, ${pageState.name}. You checked in after the cutoff time.`
+                      : "You're signed in."}
                 </p>
               </div>
             )}

@@ -142,7 +142,9 @@ function StewardProfileView({
           </p>
           <button
             type="button"
-            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-brand transition hover:bg-slate-100"
+            disabled
+            title="Coming soon"
+            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-400 cursor-not-allowed"
           >
             Update Schedule
           </button>
@@ -240,7 +242,9 @@ function StewardProfileView({
             </button>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-slate-500 transition hover:bg-slate-50"
+              disabled
+              title="Coming soon"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-slate-400 cursor-not-allowed"
             >
               <Download className="h-4 w-4" />
               Export

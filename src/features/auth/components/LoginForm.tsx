@@ -229,6 +229,12 @@ function LoginForm() {
           ) : null}
         </label>
 
+        <div className="flex justify-end">
+          <Link to="/forgot-password" className="text-xs font-medium text-brand hover:underline">
+            Forgot password?
+          </Link>
+        </div>
+
         <div className="animate-stagger-fade" style={{ animationDelay: '600ms' }}>
           <button
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70"

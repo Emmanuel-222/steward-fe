@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAccessToken, setAccessToken } from '../services/tokenStore'
 
@@ -13,17 +12,18 @@ function isTokenExpired(token: string): boolean {
   }
 }
 
+function readUser() {
+  try {
+    const userJson = localStorage.getItem('user')
+    return userJson ? JSON.parse(userJson) : null
+  } catch {
+    return null
+  }
+}
+
 function useAuth() {
   const rawToken = getAccessToken()
-
-  const user = useMemo(() => {
-    try {
-      const userJson = localStorage.getItem('user')
-      return userJson ? JSON.parse(userJson) : null
-    } catch {
-      return null
-    }
-  }, [])
+  const user = readUser()
 
   let token = rawToken
   let isAuthenticated = false
