@@ -1,87 +1,83 @@
+import { lazy, Suspense } from 'react'
+import type { ComponentType } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-import HomePage from '../../pages/HomePage'
-import LoginPage from '../../pages/LoginPage'
-import NotFoundPage from '../../pages/NotFoundPage'
-import AttendancePage from '../../pages/AttendancePage'
-import MeetingsPage from '../../pages/MeetingsPage'
-import StewardsPage from '../../pages/StewardsPage'
-import StewardDetailPage from '../../pages/StewardDetailPage'
-import MyExcusesPage from '../../pages/MyExcusesPage'
-import ExcuseRequestsPage from '../../pages/ExcuseRequestsPage'
-import CheckInPage from '../../pages/CheckInPage'
-import OnboardingPage from '../../pages/OnboardingPage'
-import SignupPage from '../../pages/SignupPage'
-import VerifyEmailPage from '../../pages/VerifyEmailPage'
-import ProfilePage from '../../pages/ProfilePage'
-import ForgotPasswordPage from '../../pages/ForgotPasswordPage'
-import ResetPasswordPage from '../../pages/ResetPasswordPage'
+import RouteFallback from '../../components/ui/RouteFallback'
+
+function page(importer: () => Promise<{ default: ComponentType }>) {
+  const Component = lazy(importer)
+  return (
+    <Suspense fallback={<RouteFallback />}>
+      <Component />
+    </Suspense>
+  )
+}
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <LoginPage />,
+    element: page(() => import('../../pages/LoginPage')),
   },
   {
     path: '/signup',
-    element: <SignupPage />,
+    element: page(() => import('../../pages/SignupPage')),
   },
   {
     path: '/verify-email/:token',
-    element: <VerifyEmailPage />,
+    element: page(() => import('../../pages/VerifyEmailPage')),
   },
   {
     path: '/check-in/:token',
-    element: <CheckInPage />,
+    element: page(() => import('../../pages/CheckInPage')),
   },
   {
     path: '/onboarding',
-    element: <OnboardingPage />,
+    element: page(() => import('../../pages/OnboardingPage')),
   },
   {
     path: '/forgot-password',
-    element: <ForgotPasswordPage />,
+    element: page(() => import('../../pages/ForgotPasswordPage')),
   },
   {
     path: '/reset-password',
-    element: <ResetPasswordPage />,
+    element: page(() => import('../../pages/ResetPasswordPage')),
   },
   {
     path: '/dashboard',
     element: <MainLayout />,
-    errorElement: <NotFoundPage />,
+    errorElement: page(() => import('../../pages/NotFoundPage')),
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: page(() => import('../../pages/HomePage')),
       },
       {
         path: 'stewards',
-        element: <StewardsPage />,
+        element: page(() => import('../../pages/StewardsPage')),
       },
       {
         path: 'stewards/:id',
-        element: <StewardDetailPage />,
+        element: page(() => import('../../pages/StewardDetailPage')),
       },
       {
         path: 'meetings',
-        element: <MeetingsPage />,
+        element: page(() => import('../../pages/MeetingsPage')),
       },
       {
         path: 'attendance/:meetingId?',
-        element: <AttendancePage />,
+        element: page(() => import('../../pages/AttendancePage')),
       },
       {
         path: 'my-excuses',
-        element: <MyExcusesPage />,
+        element: page(() => import('../../pages/MyExcusesPage')),
       },
       {
         path: 'excuse-requests',
-        element: <ExcuseRequestsPage />,
+        element: page(() => import('../../pages/ExcuseRequestsPage')),
       },
       {
         path: 'profile',
-        element: <ProfilePage />,
+        element: page(() => import('../../pages/ProfilePage')),
       },
     ],
   },
