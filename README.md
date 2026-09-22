@@ -93,7 +93,17 @@ src/
 | `npm run dev` | Start Vite dev server with HMR |
 | `npm run build` | Type-check + production build |
 | `npm run lint` | Run ESLint across the project |
+| `npm test` | Run the Vitest suite once |
 | `npm run preview` | Preview production build locally |
+
+## Testing
+
+Unit tests run with [Vitest](https://vitest.dev) (`npm test`). They cover feature API
+normalisers/formatters, Zod schemas, and a few UI components. Component tests use jsdom +
+[Testing Library](https://testing-library.com).
+
+CI (`.github/workflows/ci.yml`) runs `lint` → `test` → `build` on every push and pull request
+to `master`.
 
 ## Architecture
 
