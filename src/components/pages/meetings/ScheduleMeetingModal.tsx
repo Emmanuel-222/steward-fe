@@ -9,6 +9,7 @@ import {
   updateMeetingSchema,
 } from '../../../features/meetings/schema'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
+import { useDialogA11y } from '../../../hooks/useDialogA11y'
 import type {
   CreateMeetingValues,
   Meeting,
@@ -49,6 +50,7 @@ function ScheduleMeetingModal({
   meeting,
 }: ScheduleMeetingModalProps) {
   const { mounted, phase } = useAnimatedMount(open)
+  const dialogRef = useDialogA11y<HTMLDivElement>(onClose)
   const [serverError, setServerError] = useState('')
 
   const schema = mode === 'create' ? meetingSchema : updateMeetingSchema
@@ -164,6 +166,8 @@ function ScheduleMeetingModal({
       <div className="flex min-h-full items-center justify-center px-4 py-4 sm:px-6 sm:py-6">
       <div
         className={`max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-5 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
+        ref={dialogRef}
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"

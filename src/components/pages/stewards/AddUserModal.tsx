@@ -7,6 +7,7 @@ import { createStewardSchema, stewardRoleOptions } from '../../../features/stewa
 import type { CreateStewardValues } from '../../../features/stewards/types'
 import { DEPARTMENTS, DEPARTMENT_LABELS } from '../../../constants/departments'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
+import { useDialogA11y } from '../../../hooks/useDialogA11y'
 import PhoneInput from '../../ui/PhoneInput'
 import PasswordRequirements from '../../ui/PasswordRequirements'
 
@@ -24,6 +25,7 @@ function AddUserModal({
   isSubmitting,
 }: AddUserModalProps) {
   const { mounted, phase } = useAnimatedMount(open)
+  const dialogRef = useDialogA11y<HTMLDivElement>(onClose)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [serverError, setServerError] = useState('')
 
@@ -76,6 +78,8 @@ function AddUserModal({
       <div className="flex min-h-full items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
       <div
         className={`max-h-[calc(100vh-2rem)] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:max-h-[calc(100vh-3rem)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
+        ref={dialogRef}
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"

@@ -1,5 +1,6 @@
 import { AlertTriangle } from 'lucide-react'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
+import { useDialogA11y } from '../../../hooks/useDialogA11y'
 import type { Steward } from '../../../features/stewards/types'
 
 type DeleteUserModalProps = {
@@ -18,6 +19,7 @@ function DeleteUserModal({
   isSubmitting,
 }: DeleteUserModalProps) {
   const { mounted, phase } = useAnimatedMount(open)
+  const dialogRef = useDialogA11y<HTMLDivElement>(onClose)
   if (!mounted || !steward) return null
 
   return (
@@ -28,6 +30,8 @@ function DeleteUserModal({
       <div className="flex min-h-full items-center justify-center px-4 py-6">
       <div
         className={`max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-5 text-center shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
+        ref={dialogRef}
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"

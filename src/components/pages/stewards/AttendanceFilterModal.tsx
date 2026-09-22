@@ -1,5 +1,6 @@
 import { CalendarDays, ChevronDown, X } from 'lucide-react'
 import { useAnimatedMount } from '../../../hooks/useAnimatedMount'
+import { useDialogA11y } from '../../../hooks/useDialogA11y'
 
 type AttendanceFilterModalProps = {
   open: boolean
@@ -11,6 +12,7 @@ function AttendanceFilterModal({
   onClose,
 }: AttendanceFilterModalProps) {
   const { mounted, phase } = useAnimatedMount(open)
+  const dialogRef = useDialogA11y<HTMLDivElement>(onClose)
   if (!mounted) return null
 
   return (
@@ -21,6 +23,8 @@ function AttendanceFilterModal({
       <div className="flex min-h-full items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
       <div
         className={`max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_28px_80px_rgba(15,23,42,0.24)] sm:p-6 ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}
+        ref={dialogRef}
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
