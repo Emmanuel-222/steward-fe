@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { ArrowRight, Download } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 type QuickAction = {
   label: string
@@ -42,23 +42,6 @@ function RegistryActionsSection({ actions }: RegistryActionsSectionProps) {
           )
         })}
       </div>
-
-      <article className="rounded-card bg-brand p-6 text-white shadow-[0_18px_45px_rgba(15,45,82,0.22)]">
-        <h4 className="text-lg font-semibold">Registry Health</h4>
-        <p className="mt-3 text-sm leading-6 text-slate-200">
-          Total engagement is up 4.5% this month. Weekly reports are ready for
-          export.
-        </p>
-        <button
-          type="button"
-          disabled
-          title="Coming soon"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-400 cursor-not-allowed"
-        >
-          <Download className="h-4 w-4" />
-          Download PDF
-        </button>
-      </article>
     </div>
   )
 }

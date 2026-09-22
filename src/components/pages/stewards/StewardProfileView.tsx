@@ -4,7 +4,6 @@ import {
   Cake,
   CalendarDays,
   Clock3,
-  Download,
   Filter,
   Mail,
   Phone,
@@ -78,7 +77,7 @@ function StewardProfileView({
           Back to Directory
         </button>
 
-      <section className="grid gap-5 xl:grid-cols-[1.8fr_0.9fr]">
+      <section className="grid gap-5">
         <article className="rounded-card border border-slate-200 bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:p-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
@@ -128,26 +127,6 @@ function StewardProfileView({
               Edit
             </button>
           </div>
-        </article>
-
-        <article className="rounded-card bg-brand p-5 text-white shadow-[0_18px_55px_rgba(15,45,82,0.18)] sm:p-6">
-          <p className="text-sm font-semibold">Availability Status</p>
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            Active Duty
-          </div>
-          <p className="mt-5 text-sm leading-6 text-slate-200">
-            {steward.name.split(' ')[0]} is currently assigned to the Main Hall
-            service for the upcoming roster.
-          </p>
-          <button
-            type="button"
-            disabled
-            title="Coming soon"
-            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-400 cursor-not-allowed"
-          >
-            Update Schedule
-          </button>
         </article>
       </section>
 
@@ -239,15 +218,6 @@ function StewardProfileView({
             >
               <Filter className="h-4 w-4" />
               Filter
-            </button>
-            <button
-              type="button"
-              disabled
-              title="Coming soon"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-slate-400 cursor-not-allowed"
-            >
-              <Download className="h-4 w-4" />
-              Export
             </button>
           </div>
         </div>
