@@ -26,7 +26,7 @@ function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-page-bg px-4 py-12">
+    <main className="flex min-h-dvh items-center justify-center bg-page-bg px-4 py-12">
       <div className="w-full max-w-md">
         <div className="rounded-card border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
           {isSuccess ? (
@@ -60,7 +60,7 @@ function ForgotPasswordPage() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Email</label>
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Email</label>
                   <input
                     type="email"
                     value={email}
@@ -95,7 +95,7 @@ function ForgotPasswordPage() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 

@@ -87,7 +87,7 @@ function SignupForm() {
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="space-y-2 animate-stagger-fade" style={{ animationDelay: '0ms' }}>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-signature">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-brand">
           Attendance Management
         </p>
         <h2 className="font-serif text-[2rem] font-semibold tracking-tight text-brand">

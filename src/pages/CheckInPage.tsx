@@ -64,7 +64,7 @@ function CheckInPage() {
   const showSuccess = pageState.status === 'success'
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f6f3ee] px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-[#f6f3ee] px-4 py-10">
       <div className="w-full max-w-sm animate-fade-in-up">
         <div className="overflow-hidden rounded-3xl border border-slate-200/60 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
           <div className="bg-gradient-to-b from-amber-50/60 to-white px-7 pb-2 pt-9">
@@ -163,13 +163,13 @@ function CheckInPage() {
 
         <div className="mt-6 flex items-center justify-center gap-2">
           <span className="h-px w-6 bg-slate-200" />
-          <span className="font-sans text-[10px] font-medium uppercase tracking-[0.25em] text-slate-400">
+          <span className="font-sans text-[10px] font-medium uppercase tracking-[0.25em] text-slate-600">
             The Registrar
           </span>
           <span className="h-px w-6 bg-slate-200" />
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 

@@ -23,6 +23,6 @@ describe('PasswordRequirements', () => {
     render(<PasswordRequirements password="" />)
 
     const item = screen.getByText('One uppercase letter').closest('li')
-    expect(item?.className).toContain('text-slate-400')
+    expect(item?.className).toContain('text-slate-500')
   })
 })

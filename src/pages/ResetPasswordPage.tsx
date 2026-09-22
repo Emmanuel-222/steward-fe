@@ -43,7 +43,7 @@ function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-page-bg px-4 py-12">
+    <main className="flex min-h-dvh items-center justify-center bg-page-bg px-4 py-12">
         <div className="w-full max-w-md rounded-card border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)] text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-100">
             <KeyRound className="h-8 w-8 text-rose-600" />
@@ -59,12 +59,12 @@ function ResetPasswordPage() {
             Request new link
           </Link>
         </div>
-      </div>
+      </main>
     )
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-page-bg px-4 py-12">
+    <main className="flex min-h-dvh items-center justify-center bg-page-bg px-4 py-12">
       <div className="w-full max-w-md">
         <div className="rounded-card border border-slate-200 bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)]">
           {isSuccess ? (
@@ -98,7 +98,7 @@ function ResetPasswordPage() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">New Password</label>
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">New Password</label>
                   <div className="relative">
                     <input
                       type={showNew ? 'text' : 'password'}
@@ -118,10 +118,10 @@ function ResetPasswordPage() {
                       {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
-                  <p className="mt-1 text-xs text-slate-400">Minimum 8 characters</p>
+                  <p className="mt-1 text-xs text-slate-500">Minimum 8 characters</p>
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Confirm New Password</label>
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Confirm New Password</label>
                   <div className="relative">
                     <input
                       type={showConfirm ? 'text' : 'password'}
@@ -168,7 +168,7 @@ function ResetPasswordPage() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 

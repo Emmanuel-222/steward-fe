@@ -23,7 +23,7 @@ function PasswordRequirements({ password }: PasswordRequirementsProps) {
           <li
             key={requirement.label}
             className={`flex items-center gap-2 text-xs transition-colors ${
-              satisfied ? 'text-emerald-600' : 'text-slate-400'
+              satisfied ? 'text-emerald-600' : 'text-slate-500'
             }`}
           >
             <span

@@ -85,7 +85,7 @@ function OnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f5efe6] px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-[#f5efe6] px-4 py-10">
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_28px_80px_rgba(15,23,42,0.15)]">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand text-white">
@@ -205,7 +205,7 @@ function OnboardingPage() {
           </button>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 

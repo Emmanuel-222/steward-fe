@@ -112,7 +112,7 @@ function LoginForm() {
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="space-y-2 animate-stagger-fade" style={{ animationDelay: '0ms' }}>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-signature">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-brand">
           Attendance Management
         </p>
         <h2 className="font-serif text-[2rem] font-semibold tracking-tight text-brand">
@@ -275,7 +275,7 @@ function LoginForm() {
         </Link>
       </p>
 
-<div className="mt-8 flex flex-col items-start justify-between gap-2 text-[11px] text-slate-400 sm:flex-row sm:items-center">
+      <div className="mt-8 flex flex-col items-start justify-between gap-2 text-[11px] text-slate-500 sm:flex-row sm:items-center">
         <span>&copy; 2026 Steward Attendance Management.</span>
         <a href="mailto:privacy@stewardattendance.com" className="hover:underline">Privacy Policy & Security Protocol</a>
       </div>
