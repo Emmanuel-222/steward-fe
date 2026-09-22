@@ -102,7 +102,7 @@ function normalizeTimeValue(value: unknown) {
     return ''
   }
 
-  const [hours, minutes, meridiem] = meridiemMatch
+  const [, hours, minutes, meridiem] = meridiemMatch
   let numericHours = Number(hours)
 
   if (meridiem === 'AM') {
@@ -346,4 +346,16 @@ export async function updateMeeting({
 export async function deleteMeeting(id: string) {
   await api.delete(`/meetings/${id}`)
   return id
+}
+
+export {
+  formatDate,
+  formatTime,
+  getRawDate,
+  normalizeTimeValue,
+  getRawTime,
+  normalizeExplicitStatus,
+  normalizeStatus,
+  normalizeMeeting,
+  sortMeetings,
 }

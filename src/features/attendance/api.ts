@@ -156,3 +156,5 @@ export async function getMyExcuses() {
   const { data } = await api.get('/attendance/excuse/my')
   return Array.isArray(data) ? data : (data.data ?? [])
 }
+
+export { normalizeRecord, formatCheckinTime, extractRecords }
