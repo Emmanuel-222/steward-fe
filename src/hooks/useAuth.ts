@@ -3,13 +3,23 @@ import { getAccessToken, setAccessToken } from '../services/tokenStore'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://steward-api-nlga.onrender.com'
 
-function isTokenExpired(token: string): boolean {
+function decodeJwtPayload(token: string): { exp?: number } | null {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.exp * 1000 < Date.now()
+    const part = token.split('.')[1] ?? ''
+    const base64 = part.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
+    return JSON.parse(atob(padded))
   } catch {
+    return null
+  }
+}
+
+function isTokenExpired(token: string): boolean {
+  const payload = decodeJwtPayload(token)
+  if (!payload || typeof payload.exp !== 'number') {
     return true
   }
+  return payload.exp * 1000 < Date.now()
 }
 
 function readUser() {
