@@ -66,7 +66,7 @@ function Pagination({ page, totalPages, pageSize, onPageChange, onPageSizeChange
 
         {getPageNumbers(page, totalPages).map((p, i) =>
           p === 'ellipsis' ? (
-            <span key={`e-${i}`} className="flex h-10 w-10 items-center justify-center text-xs text-slate-400">
+            <span key={`e-${i}`} className="flex h-10 w-10 items-center justify-center text-xs text-slate-600">
               ...
             </span>
           ) : (

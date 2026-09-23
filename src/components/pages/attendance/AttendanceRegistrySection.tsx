@@ -182,7 +182,7 @@ function AttendanceRegistrySection({
 
         <div className="flex items-center gap-3">
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 group-focus-within:text-brand transition-colors" />
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600 group-focus-within:text-brand transition-colors" />
             <input
               type="text"
               placeholder="Search stewards..."
@@ -212,7 +212,7 @@ function AttendanceRegistrySection({
       </div>
 
       <div className="rounded-4xl border border-slate-200 bg-white p-2 shadow-[0_20px_70px_rgba(15,23,42,0.04)]">
-        <div className={`hidden lg:grid ${!isReadOnly ? 'lg:grid-cols-[auto_2fr_1.5fr_auto]' : 'lg:grid-cols-[2fr_1.5fr_auto]'} gap-4 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 border-b border-slate-50`}>
+        <div className={`hidden lg:grid ${!isReadOnly ? 'lg:grid-cols-[auto_2fr_1.5fr_auto]' : 'lg:grid-cols-[2fr_1.5fr_auto]'} gap-4 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-600 border-b border-slate-50`}>
           {!isReadOnly && (
             <button onClick={toggleSelectAll} aria-label={isAllSelected ? 'Deselect all' : 'Select all'} className="p-2.5 text-left">
               <div className={`h-4 w-4 rounded border-2 transition ${isAllSelected ? 'bg-brand border-brand' : 'border-slate-300 hover:border-slate-400'}`}>
@@ -228,7 +228,7 @@ function AttendanceRegistrySection({
         <div ref={listRef} className="p-2 space-y-1">
           {searched.length === 0 ? (
             <div className="py-20 text-center">
-              <p className="text-sm font-medium text-slate-400">No stewards match your criteria.</p>
+              <p className="text-sm font-medium text-slate-600">No stewards match your criteria.</p>
             </div>
           ) : (
             searched.map((entry, index) => {
@@ -290,11 +290,11 @@ function AttendanceRegistrySection({
                         {entry.steward.name}
                       </p>
                       {!isRushMode && (
-                        <p className="font-sans text-[11px] font-medium text-slate-400 truncate">
+                        <p className="font-sans text-[11px] font-medium text-slate-600 truncate">
                           {entry.steward.email}
                         </p>
                       )}
-                      <p className="font-sans text-[10px] font-medium text-slate-400 truncate mt-0.5">
+                      <p className="font-sans text-[10px] font-medium text-slate-600 truncate mt-0.5">
                         {entry.steward.department}
                         <span className="inline-flex ml-1.5 rounded-lg bg-indigo-50 px-2 py-0.5 font-sans text-[9px] font-bold uppercase tracking-wider text-indigo-600 border border-indigo-100 align-middle">
                           {entry.steward.role}
@@ -310,7 +310,7 @@ function AttendanceRegistrySection({
                              <span key={`badge-${entry.status}`} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-sans text-[10px] font-bold animate-scale-in ${isLate ? 'bg-amber-100/80 text-amber-700' : 'bg-emerald-100/80 text-emerald-700'}`}>
                                 {isLate ? 'LATE' : 'PRESENT'}
                              </span>
-                             <span className="mt-1 font-sans text-[9px] font-bold text-slate-400 flex items-center gap-1">
+                             <span className="mt-1 font-sans text-[9px] font-bold text-slate-600 flex items-center gap-1">
                                 <History className="h-3 w-3" />
                                 {entry.markedAt ? `Checked in at ${entry.markedAt}` : 'Confirmed'}
                              </span>
@@ -331,7 +331,7 @@ function AttendanceRegistrySection({
                               <span key={`badge-${entry.status}`} className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-3 py-1 font-sans text-[10px] font-bold text-rose-700 animate-scale-in">
                                  ABSENT
                               </span>
-                              <span className="mt-1 font-sans text-[9px] font-bold text-slate-400 flex items-center gap-1">
+                              <span className="mt-1 font-sans text-[9px] font-bold text-slate-600 flex items-center gap-1">
                                  <History className="h-3 w-3" />
                                  Finalized as absent
                               </span>
@@ -348,10 +348,10 @@ function AttendanceRegistrySection({
                       <div className="flex lg:hidden gap-2">
                           {isPresent ? (
                             <>
-                               <button aria-label="View check-in time" className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                               <button aria-label="View check-in time" className="p-2 rounded-xl text-slate-600 hover:text-slate-600 hover:bg-slate-100 transition">
                                   <History className="h-3.5 w-3.5" />
                                </button>
-                               <button aria-label="Quick actions" className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                               <button aria-label="Quick actions" className="p-2 rounded-xl text-slate-600 hover:text-slate-600 hover:bg-slate-100 transition">
                                   <Bolt className="h-3.5 w-3.5" />
                                </button>
                             </>
@@ -390,10 +390,10 @@ function AttendanceRegistrySection({
                      <div className="hidden lg:flex items-center justify-end pr-2 gap-2">
                         {isPresent ? (
                           <>
-                             <button aria-label="View check-in time" className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                             <button aria-label="View check-in time" className="p-2.5 rounded-xl text-slate-600 hover:text-slate-600 hover:bg-slate-100 transition">
                                 <History className="h-4 w-4" />
                              </button>
-                             <button aria-label="Quick actions" className="p-2.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                             <button aria-label="Quick actions" className="p-2.5 rounded-xl text-slate-600 hover:text-slate-600 hover:bg-slate-100 transition">
                                 <Bolt className="h-4 w-4" />
                              </button>
                           </>
@@ -468,7 +468,7 @@ function AttendanceRegistrySection({
         </div>
       )}
       <div className="pt-4 flex items-center justify-center">
-         <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
+         <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-600">
             End of Registry List for {meetingTitle}
          </p>
       </div>

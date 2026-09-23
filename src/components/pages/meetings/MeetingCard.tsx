@@ -46,15 +46,15 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
 
       <div className="mt-6 space-y-3 text-sm text-slate-500">
         <div className="flex items-center gap-3">
-          <CalendarDays className="h-4 w-4 text-slate-400" />
+          <CalendarDays className="h-4 w-4 text-slate-600" />
           <span>{meeting.date}</span>
         </div>
         <div className="flex items-center gap-3">
-          <Clock3 className="h-4 w-4 text-slate-400" />
+          <Clock3 className="h-4 w-4 text-slate-600" />
           <span>{meeting.time}</span>
         </div>
         <div className="flex items-center gap-3">
-          <MapPinHouse className="h-4 w-4 text-slate-400" />
+          <MapPinHouse className="h-4 w-4 text-slate-600" />
           <span>{meeting.location}</span>
         </div>
       </div>
@@ -62,7 +62,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
       {meeting.present !== null && meeting.absent !== null ? (
         <div className="mt-6 grid grid-cols-2 gap-3">
           <div className="rounded-2xl bg-[#eef6ff] p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
               Present
             </p>
             <p className="mt-2 text-3xl font-semibold text-brand">
@@ -70,7 +70,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
             </p>
           </div>
           <div className="rounded-2xl bg-[#fff1f3] p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
               Absent
             </p>
             <p className="mt-2 text-3xl font-semibold text-[#b42318]">
@@ -80,7 +80,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
         </div>
       ) : (
         <div className="mt-6 rounded-2xl bg-[#f6f8fb] p-4 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
             Attendance Stats
           </p>
           <p className="mt-2 text-sm text-slate-500">

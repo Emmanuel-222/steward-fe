@@ -26,7 +26,7 @@ function StewardsToolbar({
         label="Total Stewards"
         value={total}
         detail={growth}
-        detailClassName="text-emerald-600"
+        detailClassName="text-emerald-700"
       />
 
       <SearchField

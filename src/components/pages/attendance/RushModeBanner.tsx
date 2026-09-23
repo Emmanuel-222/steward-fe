@@ -39,8 +39,8 @@ function RushModeBanner({
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-4 rounded-2xl bg-white/5 p-3 pr-6 backdrop-blur-sm border border-white/10">
              <div className="text-right">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Expected Arrivals</p>
-                <p className="text-2xl font-bold">{expectedArrivals} <span className="text-sm font-medium text-slate-400">Stewards</span></p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">Expected Arrivals</p>
+                <p className="text-2xl font-bold">{expectedArrivals} <span className="text-sm font-medium text-slate-600">Stewards</span></p>
              </div>
              <button 
                 type="button"

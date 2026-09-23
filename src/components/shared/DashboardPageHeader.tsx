@@ -17,7 +17,7 @@ function DashboardPageHeader({
     <section className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
       <div className="space-y-2">
         {eyebrow ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-600">
             {eyebrow}
           </p>
         ) : null}
@@ -25,7 +25,7 @@ function DashboardPageHeader({
           {title}
         </h2>
         {description ? (
-          <p className="max-w-2xl text-sm leading-6 text-slate-500">
+          <p className="max-w-2xl text-sm leading-6 text-slate-600">
             {description}
           </p>
         ) : null}

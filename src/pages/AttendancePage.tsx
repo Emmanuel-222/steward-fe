@@ -236,7 +236,7 @@ function AttendancePage() {
       label: 'Unmarked',
       value: String(statsData?.unmarked ?? 0),
       detail: 'Pending',
-      tone: 'text-slate-400',
+      tone: 'text-slate-600',
       border: 'border-slate-100 bg-slate-50/20',
     },
   ]
@@ -356,17 +356,17 @@ function AttendancePage() {
               </div>
               <div className="space-y-1">
                 <h3 className="text-2xl font-bold text-brand">{currentUser?.name}</h3>
-                <p className="text-sm font-medium text-slate-400">{currentUser?.role || 'Steward'}</p>
+                <p className="text-sm font-medium text-slate-600">{currentUser?.role || 'Steward'}</p>
               </div>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               <div className="rounded-3xl border border-slate-100 bg-slate-50/50 p-6">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Status</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Current Status</p>
                 <div className="mt-2 flex items-center gap-2">
                   {(() => {
                     const myEntry = entries.find(e => String(e.steward.id) === String(currentUser?.id))
-                    if (!myEntry) return <span className="text-lg font-bold text-slate-400">Not Registered</span>
+                    if (!myEntry) return <span className="text-lg font-bold text-slate-600">Not Registered</span>
                     
                     if (myEntry.status === 'Present') return (
                       <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-bold text-emerald-700">
@@ -394,7 +394,7 @@ function AttendancePage() {
               </div>
 
               <div className="rounded-3xl border border-slate-100 bg-slate-50/50 p-6">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Session Date</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Session Date</p>
                 <p className="mt-2 text-lg font-bold text-brand">{activeMeeting.date}</p>
               </div>
             </div>
@@ -443,7 +443,7 @@ function AttendancePage() {
           </div>
 
           <div className="rounded-card border border-slate-100 bg-slate-50/30 p-6 text-center">
-             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
+             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-600">
                 End of personal session view
              </p>
           </div>

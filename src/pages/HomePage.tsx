@@ -72,7 +72,7 @@ function HomePage() {
       label: 'Total Stewards',
       value: stewards.length.toString(),
       detail: 'Live count',
-      tone: 'text-emerald-600' as const,
+      tone: 'text-emerald-700' as const,
     },
     {
       label: 'Total Meetings',
@@ -84,7 +84,7 @@ function HomePage() {
       label: "Active Session",
       value: ongoingMeeting ? '01' : '00',
       detail: ongoingMeeting ? 'In Progress' : 'No active meeting',
-      tone: ongoingMeeting ? 'text-emerald-600' as const : 'text-slate-400' as const,
+      tone: ongoingMeeting ? 'text-emerald-700' as const : 'text-slate-600' as const,
     },
     {
       label: 'Engagement Rate',
@@ -106,7 +106,7 @@ function HomePage() {
       label: 'My Attendance Rate',
       value: `${myRate}%`,
       detail: `${myPresentCount} of ${myTotalMarked} sessions`,
-      tone: 'text-emerald-600' as const,
+      tone: 'text-emerald-700' as const,
     },
     {
       label: 'Total Sessions',
@@ -118,7 +118,7 @@ function HomePage() {
       label: "Pending Excuses",
       value: String(myPendingExcuses.length),
       detail: 'Awaiting review',
-      tone: myPendingExcuses.length > 0 ? 'text-amber-600' as const : 'text-slate-400' as const,
+      tone: myPendingExcuses.length > 0 ? 'text-amber-600' as const : 'text-slate-600' as const,
     },
     {
       label: 'Upcoming Meetings',
@@ -204,13 +204,13 @@ function HomePage() {
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-sm font-bold text-brand">Recent Sessions</h3>
               {myAttendance.length > 5 && (
-                <button onClick={() => navigate('/dashboard/attendance')} className="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-brand transition">
+                <button onClick={() => navigate('/dashboard/attendance')} className="flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-brand transition">
                   View all <ArrowRight className="h-3 w-3" />
                 </button>
               )}
             </div>
             {recentMyAttendance.length === 0 ? (
-              <p className="py-8 text-center text-sm font-medium text-slate-400">No attendance records yet.</p>
+              <p className="py-8 text-center text-sm font-medium text-slate-600">No attendance records yet.</p>
             ) : (
               <div className="space-y-2">
                 {recentMyAttendance.map((record) => (
@@ -219,7 +219,7 @@ function HomePage() {
                       <p className="text-sm font-bold text-brand truncate">
                         {record.meeting.title || `${record.meeting.type} Meeting`}
                       </p>
-                      <p className="text-xs font-medium text-slate-400">
+                      <p className="text-xs font-medium text-slate-600">
                         {record.meeting.date.split('T')[0]} &middot; {record.meeting.startTime}
                       </p>
                     </div>
@@ -239,7 +239,7 @@ function HomePage() {
                 <h3 className="text-sm font-bold text-brand">Upcoming Meetings</h3>
               </div>
               {upcomingMeetings.length === 0 ? (
-                <p className="py-6 text-center text-sm font-medium text-slate-400">No upcoming meetings scheduled.</p>
+                <p className="py-6 text-center text-sm font-medium text-slate-600">No upcoming meetings scheduled.</p>
               ) : (
                 <div className="space-y-3">
                   {upcomingMeetings.map((meeting) => {
@@ -252,7 +252,7 @@ function HomePage() {
                             <p className="text-sm font-bold text-brand truncate">
                               {meeting.title || `${meeting.type} Meeting`}
                             </p>
-                            <p className="text-xs font-medium text-slate-400">
+                            <p className="text-xs font-medium text-slate-600">
                                {meeting.rawDate.split('T')[0]} &middot; {meeting.rawStartTime}
                             </p>
                           </div>

@@ -41,7 +41,7 @@ function AttendanceFilterModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close attendance filter dialog"
           >
             <X className="h-5 w-5" />
@@ -69,7 +69,7 @@ function AttendanceFilterModal({
                 <option>Mid-week Service</option>
                 <option>Special Meeting</option>
               </select>
-              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
             </div>
           </label>
 
@@ -87,7 +87,7 @@ function AttendanceFilterModal({
                 <option>Absent</option>
                 <option>Excused</option>
               </select>
-              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
             </div>
           </label>
 
@@ -102,11 +102,11 @@ function AttendanceFilterModal({
                   <input
                     type="text"
                     placeholder="mm/dd/yyyy"
-                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
+                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-600"
                   />
-                  <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
                 </div>
-                <span className="text-xs text-slate-400">From</span>
+                <span className="text-xs text-slate-600">From</span>
               </label>
 
               <label className="block space-y-2">
@@ -114,11 +114,11 @@ function AttendanceFilterModal({
                   <input
                     type="text"
                     placeholder="mm/dd/yyyy"
-                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
+                    className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 pr-10 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-600"
                   />
-                  <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
                 </div>
-                <span className="text-xs text-slate-400">To</span>
+                <span className="text-xs text-slate-600">To</span>
               </label>
             </div>
           </div>

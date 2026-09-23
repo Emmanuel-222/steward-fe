@@ -87,7 +87,7 @@ function MainLayout() {
             <h2 className={`font-semibold tracking-tight text-brand ${collapsed ? 'text-lg lg:text-xl' : 'text-xl'}`}>
               {collapsed ? 'TR' : 'The Registrar'}
             </h2>
-            <p className={`mt-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400 ${collapsed ? 'lg:hidden' : ''}`}>
+            <p className={`mt-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-600 ${collapsed ? 'lg:hidden' : ''}`}>
               Attendance Management
             </p>
           </div>
@@ -131,7 +131,7 @@ function MainLayout() {
                 `group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${collapsed ? 'lg:justify-center lg:px-2' : ''}`,
                 isActive
                   ? 'bg-white text-brand shadow-[0_10px_30px_rgba(15,45,82,0.08)]'
-                  : 'text-slate-500 hover:bg-white/50 hover:text-brand',
+                  : 'text-slate-600 hover:bg-white/50 hover:text-brand',
               ].join(' ')
             }
           >
@@ -172,14 +172,14 @@ function MainLayout() {
           </div>
           <div className={`min-w-0 ${collapsed ? 'lg:hidden' : ''}`}>
              <p className="text-sm font-bold text-brand truncate">{currentUser?.name || (meQuery.isLoading ? 'Fetching...' : 'Loading...')}</p>
-             <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{currentUser?.role || 'User'}</p>
+             <p className="text-[10px] font-medium text-slate-600 uppercase tracking-wider">{currentUser?.role || 'User'}</p>
           </div>
         </NavLink>
 
         <button
           type="button"
           onClick={handleLogout}
-          className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-500 transition hover:bg-white/70 hover:text-slate-800 ${collapsed ? 'lg:justify-center lg:px-2' : ''}`}
+          className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-white/70 hover:text-slate-800 ${collapsed ? 'lg:justify-center lg:px-2' : ''}`}
         >
           <LogOut className="h-4 w-4 shrink-0" />
           <span className={collapsed ? 'lg:hidden' : ''}>Logout</span>
@@ -197,7 +197,7 @@ function MainLayout() {
             <h2 className="text-lg font-semibold tracking-tight text-brand">
               The Registrar
             </h2>
-            <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+            <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
               Attendance Management
             </p>
           </div>
@@ -220,7 +220,7 @@ function MainLayout() {
           <button
             type="button"
             onClick={() => setCollapsed((prev) => !prev)}
-            className="mx-auto mb-4 hidden rounded-xl p-2 text-slate-400 transition hover:bg-white hover:text-brand lg:block"
+            className="mx-auto mb-4 hidden rounded-xl p-2 text-slate-600 transition hover:bg-white hover:text-brand lg:block"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}

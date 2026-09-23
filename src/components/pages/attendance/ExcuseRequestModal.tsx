@@ -38,7 +38,7 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
       <div className={`max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-card bg-white p-8 shadow-[0_25px_80px_rgba(15,23,42,0.2)] ${phase === 'enter' ? 'animate-modal-enter' : 'animate-modal-exit'}`}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-brand">Request Excuse</h3>
-          <button onClick={onClose} aria-label="Close excuse request dialog" className="p-2.5 rounded-xl hover:bg-slate-100 text-slate-400 transition">
+          <button onClick={onClose} aria-label="Close excuse request dialog" className="p-2.5 rounded-xl hover:bg-slate-100 text-slate-600 transition">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -50,7 +50,7 @@ function ExcuseRequestModal({ meetingId, meetingTitle, isOpen, onClose }: Excuse
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-600 px-1">
               Reason for Absence
             </label>
             <textarea

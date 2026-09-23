@@ -159,7 +159,7 @@ function OnboardingPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-600"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? 'Hide' : 'Show'}
@@ -177,7 +177,7 @@ function OnboardingPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirm((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-600"
                 aria-label={showConfirm ? 'Hide password' : 'Show password'}
               >
                 {showConfirm ? 'Hide' : 'Show'}

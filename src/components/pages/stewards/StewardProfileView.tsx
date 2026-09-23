@@ -98,21 +98,21 @@ function StewardProfileView({
 
                 <div className="grid gap-3 text-sm text-slate-500 sm:grid-cols-2">
                   <span className="inline-flex min-w-0 items-start gap-2">
-                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-slate-600" />
                     <span className="break-all sm:break-normal">{steward.email}</span>
                   </span>
                   <span className="inline-flex items-center gap-2">
-                    <Phone className="h-4 w-4 shrink-0 text-slate-400" />
+                    <Phone className="h-4 w-4 shrink-0 text-slate-600" />
                     <span>{steward.phone}</span>
                   </span>
                   {steward.birthday ? (
                     <span className="inline-flex items-center gap-2">
-                      <Cake className="h-4 w-4 shrink-0 text-slate-400" />
+                      <Cake className="h-4 w-4 shrink-0 text-slate-600" />
                       <span>Birthday: {steward.birthday}</span>
                     </span>
                   ) : null}
                   <span className="inline-flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 shrink-0 text-slate-400" />
+                    <CalendarDays className="h-4 w-4 shrink-0 text-slate-600" />
                     <span>Joined: {steward.dateAdded}</span>
                   </span>
                 </div>
@@ -136,14 +136,14 @@ function StewardProfileView({
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef3ff] text-brand">
               <CalendarDays className="h-5 w-5" />
             </div>
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
               Total Year
             </span>
           </div>
           <p className="mt-6 text-4xl font-semibold text-brand">
             {attendanceSummary.total}
           </p>
-          <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
             Total Meetings
           </p>
         </article>
@@ -160,7 +160,7 @@ function StewardProfileView({
           <p className="mt-6 text-4xl font-semibold text-brand">
             {attendanceSummary.present}
           </p>
-          <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
             Present
           </p>
         </article>
@@ -177,7 +177,7 @@ function StewardProfileView({
           <p className="mt-6 text-4xl font-semibold text-brand">
             {attendanceSummary.absent}
           </p>
-          <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
             Absent
           </p>
         </article>
@@ -191,7 +191,7 @@ function StewardProfileView({
               <p className="mt-1 text-2xl font-semibold text-brand">{attendanceRate}%</p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-600">
                 {attendanceSummary.present} / {attendanceSummary.total} meetings
               </p>
             </div>
@@ -255,7 +255,7 @@ function StewardProfileView({
                   </div>
 
                   <div className="mt-4 flex items-center justify-between gap-4 text-sm text-slate-500">
-                    <span className="font-medium text-slate-400">Marked At</span>
+                    <span className="font-medium text-slate-600">Marked At</span>
                     <span>{entry.time}</span>
                   </div>
                 </article>
@@ -264,7 +264,7 @@ function StewardProfileView({
 
             <div className="hidden overflow-x-auto md:block">
               <div className="min-w-[680px]">
-                <div className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 bg-[#f8fbff] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400 md:px-6">
+                <div className="grid grid-cols-[1fr_1.2fr_0.8fr_0.8fr] gap-4 bg-[#f8fbff] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600 md:px-6">
                   <p>Date</p>
                   <p>Meeting Type</p>
                   <p>Status</p>

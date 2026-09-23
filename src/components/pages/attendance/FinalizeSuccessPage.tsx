@@ -34,7 +34,7 @@ function FinalizeSuccessPage({
 
       <div className="mt-12 grid w-full max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '0ms' }}>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Final Present</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600">Final Present</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.present}</p>
           <span className="mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-600">CONFIRMED</span>
         </div>
@@ -42,17 +42,17 @@ function FinalizeSuccessPage({
         <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-rose-400">Final Absent</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.absent}</p>
-          <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.absent} marked as absent</span>
+          <span className="mt-2 text-[11px] font-medium text-slate-600">{stats.absent} marked as absent</span>
         </div>
 
         <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-400">Final Excused</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.excused}</p>
-          <span className="mt-2 text-[11px] font-medium text-slate-400">{stats.excused} stewards excused</span>
+          <span className="mt-2 text-[11px] font-medium text-slate-600">{stats.excused} stewards excused</span>
         </div>
 
         <div className="rounded-card border border-slate-100 bg-white p-8 shadow-[0_15px_45px_rgba(15,23,42,0.05)] animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Performance</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600">Performance</p>
           <p className="mt-2 text-4xl font-bold text-brand">{stats.performance}%</p>
           <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
              <div 
@@ -76,11 +76,11 @@ function FinalizeSuccessPage({
               The session data has been validated against global steward standards. A timestamped PDF ledger is ready for administrative review.
             </p>
             <div className="mt-4 flex items-center gap-6">
-               <span className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+               <span className="flex items-center gap-2 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Secure Audit
                </span>
-               <span className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+               <span className="flex items-center gap-2 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
                   <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                   Cloud Synced
                </span>
@@ -107,7 +107,7 @@ function FinalizeSuccessPage({
         </button>
       </div>
       
-      <p className="mt-12 text-[10px] font-medium uppercase tracking-[0.3em] text-slate-400">
+      <p className="mt-12 text-[10px] font-medium uppercase tracking-[0.3em] text-slate-600">
         Registrar Reference ID: #RS-002-SESSION-FINAL
       </p>
     </div>

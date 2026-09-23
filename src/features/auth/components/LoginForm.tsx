@@ -164,7 +164,7 @@ function LoginForm() {
           <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-signature/30">
             <svg
               aria-hidden="true"
-              className="h-4 w-4 text-slate-400"
+              className="h-4 w-4 text-slate-600"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -174,7 +174,7 @@ function LoginForm() {
               <path d="m4 7 8 6 8-6" />
             </svg>
             <input
-              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-600"
               type="email"
               placeholder="you@example.com"
               {...register('email')}
@@ -194,7 +194,7 @@ function LoginForm() {
           <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-signature/30">
             <svg
               aria-hidden="true"
-              className="h-4 w-4 text-slate-400"
+              className="h-4 w-4 text-slate-600"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -204,14 +204,14 @@ function LoginForm() {
               <path d="M8 11V8a4 4 0 1 1 8 0v3" />
             </svg>
             <input
-              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-600"
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
               {...register('password')}
             />
             <button
               type="button"
-              className="text-slate-400 transition hover:text-slate-600"
+              className="text-slate-600 transition hover:text-slate-600"
               onClick={() => setShowPassword((current) => !current)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >

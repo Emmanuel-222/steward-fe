@@ -156,7 +156,7 @@ function ImportStewardsModal({
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close import stewards dialog"
           >
             <X className="h-5 w-5" />
@@ -257,7 +257,7 @@ function ImportStewardsModal({
                   {selectedFile ? selectedFile.name : 'Choose a CSV file to upload'}
                 </span>
               </label>
-              <p className="mt-1.5 text-xs text-slate-400">
+              <p className="mt-1.5 text-xs text-slate-600">
                 Accepts .csv files up to 1MB. Required columns: fullName, email, phone,
                 department, birthday. Failure row numbers match your spreadsheet (header
                 is row 1, first steward row 2).

@@ -9,7 +9,7 @@ function SearchField(props: SearchFieldProps) {
       <Search className="h-4 w-4 shrink-0" />
       <input
         type="search"
-        className="w-full min-w-0 border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+        className="w-full min-w-0 border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-600"
         {...props}
       />
     </label>

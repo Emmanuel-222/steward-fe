@@ -191,7 +191,7 @@ function ScheduleMeetingModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close schedule meeting dialog"
           >
             <X className="h-5 w-5" />

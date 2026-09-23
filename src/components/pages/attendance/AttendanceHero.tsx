@@ -21,7 +21,7 @@ function AttendanceHero({
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
+      <nav className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600">
         <span>Steward Registry</span>
         <span className="text-slate-300">/</span>
         <span className="text-brand">Attendance Marking</span>
@@ -42,11 +42,11 @@ function AttendanceHero({
           </div>
           <div className="flex flex-wrap items-center gap-5 text-sm font-medium text-slate-500">
             <span className="inline-flex items-center gap-2">
-              <CalendarDays className="h-4 w-4 text-slate-400" />
+              <CalendarDays className="h-4 w-4 text-slate-600" />
               {meeting.date}
             </span>
             <span className="inline-flex items-center gap-2">
-              <Clock3 className="h-4 w-4 text-slate-400" />
+              <Clock3 className="h-4 w-4 text-slate-600" />
               {meeting.time}
             </span>
           </div>
@@ -58,14 +58,14 @@ function AttendanceHero({
               <Shield className="h-4 w-4" />
             </div>
             <div className="min-w-0 pr-4">
-              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">
+              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-600">
                 Active Meeting
               </p>
               <p className="truncate text-sm font-bold text-slate-800">
                 {meeting.subtitle || 'General Meeting'}
               </p>
             </div>
-            <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />
+            <ChevronDown className="h-4 w-4 shrink-0 text-slate-600" />
           </div>
 
           <MeetingQR meeting={meeting} />
@@ -86,7 +86,7 @@ function AttendanceHero({
                 {isFinalizing ? 'Finalizing...' : 'Finalize Session'}
               </button>
             ) : (
-              <div className="inline-flex items-center gap-3 rounded-2xl bg-slate-50 border border-slate-200 px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <div className="inline-flex items-center gap-3 rounded-2xl bg-slate-50 border border-slate-200 px-6 py-4 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
                 <Lock className="h-3 w-3" />
                 Admin Only
               </div>

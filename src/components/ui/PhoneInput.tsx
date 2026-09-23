@@ -33,7 +33,7 @@ function PhoneInput({ value, onChange, className = '', ...rest }: PhoneInputProp
         value={display}
         onChange={handleChange}
         placeholder="801 234 5678"
-        className="w-full min-w-0 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+        className="w-full min-w-0 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-600"
         {...rest}
       />
     </div>

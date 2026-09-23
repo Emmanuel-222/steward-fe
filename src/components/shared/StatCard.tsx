@@ -41,7 +41,7 @@ function StatCard({
       className={`rounded-3xl border bg-white p-5 shadow-[0_18px_55px_rgba(15,23,42,0.06)] ${className}`}
     >
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-600">
           {label}
         </p>
         {trend && (

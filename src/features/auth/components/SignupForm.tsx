@@ -127,7 +127,7 @@ function SignupForm() {
             <input
               type="text"
               placeholder="Julian"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-brand placeholder:text-slate-400"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-brand placeholder:text-slate-600"
               {...register('firstName')}
             />
             {errors.firstName ? (
@@ -142,7 +142,7 @@ function SignupForm() {
             <input
               type="text"
               placeholder="Pierce"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-brand placeholder:text-slate-400"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-brand placeholder:text-slate-600"
               {...register('lastName')}
             />
             {errors.lastName ? (
@@ -158,7 +158,7 @@ function SignupForm() {
           <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-signature/30">
             <svg
               aria-hidden="true"
-              className="h-4 w-4 text-slate-400"
+              className="h-4 w-4 text-slate-600"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -168,7 +168,7 @@ function SignupForm() {
               <path d="m4 7 8 6 8-6" />
             </svg>
             <input
-              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-600"
               type="email"
               placeholder="you@example.com"
               {...register('email')}
@@ -198,7 +198,7 @@ function SignupForm() {
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
           </div>
           {errors.department ? (
             <p className="text-sm text-rose-600">{errors.department.message}</p>
@@ -212,7 +212,7 @@ function SignupForm() {
           <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-signature/30">
             <svg
               aria-hidden="true"
-              className="h-4 w-4 text-slate-400"
+              className="h-4 w-4 text-slate-600"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -222,14 +222,14 @@ function SignupForm() {
               <path d="M8 11V8a4 4 0 1 1 8 0v3" />
             </svg>
             <input
-              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-600"
               type={showPassword ? 'text' : 'password'}
               placeholder="Create a secure password"
               {...register('password')}
             />
             <button
               type="button"
-              className="text-slate-400 transition hover:text-slate-600"
+              className="text-slate-600 transition hover:text-slate-600"
               onClick={() => setShowPassword((current) => !current)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
@@ -249,7 +249,7 @@ function SignupForm() {
           <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-signature/30">
             <svg
               aria-hidden="true"
-              className="h-4 w-4 text-slate-400"
+              className="h-4 w-4 text-slate-600"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -259,14 +259,14 @@ function SignupForm() {
               <path d="M8 11V8a4 4 0 1 1 8 0v3" />
             </svg>
             <input
-              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+              className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-600"
               type={showConfirm ? 'text' : 'password'}
               placeholder="Re-enter your password"
               {...register('confirmPassword')}
             />
             <button
               type="button"
-              className="text-slate-400 transition hover:text-slate-600"
+              className="text-slate-600 transition hover:text-slate-600"
               onClick={() => setShowConfirm((current) => !current)}
               aria-label={showConfirm ? 'Hide password' : 'Show password'}
             >

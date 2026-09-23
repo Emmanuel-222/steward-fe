@@ -134,7 +134,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
         aria-label="Global search"
       >
         <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3 sm:py-3">
-          <Search className="h-5 w-5 shrink-0 text-slate-400" />
+          <Search className="h-5 w-5 shrink-0 text-slate-600" />
           <input
             ref={inputRef}
             type="text"
@@ -142,7 +142,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search stewards, meetings..."
-            className="flex-1 border-none bg-transparent text-base text-slate-800 outline-none placeholder:text-slate-400"
+            className="flex-1 border-none bg-transparent text-base text-slate-800 outline-none placeholder:text-slate-600"
             role="combobox"
             aria-expanded={flatItems.length > 0}
             aria-activedescendant={safeSelectedIndex >= 0 ? `result-${safeSelectedIndex}` : undefined}
@@ -152,12 +152,12 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 sm:p-1"
+            className="rounded-lg p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-600 sm:p-1"
             aria-label="Close search"
           >
             <X className="h-5 w-5 sm:h-4 sm:w-4" />
           </button>
-          <kbd className="hidden rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-mono text-slate-400 sm:inline-block">
+          <kbd className="hidden rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-mono text-slate-600 sm:inline-block">
             ⌘K
           </kbd>
         </div>
@@ -166,7 +166,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
           {/* INITIAL STATE: no query → recent searches + quick links */}
           {query === '' && recents.length > 0 && (
             <div className="px-1 pb-1">
-              <p className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              <p className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
                 Recent Searches
               </p>
               {recents.map((r) => (
@@ -176,14 +176,14 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
                   onClick={() => setQuery(r.query)}
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 transition hover:bg-slate-50"
                 >
-                  <History className="h-4 w-4 shrink-0 text-slate-400" />
+                  <History className="h-4 w-4 shrink-0 text-slate-600" />
                   <span className="truncate">{r.query}</span>
                 </button>
               ))}
               <button
                 type="button"
                 onClick={clearRecents}
-                className="mt-1 px-3 py-2 text-xs font-medium text-slate-400 transition hover:text-slate-600"
+                className="mt-1 px-3 py-2 text-xs font-medium text-slate-600 transition hover:text-slate-600"
               >
                 Clear recent searches
               </button>
@@ -192,7 +192,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
 
           {query === '' && recents.length === 0 && (
             <div className="px-1 pb-1">
-              <p className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              <p className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
                 Quick Links
               </p>
               {quickLinks.map((link) => (
@@ -205,7 +205,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
                   }}
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-600 transition hover:bg-slate-50"
                 >
-                  <link.icon className="h-4 w-4 shrink-0 text-slate-400" />
+                  <link.icon className="h-4 w-4 shrink-0 text-slate-600" />
                   <span>{link.label}</span>
                   <ChevronRight className="ml-auto h-4 w-4 text-slate-300" />
                 </button>
@@ -222,7 +222,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
                   className="h-10 animate-pulse rounded-xl bg-slate-100"
                 />
               ))}
-              <p className="pt-2 text-center text-xs text-slate-400">
+              <p className="pt-2 text-center text-xs text-slate-600">
                 Searching stewards...
               </p>
             </div>
@@ -234,7 +234,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
               <p className="text-sm font-medium text-slate-500">
                 No results found
               </p>
-              <ul className="mt-4 space-y-1 text-xs text-slate-400">
+              <ul className="mt-4 space-y-1 text-xs text-slate-600">
                 <li>Try searching by steward name, department, or meeting type</li>
                 <li>Check for typos or try a shorter search term</li>
               </ul>
@@ -245,7 +245,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
           {flatItems.length > 0 &&
             groupedResults.map(({ group, items }) => (
               <div key={group} className="px-1 pb-1">
-                <p className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                <p className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
                   {GROUP_LABELS[group]}
                 </p>
                 {items.map((item) => {
@@ -276,7 +276,7 @@ function GlobalSearchOverlay({ isOpen, onClose }: GlobalSearchOverlayProps) {
                       <div className="min-w-0 flex-1">
                         <p className="truncate">{item.label}</p>
                         {item.description && (
-                          <p className="truncate text-xs text-slate-400">
+                          <p className="truncate text-xs text-slate-600">
                             {item.description}
                           </p>
                         )}
@@ -303,16 +303,16 @@ function ResultIcon({ group, image }: { group: SearchGroup; image?: string }) {
           {image}
         </div>
       ) : (
-        <Users className="h-4 w-4 shrink-0 text-slate-400" />
+        <Users className="h-4 w-4 shrink-0 text-slate-600" />
       )
     case 'departments':
-      return <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
+      return <Building2 className="h-4 w-4 shrink-0 text-slate-600" />
     case 'meetings':
-      return <CalendarDays className="h-4 w-4 shrink-0 text-slate-400" />
+      return <CalendarDays className="h-4 w-4 shrink-0 text-slate-600" />
     case 'pages':
       return <div className="h-4 w-4 shrink-0 rounded-full border border-slate-300" />
     case 'actions':
-      return <Plus className="h-4 w-4 shrink-0 text-slate-400" />
+      return <Plus className="h-4 w-4 shrink-0 text-slate-600" />
   }
 }
 

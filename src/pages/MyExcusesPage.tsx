@@ -15,7 +15,7 @@ function MyExcusesPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Clock className="h-6 w-6 animate-spin text-slate-400" />
+        <Clock className="h-6 w-6 animate-spin text-slate-600" />
       </div>
     )
   }
@@ -30,7 +30,7 @@ function MyExcusesPage() {
         <div className="animate-stagger-fade flex flex-col items-center justify-center py-24 text-center" style={{ animationDelay: '0ms' }}>
           <XCircle className="h-12 w-12 text-slate-300" />
           <p className="mt-4 text-lg font-semibold text-slate-500">No excuse requests yet</p>
-          <p className="mt-1 text-sm text-slate-400">If you miss a session, you can submit an excuse from the attendance page.</p>
+          <p className="mt-1 text-sm text-slate-600">If you miss a session, you can submit an excuse from the attendance page.</p>
         </div>
       </div>
     )
@@ -56,7 +56,7 @@ function MyExcusesPage() {
                   <h3 className="text-lg font-bold text-brand truncate">
                     {excuse.meeting.title || `${excuse.meeting.type} Meeting`}
                   </h3>
-                  <p className="text-sm font-medium text-slate-400">
+                  <p className="text-sm font-medium text-slate-600">
                     {excuse.meeting.date.split('T')[0]} &middot; {excuse.meeting.type}
                   </p>
                 </div>
@@ -67,7 +67,7 @@ function MyExcusesPage() {
               </div>
 
               <div className="mt-4 rounded-2xl bg-slate-50/70 p-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Reason</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Reason</p>
                 <p className="text-sm font-medium text-slate-700 leading-relaxed">{excuse.reason}</p>
               </div>
 
@@ -78,7 +78,7 @@ function MyExcusesPage() {
                 </div>
               )}
 
-              <p className="mt-3 text-[11px] font-medium text-slate-400">
+              <p className="mt-3 text-[11px] font-medium text-slate-600">
                 Submitted {new Date(excuse.createdAt).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
               </p>
             </div>

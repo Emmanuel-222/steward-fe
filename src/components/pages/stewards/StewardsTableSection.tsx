@@ -54,7 +54,7 @@ function ActionMenu({ steward, onView, onEdit, onDelete, isAdmin }: {
         ref={buttonRef}
         type="button"
         onClick={handleToggle}
-        className="rounded-xl p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-brand"
+        className="rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-brand"
         aria-label="Actions"
       >
         <EllipsisVertical className="h-4 w-4" />
@@ -69,7 +69,7 @@ function ActionMenu({ steward, onView, onEdit, onDelete, isAdmin }: {
             onClick={() => { onView(steward); setOpen(false) }}
             className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            <Eye className="h-4 w-4 text-slate-400" />
+            <Eye className="h-4 w-4 text-slate-600" />
             View Details
           </button>
           {isAdmin && (
@@ -79,7 +79,7 @@ function ActionMenu({ steward, onView, onEdit, onDelete, isAdmin }: {
                 onClick={() => { onEdit(steward); setOpen(false) }}
                 className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
-                <Pencil className="h-4 w-4 text-slate-400" />
+                <Pencil className="h-4 w-4 text-slate-600" />
                 Edit Record
               </button>
               <button
@@ -112,7 +112,7 @@ function StewardsTableSection({
   return (
     <section className="rounded-card border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.06)]">
       <div className="overflow-x-auto">
-        <div className="hidden min-w-[680px] grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 md:grid">
+        <div className="hidden min-w-[680px] grid-cols-[2fr_1.3fr_1.1fr_1.1fr_1fr_0.8fr] gap-4 border-b border-slate-100 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-600 md:grid">
           <p>Full Name</p>
           <p>Department</p>
           <p>Role</p>
@@ -157,7 +157,7 @@ function StewardsTableSection({
                 </div>
 
                 <div className="flex items-center gap-2 md:hidden">
-                  <span className="inline-flex rounded-full bg-[#eaf1ff] px-3 py-1 text-xs font-medium text-[#5471a8]">
+                  <span className="inline-flex rounded-full bg-[#eaf1ff] px-3 py-1 text-xs font-medium text-[#3f5a8f]">
                     {steward.department}
                   </span>
                   <span
@@ -188,7 +188,7 @@ function StewardsTableSection({
                 </div>
 
                 <div className="hidden md:block">
-                  <span className="inline-flex rounded-full bg-[#eaf1ff] px-3 py-1 text-xs font-medium text-[#5471a8]">
+                  <span className="inline-flex rounded-full bg-[#eaf1ff] px-3 py-1 text-xs font-medium text-[#3f5a8f]">
                     {steward.department}
                   </span>
                 </div>

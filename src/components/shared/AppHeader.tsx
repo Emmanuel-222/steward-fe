@@ -9,7 +9,7 @@ function AppHeader({ onSearchClick }: AppHeaderProps) {
     <header className="sticky top-0 z-30 border-b border-slate-200/60 bg-white/80 px-4 py-4 backdrop-blur-md sm:px-6 lg:px-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-600">
             System Console
           </p>
           <h1 className="truncate text-xl font-bold tracking-tight text-slate-900">
@@ -25,7 +25,7 @@ function AppHeader({ onSearchClick }: AppHeaderProps) {
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left">Search stewards, meetings...</span>
-            <kbd className="hidden rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-mono text-slate-400 sm:inline-block">
+            <kbd className="hidden rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-mono text-slate-600 sm:inline-block">
               ⌘K
             </kbd>
           </button>

@@ -25,7 +25,7 @@ function ExcuseRequestsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Clock className="h-6 w-6 animate-spin text-slate-400" />
+        <Clock className="h-6 w-6 animate-spin text-slate-600" />
       </div>
     )
   }
@@ -39,8 +39,8 @@ function ExcuseRequestsPage() {
         />
         <div className="animate-stagger-fade flex flex-col items-center justify-center py-24 text-center" style={{ animationDelay: '0ms' }}>
           <MessageSquare className="h-12 w-12 text-slate-300" />
-          <p className="mt-4 text-lg font-semibold text-slate-500">No pending excuses</p>
-          <p className="mt-1 text-sm text-slate-400">All excuse requests have been reviewed.</p>
+          <p className="mt-4 text-lg font-semibold text-slate-600">No pending excuses</p>
+          <p className="mt-1 text-sm text-slate-600">All excuse requests have been reviewed.</p>
         </div>
       </div>
     )
@@ -72,7 +72,7 @@ function ExcuseRequestsPage() {
             <div className="mb-4 flex items-start justify-between gap-4">
               <div className="space-y-1 min-w-0">
                 <p className="text-sm font-bold text-brand truncate">{req.steward.fullName}</p>
-                <p className="text-[10px] font-medium text-slate-400">
+                <p className="text-[10px] font-medium text-slate-600">
                   {req.meeting.title || `${req.meeting.type} Session`} &middot; {req.meeting.date.split('T')[0]}
                 </p>
                 {isAdminOrPastor && (
@@ -105,7 +105,7 @@ function ExcuseRequestsPage() {
             </div>
 
             <div className="mt-auto rounded-2xl bg-slate-50/70 p-4">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Reason</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Reason</p>
               <p className="text-sm font-medium text-slate-700 leading-relaxed italic">"{req.reason}"</p>
             </div>
           </div>

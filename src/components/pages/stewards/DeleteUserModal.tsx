@@ -72,7 +72,7 @@ function DeleteUserModal({
           </button>
         </div>
 
-        <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+        <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-600">
           Authority Clearance Required: Level 4
         </p>
       </div>

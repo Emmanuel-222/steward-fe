@@ -106,7 +106,7 @@ function EditUserModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close edit user dialog"
           >
             <X className="h-5 w-5" />
@@ -118,7 +118,7 @@ function EditUserModal({
             {steward.initials}
           </div>
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
               Member Status
             </p>
             <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
@@ -191,7 +191,7 @@ function EditUserModal({
               <input
                 type="text"
                 placeholder="DD/MM/YYYY (optional)"
-                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-400"
+                className="h-11 w-full rounded-xl border border-[#d8e2f0] bg-[#f3f7fd] px-4 text-sm text-slate-700 outline-none transition focus:border-brand placeholder:text-slate-600"
                 {...register('birthday')}
               />
               {errors.birthday ? (
@@ -213,7 +213,7 @@ function EditUserModal({
                     <option key={dept} value={dept}>{DEPARTMENT_LABELS[dept]}</option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
               </div>
               {errors.department ? (
                 <p className="text-sm text-rose-600">{errors.department.message}</p>
@@ -235,7 +235,7 @@ function EditUserModal({
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
               </div>
               {errors.role ? (
                 <p className="text-sm text-rose-600">{errors.role.message}</p>

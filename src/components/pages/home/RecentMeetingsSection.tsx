@@ -20,7 +20,7 @@ function RecentMeetingsSection({
         <button
           type="button"
           onClick={onViewAll}
-          className="text-left text-sm font-medium text-slate-500 transition hover:text-slate-700 sm:text-right"
+          className="text-left text-sm font-medium text-slate-600 transition hover:text-slate-700 sm:text-right"
         >
           View All Records
         </button>
@@ -66,7 +66,7 @@ function RecentMeetingsSection({
                     <p className="text-lg font-semibold text-emerald-600">
                       {meeting.present ?? 0}
                     </p>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
                       Present
                     </p>
                   </div>
@@ -75,7 +75,7 @@ function RecentMeetingsSection({
                     <p className="text-lg font-semibold text-rose-500">
                       {meeting.absent ?? 0}
                     </p>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
                       Absent
                     </p>
                   </div>

@@ -54,7 +54,7 @@ function MeetingQR({ meeting }: MeetingQRProps) {
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute right-4 top-4 rounded-xl p-2.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+              className="absolute right-4 top-4 rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-600"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
@@ -79,7 +79,7 @@ function MeetingQR({ meeting }: MeetingQRProps) {
                   />
                 </div>
               ) : (
-                <div className="flex aspect-square w-full max-w-[240px] items-center justify-center rounded-2xl bg-slate-50 text-sm text-slate-400">
+                <div className="flex aspect-square w-full max-w-[240px] items-center justify-center rounded-2xl bg-slate-50 text-sm text-slate-600">
                   Failed to load
                 </div>
               )}
@@ -97,7 +97,7 @@ function MeetingQR({ meeting }: MeetingQRProps) {
               </button>
             </div>
 
-            <p className="mt-6 max-w-56 text-center text-[11px] leading-relaxed text-slate-400">
+            <p className="mt-6 max-w-56 text-center text-[11px] leading-relaxed text-slate-600">
               Stewards scan this QR at the entrance to sign in with their email.
             </p>
           </div>
