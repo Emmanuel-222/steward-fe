@@ -23,7 +23,7 @@ function PasswordRequirements({ password }: { password: string }) {
       {checks.map(({ label, met }) => (
         <div key={label} className="flex items-center gap-1.5">
           <CheckCircle className={`h-3 w-3 ${met ? 'text-emerald-500' : 'text-slate-300'}`} />
-          <span className={`text-xs ${met ? 'text-emerald-600' : 'text-slate-400'}`}>{label}</span>
+          <span className={`text-xs ${met ? 'text-emerald-600' : 'text-slate-500'}`}>{label}</span>
         </div>
       ))}
     </div>
@@ -109,8 +109,9 @@ function ProfilePage() {
 
           <form onSubmit={handleProfileSubmit} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Full Name</label>
+              <label htmlFor="profile-full-name" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Full Name</label>
               <input
+                id="profile-full-name"
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
@@ -118,18 +119,20 @@ function ProfilePage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Email</label>
+              <label htmlFor="profile-email" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Email</label>
               <input
+                id="profile-email"
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-400"
+                className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-500"
               />
-              <p className="mt-1 text-xs text-slate-400">Email cannot be changed</p>
+              <p className="mt-1 text-xs text-slate-500">Email cannot be changed</p>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Phone</label>
+              <label htmlFor="profile-phone" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Phone</label>
               <input
+                id="profile-phone"
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
@@ -137,21 +140,23 @@ function ProfilePage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Role</label>
+              <label htmlFor="profile-role" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Role</label>
               <input
+                id="profile-role"
                 type="text"
                 value={user?.role || ''}
                 disabled
-                className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-400 capitalize"
+                className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-500 capitalize"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Department</label>
+              <label htmlFor="profile-department" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Department</label>
               <input
+                id="profile-department"
                 type="text"
                 value={user?.department || ''}
                 disabled
-                className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-400"
+                className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-500"
               />
             </div>
 
@@ -177,9 +182,10 @@ function ProfilePage() {
 
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Current Password</label>
+              <label htmlFor="profile-current-password" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Current Password</label>
               <div className="relative">
                 <input
+                  id="profile-current-password"
                   type={showCurrent ? 'text' : 'password'}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
@@ -190,17 +196,18 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setShowCurrent(s => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
-                  tabIndex={-1}
+                  aria-label={showCurrent ? 'Hide current password' : 'Show current password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition"
                 >
                   {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">New Password</label>
+              <label htmlFor="profile-new-password" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">New Password</label>
               <div className="relative">
                 <input
+                  id="profile-new-password"
                   type={showNew ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -211,8 +218,8 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setShowNew(s => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
-                  tabIndex={-1}
+                  aria-label={showNew ? 'Hide new password' : 'Show new password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition"
                 >
                   {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -220,9 +227,10 @@ function ProfilePage() {
               <PasswordRequirements password={newPassword} />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Confirm New Password</label>
+              <label htmlFor="profile-confirm-password" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Confirm New Password</label>
               <div className="relative">
                 <input
+                  id="profile-confirm-password"
                   type={showConfirm ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -233,8 +241,8 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm(s => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
-                  tabIndex={-1}
+                  aria-label={showConfirm ? 'Hide confirmation password' : 'Show confirmation password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition"
                 >
                   {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
