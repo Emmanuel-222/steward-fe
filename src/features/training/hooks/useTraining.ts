@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createCohort,
+  getClassRoster,
   getCohort,
   getCohortClasses,
   getCohorts,
+  getTeaching,
   getTrainees,
   getTrainingClasses,
   getTrainingMe,
@@ -15,6 +17,7 @@ import {
   type CreateCohortPayload,
   type ScheduleClassPayload,
 } from '../api'
+import { markPresent } from '../../attendance/api'
 
 const keys = {
   me: ['training', 'me'] as const,
@@ -71,9 +74,36 @@ export function useUpdateCohortMutation() {
 export function useSaveTopicMutation(cohortId: string | number) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (payload: { weekNumber: number; title: string; description?: string; notes?: string }) =>
-      saveTopic({ cohortId, ...payload }),
+    mutationFn: (payload: {
+      weekNumber: number
+      title: string
+      description?: string
+      notes?: string
+      teacherId?: number | null
+    }) => saveTopic({ cohortId, ...payload }),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.cohort(cohortId) }),
+  })
+}
+
+export function useTeachingQuery(enabled = true) {
+  return useQuery({ queryKey: ['training', 'teaching'], queryFn: getTeaching, enabled })
+}
+
+export function useClassRosterQuery(classId: number | null, enabled = true) {
+  return useQuery({
+    queryKey: ['training', 'class', String(classId), 'roster'],
+    queryFn: () => getClassRoster(classId as number),
+    enabled: enabled && classId != null,
+  })
+}
+
+export function useMarkTrainingAttendanceMutation(classId: number | null) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ userId, meetingId, status }: { userId: number; meetingId: number; status: string }) =>
+      markPresent(String(userId), String(meetingId), status),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: ['training', 'class', String(classId), 'roster'] }),
   })
 }
 

@@ -1,6 +1,9 @@
 import api from '../../services/axios'
 import type {
+  ClassRoster,
+  CohortListItem,
   GraduationStatus,
+  TeachingResponse,
   TrainingClassItem,
   TrainingCohort,
   TrainingMe,
@@ -26,7 +29,7 @@ export async function getTrainingClasses() {
 
 export async function getCohorts() {
   const { data } = await api.get('/training/cohorts')
-  return (Array.isArray(data) ? data : []) as TrainingCohort[]
+  return (Array.isArray(data) ? data : []) as CohortListItem[]
 }
 
 export async function getCohort(id: string | number) {
@@ -52,7 +55,6 @@ export type CreateCohortPayload = {
   name: string
   startDate: string
   weekCount: number
-  teacherId: number
   maxMissedClasses: number
 }
 
@@ -78,20 +80,33 @@ export async function saveTopic({
   title,
   description,
   notes,
+  teacherId,
 }: {
   cohortId: string | number
   weekNumber: number
   title: string
   description?: string
   notes?: string
+  teacherId?: number | null
 }) {
   const { data } = await api.post(`/training/cohorts/${cohortId}/topics`, {
     weekNumber,
     title,
     description,
     notes,
+    teacherId: teacherId ?? null,
   })
   return data as TrainingTopic
+}
+
+export async function getTeaching() {
+  const { data } = await api.get('/training/teaching')
+  return data as TeachingResponse
+}
+
+export async function getClassRoster(classId: number) {
+  const { data } = await api.get(`/training/classes/${classId}/roster`)
+  return data as ClassRoster
 }
 
 export type ScheduleClassPayload = {

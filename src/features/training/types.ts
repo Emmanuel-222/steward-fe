@@ -5,11 +5,13 @@ export type TrainingCohort = {
   name: string
   startDate: string
   weekCount: number
-  teacherId: number
-  teacher?: { id: number; fullName: string } | null
   maxMissedClasses: number
   status: string
-  _count?: { enrollments: number }
+  _count?: { enrollments: number; topics?: number }
+}
+
+export type CohortListItem = TrainingCohort & {
+  topics: Array<{ teacherId: number | null; teacher: { id: number; fullName: string } | null }>
 }
 
 export type TrainingTopic = {
@@ -19,6 +21,8 @@ export type TrainingTopic = {
   title: string
   description?: string | null
   notes?: string | null
+  teacherId?: number | null
+  teacher?: { id: number; fullName: string } | null
 }
 
 export type TrainingClassItem = {
@@ -61,4 +65,30 @@ export type TraineeRow = {
   missed: number
   maxMissedClasses: number
   graduation: GraduationStatus
+}
+
+export type TeachingClass = {
+  classId: number
+  meetingId: number
+  cohortId: number
+  cohortName: string
+  topic: string | null
+  week: number | null
+  date: string
+  startTime: string
+  endTime: string
+  location: string
+}
+
+export type TeachingResponse = { isTeacher: boolean; classes: TeachingClass[] }
+
+export type RosterEntry = { userId: number; name: string; status: string }
+
+export type ClassRoster = {
+  classId: number
+  meetingId: number
+  cohortName: string
+  topic: string | null
+  week: number | null
+  roster: RosterEntry[]
 }
