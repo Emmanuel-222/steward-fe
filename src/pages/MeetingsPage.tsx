@@ -174,7 +174,7 @@ function MeetingsPage() {
               onRetry={() => meetingsQuery.refetch()}
             />
           ) : filteredMeetings.length === 0 ? (
-            <div className="grid gap-5 xl:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               <div className="xl:col-span-2 rounded-card border border-slate-200 bg-white px-6 py-10 text-center shadow-card">
                 <p className="text-lg font-semibold text-brand">
                   No meetings found for {activeTab.toLowerCase()}.
@@ -189,7 +189,7 @@ function MeetingsPage() {
             </div>
           ) : (
             <>
-              <div className="grid gap-5 xl:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {filteredMeetings.slice(0, 3).map((meeting) => (
                   <MeetingCard
                     key={meeting.id}
@@ -204,7 +204,7 @@ function MeetingsPage() {
                 ))}
               </div>
 
-              <div className="grid gap-5 xl:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {filteredMeetings.slice(3).map((meeting) => (
                   <MeetingCard
                     key={meeting.id}
