@@ -95,6 +95,10 @@ export const router = createBrowserRouter([
         path: 'training/:id',
         element: page(() => import('../../pages/TrainingCohortDetailPage')),
       },
+      {
+        path: 'teaching',
+        element: page(() => import('../../pages/TrainingTeachingPage')),
+      },
     ],
   },
 ])

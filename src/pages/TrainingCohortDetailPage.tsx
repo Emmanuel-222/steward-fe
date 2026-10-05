@@ -5,6 +5,7 @@ import ErrorState from '../components/ui/ErrorState'
 import Skeleton from '../components/ui/Skeleton'
 import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import { useToast } from '../hooks/useToast'
+import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import {
   useCohortClassesQuery,
   useCohortQuery,
@@ -26,10 +27,15 @@ function TrainingCohortDetailPage() {
   const importMutation = useImportTraineesMutation(id)
   const { showToast } = useToast()
   const fileRef = useRef<HTMLInputElement>(null)
+  const stewardsQuery = useStewardsQuery('')
+  const teachers = (stewardsQuery.data?.items ?? []).filter(
+    (s) => !['admin', 'trainee'].includes(s.role.toLowerCase()),
+  )
 
   const [week, setWeek] = useState('')
   const [topicTitle, setTopicTitle] = useState('')
   const [topicDesc, setTopicDesc] = useState('')
+  const [topicTeacher, setTopicTeacher] = useState('')
 
   const [clsDate, setClsDate] = useState('')
   const [clsStart, setClsStart] = useState('')
@@ -61,11 +67,13 @@ function TrainingCohortDetailPage() {
         weekNumber: Number(week),
         title: topicTitle,
         description: topicDesc || undefined,
+        teacherId: topicTeacher ? Number(topicTeacher) : null,
       })
       showToast('Topic saved', 'success')
       setWeek('')
       setTopicTitle('')
       setTopicDesc('')
+      setTopicTeacher('')
     } catch {
       showToast('Could not save topic', 'error')
     }
@@ -125,9 +133,7 @@ function TrainingCohortDetailPage() {
     <div className="space-y-8">
       <DashboardPageHeader
         title={cohort.name}
-        description={`${cohort.weekCount} weeks · allowed missed classes: ${cohort.maxMissedClasses}${
-          cohort.teacher?.fullName ? ` · Teacher: ${cohort.teacher.fullName}` : ''
-        }`}
+        description={`${cohort.weekCount} weeks · allowed missed classes: ${cohort.maxMissedClasses}`}
         actions={
           <Link to="/dashboard/training" className="text-sm font-semibold text-brand hover:underline">
             Back to cohorts
@@ -146,14 +152,23 @@ function TrainingCohortDetailPage() {
               <li key={t.id} className="rounded-xl border border-slate-100 px-4 py-3">
                 <p className="text-sm font-semibold text-brand">Week {t.weekNumber}: {t.title}</p>
                 {t.description ? <p className="text-sm text-slate-600">{t.description}</p> : null}
+                <p className="mt-1 text-xs font-medium text-slate-600">
+                  {t.teacher?.fullName ? `Teacher: ${t.teacher.fullName}` : 'No teacher assigned'}
+                </p>
               </li>
             ))
           )}
         </ul>
-        <form onSubmit={handleAddTopic} className="mt-5 grid gap-3 sm:grid-cols-[100px_1fr_1fr_auto]">
+        <form onSubmit={handleAddTopic} className="mt-5 grid gap-3 sm:grid-cols-[90px_1fr_1fr_1fr_auto]">
           <input value={week} onChange={(e) => setWeek(e.target.value)} type="number" min="1" placeholder="Week" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
           <input value={topicTitle} onChange={(e) => setTopicTitle(e.target.value)} placeholder="Topic title" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
           <input value={topicDesc} onChange={(e) => setTopicDesc(e.target.value)} placeholder="Description (optional)" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
+          <select value={topicTeacher} onChange={(e) => setTopicTeacher(e.target.value)} className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand">
+            <option value="">Teacher for this week</option>
+            {teachers.map((t) => (
+              <option key={t.id} value={t.id}>{t.name} ({t.role})</option>
+            ))}
+          </select>
           <button type="submit" disabled={saveTopic.isPending} className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60">Save</button>
         </form>
       </section>

@@ -20,6 +20,7 @@ import useGlobalSearchHotkey from '../../components/global-search/useGlobalSearc
 import useAuth from '../../hooks/useAuth'
 import useMeQuery from '../../features/auth/hooks/useMeQuery'
 import useExcuseRequestsQuery from '../../features/attendance/hooks/useExcuseRequestsQuery'
+import { useTeachingQuery } from '../../features/training/hooks/useTraining'
 
 const adminNavItems = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
@@ -56,6 +57,10 @@ function MainLayout() {
   const isNonSteward = currentUser?.role?.toLowerCase() !== 'steward' && currentUser?.role?.toLowerCase() !== 'trainee'
   const { data: pendingExcuses } = useExcuseRequestsQuery(isNonSteward)
   const excuseCount = isNonSteward ? (pendingExcuses?.length ?? 0) : 0
+  const currentRole = currentUser?.role?.toLowerCase()
+  const canTeach = currentRole === 'steward' || currentRole === 'leader' || currentRole === 'pastor'
+  const { data: teaching } = useTeachingQuery(canTeach)
+  const showTeaching = Boolean(teaching?.isTeacher)
 
   useEffect(() => {
     if (meQuery.data && !user) {
@@ -116,18 +121,19 @@ function MainLayout() {
           const role = currentUser?.role?.toLowerCase()
           const isSteward = role === 'steward'
           const isTrainee = role === 'trainee'
-          if (isTrainee) return traineeNavItems
-          const items = isSteward ? stewardNavItems : adminNavItems
-
-          if (isSteward) return items
-
           const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
-          return items.filter(({ label }) => {
-            if (label === 'Stewards' || label === 'Meetings' || label === 'Excuses' || label === 'Training') {
-              return isAuthorized
-            }
-            return true
-          })
+          const base = isTrainee ? traineeNavItems : isSteward ? stewardNavItems : adminNavItems
+          let items = isTrainee || isSteward
+            ? base
+            : base.filter(({ label }) =>
+                label === 'Stewards' || label === 'Meetings' || label === 'Excuses' || label === 'Training'
+                  ? isAuthorized
+                  : true,
+              )
+          if (showTeaching && !isTrainee) {
+            items = [...items, { label: 'Teaching', to: '/dashboard/teaching', icon: GraduationCap }]
+          }
+          return items
         })().map(({ label, to, icon: Icon, end }) => {
           const showBadge = label === 'Excuses' && excuseCount > 0
           return (
