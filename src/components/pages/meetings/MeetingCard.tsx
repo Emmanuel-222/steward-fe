@@ -51,14 +51,16 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
       </div>
 
       <div className="mt-4 min-w-0">
-        <h3 className="truncate text-lg font-semibold text-brand">{meeting.title}</h3>
-        <p className="mt-1 flex items-center gap-1.5 truncate text-sm text-slate-600">
-          <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-          {meeting.date} · {meeting.time}
+        <h3 className="break-words text-lg font-semibold text-brand">{meeting.title}</h3>
+        <p className="mt-1 flex items-start gap-1.5 text-sm text-slate-600">
+          <CalendarDays className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span className="break-words">
+            {meeting.date} · {meeting.time}
+          </span>
         </p>
-        <p className="mt-1 flex items-center gap-1.5 truncate text-sm text-slate-600">
-          <MapPinHouse className="h-3.5 w-3.5 shrink-0" />
-          {meeting.location}
+        <p className="mt-1 flex items-start gap-1.5 text-sm text-slate-600">
+          <MapPinHouse className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span className="break-words">{meeting.location}</span>
         </p>
       </div>
 

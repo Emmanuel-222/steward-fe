@@ -23,7 +23,7 @@ import type {
   UpdateMeetingValues,
 } from "../features/meetings/types";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 5;
 const tabs = ["All Meetings", "Upcoming", "Ongoing", "Completed", "Archived"];
 
 function MeetingsPage() {
@@ -173,24 +173,19 @@ function MeetingsPage() {
               message="Unable to load meetings right now."
               onRetry={() => meetingsQuery.refetch()}
             />
-          ) : filteredMeetings.length === 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              <div className="xl:col-span-2 rounded-card border border-slate-200 bg-white px-6 py-10 text-center shadow-card">
-                <p className="text-lg font-semibold text-brand">
-                  No meetings found for {activeTab.toLowerCase()}.
-                </p>
-                <p className="mt-2 text-sm text-slate-500">
-                  Create your first meeting to start tracking attendance.
-                </p>
-              </div>
-              <MeetingScheduleCard
-                onClick={() => setIsScheduleModalOpen(true)}
-              />
-            </div>
           ) : (
-            <>
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {filteredMeetings.slice(0, 3).map((meeting) => (
+            <div className="grid items-start gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {filteredMeetings.length === 0 ? (
+                <div className="rounded-card border border-slate-200 bg-white px-6 py-10 text-center shadow-card sm:col-span-2 xl:col-span-1">
+                  <p className="text-lg font-semibold text-brand">
+                    No meetings found for {activeTab.toLowerCase()}.
+                  </p>
+                  <p className="mt-2 text-sm text-slate-500">
+                    Create your first meeting to start tracking attendance.
+                  </p>
+                </div>
+              ) : (
+                filteredMeetings.map((meeting) => (
                   <MeetingCard
                     key={meeting.id}
                     meeting={meeting}
@@ -201,27 +196,10 @@ function MeetingsPage() {
                     onDelete={setDeletingMeeting}
                     onAction={handleAction}
                   />
-                ))}
-              </div>
-
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {filteredMeetings.slice(3).map((meeting) => (
-                  <MeetingCard
-                    key={meeting.id}
-                    meeting={meeting}
-                    onEdit={(selectedMeeting) => {
-                      setEditingMeeting(selectedMeeting);
-                      setIsScheduleModalOpen(true);
-                    }}
-                    onDelete={setDeletingMeeting}
-                    onAction={handleAction}
-                  />
-                ))}
-                <MeetingScheduleCard
-                  onClick={() => setIsScheduleModalOpen(true)}
-                />
-              </div>
-            </>
+                ))
+              )}
+              <MeetingScheduleCard onClick={() => setIsScheduleModalOpen(true)} />
+            </div>
           )}
         </div>
         </section>

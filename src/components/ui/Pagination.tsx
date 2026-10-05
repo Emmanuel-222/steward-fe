@@ -9,7 +9,7 @@ type PaginationProps = {
   onPageSizeChange?: (size: number) => void
 }
 
-const PAGE_SIZE_OPTIONS = [10, 20, 50]
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50]
 
 function getPageNumbers(current: number, total: number): (number | 'ellipsis')[] {
   if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1)
