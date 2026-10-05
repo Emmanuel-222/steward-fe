@@ -52,7 +52,7 @@ function StatCard({
         )}
       </div>
       <div className="mt-4 flex items-end gap-2">
-        <p className="font-sans text-3xl font-semibold tracking-tight text-brand sm:text-4xl">
+        <p className="font-sans text-3xl font-semibold tracking-tight text-brand tabular-nums sm:text-4xl">
           {value}
         </p>
         <span className={`font-sans pb-1 text-xs font-semibold ${detailClassName}`}>

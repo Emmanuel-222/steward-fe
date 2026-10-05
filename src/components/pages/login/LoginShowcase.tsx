@@ -30,8 +30,8 @@ function LoginShowcase() {
             The Digital <span className="text-signature">Registrar.</span>
           </h1>
           <p className="text-sm leading-7 text-slate-300">
-            Precision attendance management for the modern ministry. Secure,
-            authoritative, and seamless.
+            Attendance records for every meeting — stewards, departments, and
+            excuse requests, all in one registry.
           </p>
         </div>
       </div>
@@ -54,8 +54,8 @@ function LoginShowcase() {
             </svg>
           </div>
           <div>
-            <p className="text-sm font-semibold text-white">Verified Access Only</p>
-            <p className="text-xs text-signature/90">System ID 836-024-ALPHA</p>
+            <p className="text-sm font-semibold text-white">Role-based access</p>
+            <p className="text-xs text-signature/90">Admin · Leader · Pastor · Steward</p>
           </div>
         </div>
       </div>

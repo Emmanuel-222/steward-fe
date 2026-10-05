@@ -40,7 +40,7 @@ function ForgotPasswordPage() {
               </p>
               <Link
                 to="/"
-                className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-lg shadow-brand/20 transition hover:bg-brand/90"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-[0_14px_30px_-12px_rgba(15,45,82,0.45)] transition hover:bg-brand/90"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to Login
@@ -79,7 +79,7 @@ function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3 text-sm font-bold text-white shadow-lg shadow-brand/20 transition hover:bg-brand/90 disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3 text-sm font-bold text-white shadow-[0_14px_30px_-12px_rgba(15,45,82,0.45)] transition hover:bg-brand/90 disabled:opacity-50"
                 >
                   {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
                   {isPending ? 'Sending...' : 'Send Reset Link'}

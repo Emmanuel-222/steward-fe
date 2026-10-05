@@ -122,3 +122,64 @@ select {
 #root {
   min-height: 100vh;
 }
+
+/* --- Browser surfaces ----------------------------------------------------
+   Text selection, caret, scrollbars, focus rings and tabular figures are the
+   parts of the page the design system forgets to draw. Theme them from the
+   palette so the interface reads as built rather than assembled. */
+
+::selection {
+  background-color: color-mix(in oklab, var(--color-brand) 16%, white);
+  color: var(--color-brand);
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--color-brand);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-brand) 35%, transparent) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--color-brand) 30%, transparent);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--color-brand) 45%, transparent);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+th,
+td {
+  font-variant-numeric: tabular-nums;
+}
+
+a {
+  text-underline-offset: 3px;
+}
