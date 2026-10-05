@@ -19,8 +19,8 @@ function TrainingCohortsPage() {
   const [teacherId, setTeacherId] = useState('')
   const [maxMissedClasses, setMaxMissedClasses] = useState('3')
 
-  const teachers = (stewardsQuery.data?.items ?? []).filter((s) =>
-    ['leader', 'pastor', 'admin'].includes(s.role.toLowerCase()),
+  const teachers = (stewardsQuery.data?.items ?? []).filter(
+    (s) => !['admin', 'trainee'].includes(s.role.toLowerCase()),
   )
 
   const handleCreate = async (e: React.FormEvent) => {
