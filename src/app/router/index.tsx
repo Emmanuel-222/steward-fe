@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: page(() => import('../../pages/HomePage')),
+        element: page(() => import('../../pages/DashboardIndexPage')),
       },
       {
         path: 'stewards',
@@ -78,6 +78,22 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: page(() => import('../../pages/ProfilePage')),
+      },
+      {
+        path: 'classes',
+        element: page(() => import('../../pages/TrainingClassesPage')),
+      },
+      {
+        path: 'training-attendance',
+        element: page(() => import('../../pages/TrainingAttendancePage')),
+      },
+      {
+        path: 'training',
+        element: page(() => import('../../pages/TrainingCohortsPage')),
+      },
+      {
+        path: 'training/:id',
+        element: page(() => import('../../pages/TrainingCohortDetailPage')),
       },
     ],
   },

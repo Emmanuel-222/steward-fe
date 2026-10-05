@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const meetingTypeOptions = ['Sunday', 'Special', 'Prayer Meeting', 'Bible study'] as const
+export const meetingTypeOptions = ['Sunday', 'Special', 'Prayer Meeting', 'Bible study', 'Training'] as const
 
 const validMeetingTypes = meetingTypeOptions as readonly string[]
 

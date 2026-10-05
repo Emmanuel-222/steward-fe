@@ -2,6 +2,7 @@ import {
   CalendarDays,
   ClipboardList,
   FileText,
+  GraduationCap,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -24,6 +25,7 @@ const adminNavItems = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
   { label: 'Stewards', to: '/dashboard/stewards', icon: Users },
   { label: 'Meetings', to: '/dashboard/meetings', icon: CalendarDays },
+  { label: 'Training', to: '/dashboard/training', icon: GraduationCap },
   { label: 'Excuses', to: '/dashboard/excuse-requests', icon: MessageSquare },
   { label: 'Attendance', to: '/dashboard/attendance', icon: ClipboardList },
 ]
@@ -32,6 +34,12 @@ const stewardNavItems = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
   { label: 'My Attendance', to: '/dashboard/attendance', icon: ClipboardList },
   { label: 'My Excuses', to: '/dashboard/my-excuses', icon: FileText },
+]
+
+const traineeNavItems = [
+  { label: 'School Home', to: '/dashboard', icon: LayoutDashboard, end: true },
+  { label: 'My Classes', to: '/dashboard/classes', icon: CalendarDays, end: false },
+  { label: 'My Attendance', to: '/dashboard/training-attendance', icon: ClipboardList, end: false },
 ]
 
 function MainLayout() {
@@ -45,7 +53,7 @@ function MainLayout() {
 
   const currentUser = user || meQuery.data
 
-  const isNonSteward = currentUser?.role?.toLowerCase() !== 'steward'
+  const isNonSteward = currentUser?.role?.toLowerCase() !== 'steward' && currentUser?.role?.toLowerCase() !== 'trainee'
   const { data: pendingExcuses } = useExcuseRequestsQuery(isNonSteward)
   const excuseCount = isNonSteward ? (pendingExcuses?.length ?? 0) : 0
 
@@ -107,13 +115,15 @@ function MainLayout() {
         {(() => {
           const role = currentUser?.role?.toLowerCase()
           const isSteward = role === 'steward'
+          const isTrainee = role === 'trainee'
+          if (isTrainee) return traineeNavItems
           const items = isSteward ? stewardNavItems : adminNavItems
 
           if (isSteward) return items
 
           const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
           return items.filter(({ label }) => {
-            if (label === 'Stewards' || label === 'Meetings' || label === 'Excuses') {
+            if (label === 'Stewards' || label === 'Meetings' || label === 'Excuses' || label === 'Training') {
               return isAuthorized
             }
             return true
