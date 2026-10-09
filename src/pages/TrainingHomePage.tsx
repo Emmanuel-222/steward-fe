@@ -1,4 +1,5 @@
-import { GraduationCap, MapPin } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronDown, GraduationCap, MapPin } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
@@ -25,6 +26,7 @@ function TrainingHomePage() {
 
   const { data, isLoading, isError, refetch } = meQuery
   const curriculum = classesQuery.data ?? []
+  const [curriculumOpen, setCurriculumOpen] = useState(true)
 
   return (
     <div className="space-y-8">
@@ -111,47 +113,63 @@ function TrainingHomePage() {
           </div>
 
           <section className="rounded-card border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-brand">Your curriculum</h2>
-            <p className="mt-1 text-sm text-slate-600">
-              The {curriculum.length} session{curriculum.length === 1 ? '' : 's'} for your{' '}
-              <span className="font-semibold capitalize">{data.cohort.track}</span> track.
-            </p>
-            {classesQuery.isLoading ? (
-              <Spinner />
-            ) : curriculum.length === 0 ? (
-              <p className="mt-4 text-sm text-slate-600">The schedule hasn't been published yet.</p>
-            ) : (
-              <ul className="mt-4 space-y-2">
-                {curriculum.map((c) => (
-                  <li
-                    key={String(c.id)}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-brand">
-                        {c.week ? `Week ${c.week} · ` : ''}
-                        {c.topic ?? 'Training session'}
-                      </p>
-                      <p className="text-xs text-slate-600">
-                        {c.day}
-                        {c.date
-                          ? ` · ${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-                          : ''}
-                        {c.startTime ? ` · ${c.startTime}${c.endTime ? `–${c.endTime}` : ''}` : ''}
-                        {c.teacher ? ` · ${c.teacher}` : ''}
-                      </p>
-                    </div>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                        statusTone[c.status] ?? statusTone.Unmarked
-                      }`}
+            <button
+              type="button"
+              onClick={() => setCurriculumOpen((v) => !v)}
+              aria-expanded={curriculumOpen}
+              className="flex w-full items-start justify-between gap-3 text-left"
+            >
+              <div>
+                <h2 className="text-lg font-semibold text-brand">Your curriculum</h2>
+                <p className="mt-1 text-sm text-slate-600">
+                  The {curriculum.length} session{curriculum.length === 1 ? '' : 's'} for your{' '}
+                  <span className="font-semibold capitalize">{data.cohort.track}</span> track.
+                </p>
+              </div>
+              <ChevronDown
+                className={`mt-1 h-5 w-5 shrink-0 text-slate-500 transition-transform ${
+                  curriculumOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {curriculumOpen ? (
+              classesQuery.isLoading ? (
+                <Spinner />
+              ) : curriculum.length === 0 ? (
+                <p className="mt-4 text-sm text-slate-600">The schedule hasn't been published yet.</p>
+              ) : (
+                <ul className="mt-4 space-y-2">
+                  {curriculum.map((c) => (
+                    <li
+                      key={String(c.id)}
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"
                     >
-                      {c.status}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-brand">
+                          {c.week ? `Week ${c.week} · ` : ''}
+                          {c.topic ?? 'Training session'}
+                        </p>
+                        <p className="text-xs text-slate-600">
+                          {c.day}
+                          {c.date
+                            ? ` · ${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                            : ''}
+                          {c.startTime ? ` · ${c.startTime}${c.endTime ? `–${c.endTime}` : ''}` : ''}
+                          {c.teacher ? ` · ${c.teacher}` : ''}
+                        </p>
+                      </div>
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                          statusTone[c.status] ?? statusTone.Unmarked
+                        }`}
+                      >
+                        {c.status}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )
+            ) : null}
           </section>
         </>
       )}
