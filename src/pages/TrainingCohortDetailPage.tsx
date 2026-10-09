@@ -14,6 +14,7 @@ import {
   useImportTraineesMutation,
   useSaveTopicMutation,
   useScheduleClassMutation,
+  useSeedCurriculumMutation,
   useTraineesQuery,
 } from '../features/training/hooks/useTraining'
 
@@ -24,6 +25,7 @@ function TrainingCohortDetailPage() {
   const traineesQuery = useTraineesQuery(id)
   const saveTopic = useSaveTopicMutation(id)
   const generateSessions = useGenerateSessionsMutation(id)
+  const seedCurriculum = useSeedCurriculumMutation(id)
   const scheduleClass = useScheduleClassMutation(id)
   const graduate = useGraduateTraineeMutation(id)
   const importMutation = useImportTraineesMutation(id)
@@ -153,7 +155,24 @@ function TrainingCohortDetailPage() {
 
       {/* Curriculum */}
       <section className="rounded-card border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-brand">Curriculum</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold text-brand">Curriculum</h2>
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                const r = await seedCurriculum.mutateAsync()
+                showToast(`Loaded ${r?.created ?? 0} session(s)`, 'success')
+              } catch {
+                showToast('Could not load the curriculum', 'error')
+              }
+            }}
+            disabled={seedCurriculum.isPending}
+            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+          >
+            {seedCurriculum.isPending ? 'Loading...' : 'Load 2026 curriculum'}
+          </button>
+        </div>
         <ul className="mt-4 space-y-2">
           {topics.length === 0 ? (
             <li className="text-sm text-slate-600">No topics yet.</li>

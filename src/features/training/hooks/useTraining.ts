@@ -14,6 +14,7 @@ import {
   importTrainees,
   saveTopic,
   scheduleClass,
+  seedCurriculum,
   updateCohort,
   type CreateCohortPayload,
   type SaveSessionPayload,
@@ -89,6 +90,14 @@ export function useGenerateSessionsMutation(cohortId: string | number) {
       qc.invalidateQueries({ queryKey: keys.cohort(cohortId) })
       qc.invalidateQueries({ queryKey: keys.cohortClasses(cohortId) })
     },
+  })
+}
+
+export function useSeedCurriculumMutation(cohortId: string | number) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: () => seedCurriculum(cohortId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.cohort(cohortId) }),
   })
 }
 

@@ -120,6 +120,11 @@ export async function generateSessions(cohortId: string | number) {
   return data as { created: number }
 }
 
+export async function seedCurriculum(cohortId: string | number) {
+  const { data } = await api.post(`/training/cohorts/${cohortId}/seed-curriculum`)
+  return data as { created: number }
+}
+
 export async function getTeaching() {
   const { data } = await api.get('/training/teaching')
   return data as TeachingResponse
