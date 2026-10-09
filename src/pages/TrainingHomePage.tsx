@@ -3,7 +3,15 @@ import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
 import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
-import { useTrainingMeQuery } from '../features/training/hooks/useTraining'
+import { useTrainingClassesQuery, useTrainingMeQuery } from '../features/training/hooks/useTraining'
+
+const statusTone: Record<string, string> = {
+  Present: 'bg-emerald-100 text-emerald-700',
+  Absent: 'bg-rose-100 text-rose-700',
+  Excused: 'bg-amber-100 text-amber-800',
+  Unmarked: 'bg-slate-100 text-slate-600',
+  Upcoming: 'bg-sky-100 text-sky-700',
+}
 
 function formatClassDate(value: string) {
   const d = new Date(value)
@@ -12,13 +20,17 @@ function formatClassDate(value: string) {
 }
 
 function TrainingHomePage() {
-  const { data, isLoading, isError, refetch } = useTrainingMeQuery()
+  const meQuery = useTrainingMeQuery()
+  const classesQuery = useTrainingClassesQuery()
+
+  const { data, isLoading, isError, refetch } = meQuery
+  const curriculum = classesQuery.data ?? []
 
   return (
     <div className="space-y-8">
       <DashboardPageHeader
         title="School"
-        description="Your training progress, this week's topic, and your next class."
+        description="Your training path, this week's topic, and your own curriculum."
       />
 
       {isLoading ? (
@@ -33,8 +45,11 @@ function TrainingHomePage() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
                   {data.cohort.name}
                 </p>
-                <p className="mt-1 text-sm font-medium capitalize text-slate-600">
-                  {data.cohort.track} track
+                <p className="mt-1 inline-flex items-center gap-2 text-sm font-medium text-slate-600">
+                  <span className="rounded-full bg-brand px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white capitalize">
+                    {data.cohort.track}
+                  </span>
+                  track
                 </p>
               </div>
               <GraduationStatusBadge status={data.graduation} />
@@ -94,6 +109,50 @@ function TrainingHomePage() {
               )}
             </article>
           </div>
+
+          <section className="rounded-card border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-brand">Your curriculum</h2>
+            <p className="mt-1 text-sm text-slate-600">
+              The {curriculum.length} session{curriculum.length === 1 ? '' : 's'} for your{' '}
+              <span className="font-semibold capitalize">{data.cohort.track}</span> track.
+            </p>
+            {classesQuery.isLoading ? (
+              <Spinner />
+            ) : curriculum.length === 0 ? (
+              <p className="mt-4 text-sm text-slate-600">The schedule hasn't been published yet.</p>
+            ) : (
+              <ul className="mt-4 space-y-2">
+                {curriculum.map((c) => (
+                  <li
+                    key={String(c.id)}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-100 px-4 py-3"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-brand">
+                        {c.week ? `Week ${c.week} · ` : ''}
+                        {c.topic ?? 'Training session'}
+                      </p>
+                      <p className="text-xs text-slate-600">
+                        {c.day}
+                        {c.date
+                          ? ` · ${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                          : ''}
+                        {c.startTime ? ` · ${c.startTime}${c.endTime ? `–${c.endTime}` : ''}` : ''}
+                        {c.teacher ? ` · ${c.teacher}` : ''}
+                      </p>
+                    </div>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                        statusTone[c.status] ?? statusTone.Unmarked
+                      }`}
+                    >
+                      {c.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </>
       )}
     </div>
