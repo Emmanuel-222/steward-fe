@@ -64,10 +64,10 @@ export function useCreateCohortMutation() {
   })
 }
 
-export function useDeleteCohortMutation(cohortId: string | number) {
+export function useDeleteCohortMutation() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: () => deleteCohort(cohortId),
+    mutationFn: (cohortId: string | number) => deleteCohort(cohortId),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.cohorts }),
   })
 }
