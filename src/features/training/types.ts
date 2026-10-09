@@ -18,22 +18,30 @@ export type TrainingTopic = {
   id: number
   cohortId: number
   weekNumber: number
+  day: string
+  startTime?: string | null
+  endTime?: string | null
   title: string
   description?: string | null
   notes?: string | null
+  requiredForNew: boolean
+  requiredForRefresher: boolean
   teacherId?: number | null
   teacher?: { id: number; fullName: string } | null
 }
 
-export type TrainingClassItem = {
+export type TrainingSession = {
   id: string | number
-  meetingId: number
-  date: string
-  startTime: string
-  endTime: string
-  location: string
-  topic: string | null
+  meetingId: number | null
   week: number | null
+  day: string | null
+  topic: string | null
+  teacher: string | null
+  date: string | null
+  startTime: string | null
+  endTime: string | null
+  location: string | null
+  required: boolean
   status: string
 }
 
@@ -42,16 +50,17 @@ export type TrainingMe = {
     id: number
     name: string
     weekCount: number
-    teacher: string | null
     maxMissedClasses: number
+    track: 'new' | 'refresher'
   }
-  currentTopic: TrainingTopic | null
+  currentTopic: { weekNumber: number; title: string; description?: string | null } | null
   nextClass: {
     date: string
     startTime: string
     endTime: string
     location: string
     topic: string | null
+    teacher: string | null
   } | null
   missed: number
   graduation: GraduationStatus
@@ -61,6 +70,7 @@ export type TraineeRow = {
   userId: number
   name: string
   email: string
+  track: string
   enrollmentStatus: string
   missed: number
   maxMissedClasses: number
