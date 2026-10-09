@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Skeleton from '../components/ui/Skeleton'
@@ -107,8 +108,8 @@ function TrainingCohortsPage() {
             const teachers = cohortTeachers(cohort)
             return (
               <li key={cohort.id}>
-                <a
-                  href={`/dashboard/training/${cohort.id}`}
+                <Link
+                  to={`/dashboard/training/${cohort.id}`}
                   className="block rounded-card border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand/40 hover:shadow-md"
                 >
                   <p className="text-lg font-semibold text-brand">{cohort.name}</p>
@@ -118,7 +119,7 @@ function TrainingCohortsPage() {
                   <p className="mt-2 text-xs font-medium uppercase tracking-wider text-slate-600">
                     {cohort.weekCount} weeks · {cohort._count?.enrollments ?? 0} trainees · miss {cohort.maxMissedClasses} fails
                   </p>
-                </a>
+                </Link>
               </li>
             )
           })}
