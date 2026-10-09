@@ -129,9 +129,9 @@ function TrainingCohortDetailPage() {
     }
   }
 
-  const handleImport = async (file: File, track: 'new' | 'refresher') => {
+  const handleImport = async (file: File) => {
     try {
-      const result = (await importMutation.mutateAsync({ file, track })) as {
+      const result = (await importMutation.mutateAsync(file)) as {
         imported: number
         skipped: number
         defaultPassword?: string

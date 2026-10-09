@@ -159,8 +159,7 @@ export function useGraduateTraineeMutation(cohortId: string | number) {
 export function useImportTraineesMutation(cohortId: string | number) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ file, track }: { file: File; track: 'new' | 'refresher' }) =>
-      importTrainees({ cohortId, file, track }),
+    mutationFn: (file: File) => importTrainees({ cohortId, file }),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.trainees(cohortId) }),
   })
 }

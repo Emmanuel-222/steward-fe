@@ -172,18 +172,9 @@ export async function graduateTrainee({
   return data
 }
 
-export async function importTrainees({
-  cohortId,
-  file,
-  track,
-}: {
-  cohortId: string | number
-  file: File
-  track: 'new' | 'refresher'
-}) {
+export async function importTrainees({ cohortId, file }: { cohortId: string | number; file: File }) {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('track', track)
   const { data } = await api.post(`/training/cohorts/${cohortId}/import`, formData)
   return data
 }

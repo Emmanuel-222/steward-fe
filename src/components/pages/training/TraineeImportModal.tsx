@@ -13,14 +13,14 @@ type ImportResult = {
 type TraineeImportModalProps = {
   open: boolean
   onClose: () => void
-  onSubmit: (file: File, track: 'new' | 'refresher') => Promise<ImportResult | undefined>
+  onSubmit: (file: File) => Promise<ImportResult | undefined>
   isSubmitting: boolean
 }
 
 const TEMPLATE = [
-  'fullName,email,phone',
-  'Ada Obi,ada.obi@example.com,08011112222',
-  'Bola Ade,bola.ade@example.com,08033334444',
+  'fullName,email,phone,track',
+  'Ada Obi,ada.obi@example.com,08011112222,new',
+  'Bola Ade,bola.ade@example.com,08033334444,refresher',
 ].join('\n')
 
 function downloadTemplate() {
@@ -36,14 +36,12 @@ function downloadTemplate() {
 function TraineeImportModal({ open, onClose, onSubmit, isSubmitting }: TraineeImportModalProps) {
   const { mounted, phase } = useAnimatedMount(open)
   const [file, setFile] = useState<File | null>(null)
-  const [track, setTrack] = useState<'new' | 'refresher'>('new')
   const [result, setResult] = useState<ImportResult | null>(null)
 
   if (!mounted) return null
 
   const reset = () => {
     setFile(null)
-    setTrack('new')
     setResult(null)
   }
 
@@ -54,7 +52,7 @@ function TraineeImportModal({ open, onClose, onSubmit, isSubmitting }: TraineeIm
 
   const handleSubmit = async () => {
     if (!file) return
-    const res = await onSubmit(file, track)
+    const res = await onSubmit(file)
     if (res) setResult(res)
   }
 
@@ -148,25 +146,10 @@ function TraineeImportModal({ open, onClose, onSubmit, isSubmitting }: TraineeIm
               </label>
 
               <div>
-                <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Import as
-                </p>
-                <div className="inline-flex rounded-xl border border-slate-200 p-1">
-                  {(['new', 'refresher'] as const).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setTrack(t)}
-                      className={`rounded-lg px-4 py-1.5 text-sm font-semibold capitalize transition ${
-                        track === t ? 'bg-brand text-white' : 'text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-                <p className="mt-2 text-xs text-slate-500">
-                  A <code>track</code> column in the file overrides this per row.
+                <p className="text-xs text-slate-500">
+                  Include a <code>track</code> column (<span className="font-semibold">new</span> /{' '}
+                  <span className="font-semibold">refresher</span>) in the file. Rows without one
+                  default to new.
                 </p>
               </div>
 
