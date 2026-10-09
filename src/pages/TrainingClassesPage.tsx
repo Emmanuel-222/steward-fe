@@ -18,7 +18,7 @@ function TrainingClassesPage() {
     <div className="space-y-8">
       <DashboardPageHeader
         title="My Classes"
-        description="The full schedule — sessions for your track are marked as required."
+        description="The sessions for your track, and whether you were marked present."
       />
 
       {isLoading ? (
@@ -34,23 +34,12 @@ function TrainingClassesPage() {
           {data.map((c) => (
             <li
               key={String(c.id)}
-              className={`flex flex-wrap items-center justify-between gap-3 rounded-card border p-4 shadow-sm ${
-                c.required ? 'border-slate-200 bg-white' : 'border-slate-100 bg-slate-50/60'
-              }`}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-slate-200 bg-white p-4 shadow-sm"
             >
               <div className="min-w-0">
                 <p className="font-semibold text-brand">
                   {c.week ? `Week ${c.week} · ` : ''}
                   {c.topic ?? 'Training session'}
-                  {c.required ? (
-                    <span className="ml-2 rounded-full bg-[#eef4ff] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand">
-                      Required
-                    </span>
-                  ) : (
-                    <span className="ml-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                      Not required
-                    </span>
-                  )}
                 </p>
                 <p className="text-sm text-slate-600">
                   {c.day}
