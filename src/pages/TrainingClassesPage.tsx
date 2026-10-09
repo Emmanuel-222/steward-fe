@@ -1,6 +1,6 @@
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
-import Skeleton from '../components/ui/Skeleton'
+import Spinner from '../components/ui/Spinner'
 import { useTrainingClassesQuery } from '../features/training/hooks/useTraining'
 
 const statusTone: Record<string, string> = {
@@ -22,7 +22,7 @@ function TrainingClassesPage() {
       />
 
       {isLoading ? (
-        <Skeleton className="h-64" />
+        <Spinner />
       ) : isError ? (
         <ErrorState message="We couldn't load your classes." onRetry={() => refetch()} />
       ) : !data || data.length === 0 ? (

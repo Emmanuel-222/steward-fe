@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
-import Skeleton from '../components/ui/Skeleton'
+import Spinner from '../components/ui/Spinner'
 import { useToast } from '../hooks/useToast'
 import {
   useClassRosterQuery,
@@ -39,7 +39,7 @@ function TrainingTeachingPage() {
       />
 
       {teachingQuery.isLoading ? (
-        <Skeleton className="h-64" />
+        <Spinner />
       ) : teachingQuery.isError ? (
         <ErrorState message="We couldn't load your classes." onRetry={() => teachingQuery.refetch()} />
       ) : !teachingQuery.data?.isTeacher ? (
@@ -77,7 +77,7 @@ function TrainingTeachingPage() {
             {selected == null ? (
               <p className="text-sm text-slate-600">Select a class to mark attendance.</p>
             ) : rosterQuery.isLoading ? (
-              <Skeleton className="h-48" />
+              <Spinner />
             ) : rosterQuery.isError || !rosterQuery.data ? (
               <ErrorState message="We couldn't load the class roster." onRetry={() => rosterQuery.refetch()} />
             ) : (

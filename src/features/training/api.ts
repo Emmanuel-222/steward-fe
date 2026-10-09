@@ -63,6 +63,11 @@ export async function createCohort(payload: CreateCohortPayload) {
   return data as TrainingCohort
 }
 
+export async function deleteCohort(cohortId: string | number) {
+  const { data } = await api.delete(`/training/cohorts/${cohortId}`)
+  return data
+}
+
 export async function updateCohort({
   id,
   payload,

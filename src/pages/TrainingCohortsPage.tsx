@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
-import Skeleton from '../components/ui/Skeleton'
+import Spinner from '../components/ui/Spinner'
 import { useToast } from '../hooks/useToast'
 import { useCohortsQuery, useCreateCohortMutation } from '../features/training/hooks/useTraining'
 
@@ -95,7 +95,7 @@ function TrainingCohortsPage() {
       ) : null}
 
       {cohortsQuery.isLoading ? (
-        <Skeleton className="h-64" />
+        <Spinner />
       ) : cohortsQuery.isError ? (
         <ErrorState message="We couldn't load cohorts." onRetry={() => cohortsQuery.refetch()} />
       ) : (cohortsQuery.data ?? []).length === 0 ? (

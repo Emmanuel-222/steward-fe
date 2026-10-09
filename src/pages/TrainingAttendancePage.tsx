@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
-import Skeleton from '../components/ui/Skeleton'
+import Spinner from '../components/ui/Spinner'
 import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import ExcuseRequestModal from '../components/pages/attendance/ExcuseRequestModal'
 import { useTrainingClassesQuery, useTrainingMeQuery } from '../features/training/hooks/useTraining'
@@ -33,7 +33,7 @@ function TrainingAttendancePage() {
       ) : null}
 
       {classesQuery.isLoading ? (
-        <Skeleton className="h-64" />
+        <Spinner />
       ) : classesQuery.isError ? (
         <ErrorState message="We couldn't load your attendance." onRetry={() => classesQuery.refetch()} />
       ) : missed.length === 0 ? (

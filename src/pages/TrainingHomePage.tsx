@@ -1,7 +1,7 @@
 import { GraduationCap, MapPin } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
-import Skeleton from '../components/ui/Skeleton'
+import Spinner from '../components/ui/Spinner'
 import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import { useTrainingMeQuery } from '../features/training/hooks/useTraining'
 
@@ -22,10 +22,7 @@ function TrainingHomePage() {
       />
 
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Skeleton className="h-44" />
-          <Skeleton className="h-44" />
-        </div>
+        <Spinner />
       ) : isError || !data ? (
         <ErrorState message="We couldn't load your training record." onRetry={() => refetch()} />
       ) : (

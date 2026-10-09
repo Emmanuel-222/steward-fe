@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createCohort,
+  deleteCohort,
   generateSessions,
   getClassRoster,
   getCohort,
@@ -59,6 +60,14 @@ export function useCreateCohortMutation() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (payload: CreateCohortPayload) => createCohort(payload),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.cohorts }),
+  })
+}
+
+export function useDeleteCohortMutation(cohortId: string | number) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: () => deleteCohort(cohortId),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.cohorts }),
   })
 }

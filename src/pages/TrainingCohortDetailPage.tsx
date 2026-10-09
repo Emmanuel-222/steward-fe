@@ -1,14 +1,16 @@
 import { useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
-import Skeleton from '../components/ui/Skeleton'
+import Spinner from '../components/ui/Spinner'
 import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import { useToast } from '../hooks/useToast'
+import useAuth from '../hooks/useAuth'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import {
   useCohortClassesQuery,
   useCohortQuery,
+  useDeleteCohortMutation,
   useGenerateSessionsMutation,
   useGraduateTraineeMutation,
   useImportTraineesMutation,
@@ -29,8 +31,13 @@ function TrainingCohortDetailPage() {
   const scheduleClass = useScheduleClassMutation(id)
   const graduate = useGraduateTraineeMutation(id)
   const importMutation = useImportTraineesMutation(id)
+  const deleteCohortMutation = useDeleteCohortMutation(id)
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const isAdmin = user?.role?.toLowerCase() === 'admin'
   const { showToast } = useToast()
   const fileRef = useRef<HTMLInputElement>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const stewardsQuery = useStewardsQuery('')
   const teachers = (stewardsQuery.data?.items ?? []).filter(
     (s) => !['admin', 'trainee'].includes(s.role.toLowerCase()),
@@ -51,7 +58,7 @@ function TrainingCohortDetailPage() {
   const [clsLocation, setClsLocation] = useState('')
   const [clsTopic, setClsTopic] = useState('')
 
-  if (cohortQuery.isLoading) return <Skeleton className="h-72" />
+  if (cohortQuery.isLoading) return <Spinner />
   if (cohortQuery.isError || !cohortQuery.data) {
     return (
       <div className="space-y-6">
@@ -147,9 +154,20 @@ function TrainingCohortDetailPage() {
         title={cohort.name}
         description={`${cohort.weekCount} weeks · allowed missed classes: ${cohort.maxMissedClasses}`}
         actions={
-          <Link to="/dashboard/training" className="text-sm font-semibold text-brand hover:underline">
-            Back to cohorts
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/dashboard/training" className="text-sm font-semibold text-brand hover:underline">
+              Back to cohorts
+            </Link>
+            {isAdmin ? (
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-100"
+              >
+                Delete cohort
+              </button>
+            ) : null}
+          </div>
         }
       />
 
@@ -322,6 +340,58 @@ function TrainingCohortDetailPage() {
           </table>
         </div>
       </section>
+
+      {confirmDelete ? (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
+          onClick={() => setConfirmDelete(false)}
+        >
+          <div className="flex min-h-full items-center justify-center px-4 py-6">
+            <div
+              className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
+              onClick={(event) => event.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="delete-cohort-title"
+            >
+              <h3 id="delete-cohort-title" className="text-xl font-semibold text-slate-900">
+                Delete cohort?
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                This permanently removes{' '}
+                <span className="font-semibold text-slate-800">{cohort.name}</span> with its
+                curriculum, sessions and enrollments. This cannot be undone.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="rounded-xl bg-[#eef3ff] px-4 py-3 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await deleteCohortMutation.mutateAsync()
+                      showToast('Cohort deleted', 'success')
+                      navigate('/dashboard/training')
+                    } catch {
+                      showToast('Could not delete cohort', 'error')
+                      setConfirmDelete(false)
+                    }
+                  }}
+                  disabled={deleteCohortMutation.isPending}
+                  className="rounded-xl bg-[#d92d20] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#b42318] disabled:opacity-70"
+                >
+                  {deleteCohortMutation.isPending ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
