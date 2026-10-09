@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
+  addTrainee,
   createCohort,
   deleteCohort,
   generateSessions,
@@ -17,6 +18,7 @@ import {
   scheduleClass,
   seedCurriculum,
   updateCohort,
+  type AddTraineePayload,
   type CreateCohortPayload,
   type SaveSessionPayload,
   type ScheduleClassPayload,
@@ -157,7 +159,16 @@ export function useGraduateTraineeMutation(cohortId: string | number) {
 export function useImportTraineesMutation(cohortId: string | number) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (file: File) => importTrainees({ file, cohortId }),
+    mutationFn: ({ file, track }: { file: File; track: 'new' | 'refresher' }) =>
+      importTrainees({ cohortId, file, track }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.trainees(cohortId) }),
+  })
+}
+
+export function useAddTraineeMutation(cohortId: string | number) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: AddTraineePayload) => addTrainee({ cohortId, payload }),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.trainees(cohortId) }),
   })
 }

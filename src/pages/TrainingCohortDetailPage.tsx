@@ -1,12 +1,16 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
 import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
+import TraineeImportModal from '../components/pages/training/TraineeImportModal'
+import AddTraineeModal from '../components/pages/training/AddTraineeModal'
+import type { AddTraineePayload } from '../features/training/api'
 import { useToast } from '../hooks/useToast'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import {
+  useAddTraineeMutation,
   useCohortClassesQuery,
   useCohortQuery,
   useGenerateSessionsMutation,
@@ -29,8 +33,8 @@ function TrainingCohortDetailPage() {
   const scheduleClass = useScheduleClassMutation(id)
   const graduate = useGraduateTraineeMutation(id)
   const importMutation = useImportTraineesMutation(id)
+  const addTraineeMutation = useAddTraineeMutation(id)
   const { showToast } = useToast()
-  const fileRef = useRef<HTMLInputElement>(null)
   const stewardsQuery = useStewardsQuery('')
   const teachers = (stewardsQuery.data?.items ?? []).filter(
     (s) => !['admin', 'trainee'].includes(s.role.toLowerCase()),
@@ -50,6 +54,8 @@ function TrainingCohortDetailPage() {
   const [clsEnd, setClsEnd] = useState('')
   const [clsLocation, setClsLocation] = useState('')
   const [clsTopic, setClsTopic] = useState('')
+  const [showImport, setShowImport] = useState(false)
+  const [showAdd, setShowAdd] = useState(false)
 
   if (cohortQuery.isLoading) return <Spinner />
   if (cohortQuery.isError || !cohortQuery.data) {
@@ -116,19 +122,29 @@ function TrainingCohortDetailPage() {
     }
   }
 
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const handleImport = async (file: File, track: 'new' | 'refresher') => {
     try {
-      const result = (await importMutation.mutateAsync(file)) as {
-        imported?: number
-        enrolled?: number
+      const result = (await importMutation.mutateAsync({ file, track })) as {
+        imported: number
+        skipped: number
+        defaultPassword?: string
+        failures: { row: number; field: string; message: string }[]
       }
-      showToast(`Imported ${result.imported ?? 0}, enrolled ${result.enrolled ?? 0}`, 'success')
+      showToast(`Imported ${result.imported}`, 'success')
+      return result
     } catch {
       showToast('Import failed', 'error')
-    } finally {
-      if (fileRef.current) fileRef.current.value = ''
+      return undefined
+    }
+  }
+
+  const handleAddTrainee = async (values: AddTraineePayload) => {
+    try {
+      await addTraineeMutation.mutateAsync(values)
+      showToast('Trainee added', 'success')
+      setShowAdd(false)
+    } catch {
+      showToast('Could not add trainee', 'error')
     }
   }
 
@@ -276,8 +292,21 @@ function TrainingCohortDetailPage() {
       <section className="rounded-card border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-brand">Trainees</h2>
-          <div className="flex items-center gap-3">
-            <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="text-xs text-slate-600" />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowAdd(true)}
+              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            >
+              Add trainee
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowImport(true)}
+              className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-hover"
+            >
+              Import trainees
+            </button>
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
@@ -322,6 +351,19 @@ function TrainingCohortDetailPage() {
           </table>
         </div>
       </section>
+
+      <TraineeImportModal
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        onSubmit={handleImport}
+        isSubmitting={importMutation.isPending}
+      />
+      <AddTraineeModal
+        open={showAdd}
+        onClose={() => setShowAdd(false)}
+        onSubmit={handleAddTrainee}
+        isSubmitting={addTraineeMutation.isPending}
+      />
     </div>
   )
 }

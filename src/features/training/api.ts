@@ -172,10 +172,36 @@ export async function graduateTrainee({
   return data
 }
 
-export async function importTrainees({ file, cohortId }: { file: File; cohortId: string | number }) {
+export async function importTrainees({
+  cohortId,
+  file,
+  track,
+}: {
+  cohortId: string | number
+  file: File
+  track: 'new' | 'refresher'
+}) {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('cohortId', String(cohortId))
-  const { data } = await api.post('/users/import', formData)
+  formData.append('track', track)
+  const { data } = await api.post(`/training/cohorts/${cohortId}/import`, formData)
+  return data
+}
+
+export type AddTraineePayload = {
+  fullName: string
+  email: string
+  phone: string
+  track: 'new' | 'refresher'
+}
+
+export async function addTrainee({
+  cohortId,
+  payload,
+}: {
+  cohortId: string | number
+  payload: AddTraineePayload
+}) {
+  const { data } = await api.post(`/training/cohorts/${cohortId}/trainees`, payload)
   return data
 }
