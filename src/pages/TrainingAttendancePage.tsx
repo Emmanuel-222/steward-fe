@@ -12,7 +12,7 @@ function TrainingAttendancePage() {
   const [excuseFor, setExcuseFor] = useState<{ meetingId: number; label: string } | null>(null)
 
   const classes = classesQuery.data ?? []
-  const missed = classes.filter((c) => c.status === 'Absent')
+  const missed = classes.filter((c) => c.required && c.status === 'Absent')
 
   return (
     <div className="space-y-8">
@@ -49,22 +49,28 @@ function TrainingAttendancePage() {
             >
               <div>
                 <p className="font-semibold text-brand">
-                  {c.topic ? `Week ${c.week}: ${c.topic}` : 'Training class'}
+                  {c.week ? `Week ${c.week} · ` : ''}
+                  {c.topic ?? 'Training session'}
                 </p>
                 <p className="text-sm text-slate-600">
-                  {new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ·{' '}
-                  {c.startTime}–{c.endTime}
+                  {c.day}
+                  {c.date
+                    ? ` · ${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                    : ''}
+                  {c.startTime ? ` · ${c.startTime}${c.endTime ? `–${c.endTime}` : ''}` : ''}
                 </p>
               </div>
               <button
                 type="button"
+                disabled={c.meetingId == null}
                 onClick={() =>
+                  c.meetingId != null &&
                   setExcuseFor({
                     meetingId: c.meetingId,
-                    label: c.topic ? `Week ${c.week} class` : 'Training class',
+                    label: c.topic ? `Week ${c.week} session` : 'Training session',
                   })
                 }
-                className="inline-flex items-center rounded-xl bg-white px-4 py-2 text-xs font-semibold text-brand ring-1 ring-slate-200 transition hover:bg-slate-50"
+                className="inline-flex items-center rounded-xl bg-white px-4 py-2 text-xs font-semibold text-brand ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Request permission
               </button>

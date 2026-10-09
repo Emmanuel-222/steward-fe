@@ -8,6 +8,7 @@ const statusTone: Record<string, string> = {
   Absent: 'bg-rose-100 text-rose-700',
   Excused: 'bg-amber-100 text-amber-800',
   Unmarked: 'bg-slate-100 text-slate-600',
+  Upcoming: 'bg-sky-100 text-sky-700',
 }
 
 function TrainingClassesPage() {
@@ -17,7 +18,7 @@ function TrainingClassesPage() {
     <div className="space-y-8">
       <DashboardPageHeader
         title="My Classes"
-        description="Every training class and whether you were marked present."
+        description="The full schedule — sessions for your track are marked as required."
       />
 
       {isLoading ? (
@@ -26,23 +27,40 @@ function TrainingClassesPage() {
         <ErrorState message="We couldn't load your classes." onRetry={() => refetch()} />
       ) : !data || data.length === 0 ? (
         <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
-          No classes scheduled yet.
+          The schedule hasn't been published yet.
         </div>
       ) : (
         <ul className="space-y-3">
           {data.map((c) => (
             <li
               key={String(c.id)}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-slate-200 bg-white p-4 shadow-sm"
+              className={`flex flex-wrap items-center justify-between gap-3 rounded-card border p-4 shadow-sm ${
+                c.required ? 'border-slate-200 bg-white' : 'border-slate-100 bg-slate-50/60'
+              }`}
             >
-              <div>
+              <div className="min-w-0">
                 <p className="font-semibold text-brand">
-                  {c.topic ? `Week ${c.week}: ${c.topic}` : 'Training class'}
+                  {c.week ? `Week ${c.week} · ` : ''}
+                  {c.topic ?? 'Training session'}
+                  {c.required ? (
+                    <span className="ml-2 rounded-full bg-[#eef4ff] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand">
+                      Required
+                    </span>
+                  ) : (
+                    <span className="ml-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                      Not required
+                    </span>
+                  )}
                 </p>
                 <p className="text-sm text-slate-600">
-                  {new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ·{' '}
-                  {c.startTime}–{c.endTime} · {c.location}
+                  {c.day}
+                  {c.date
+                    ? ` · ${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                    : ''}
+                  {c.startTime ? ` · ${c.startTime}${c.endTime ? `–${c.endTime}` : ''}` : ''}
+                  {c.location ? ` · ${c.location}` : ''}
                 </p>
+                {c.teacher ? <p className="text-xs text-slate-600">Teacher: {c.teacher}</p> : null}
               </div>
               <span
                 className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${

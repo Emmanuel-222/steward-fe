@@ -9,6 +9,7 @@ import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import {
   useCohortClassesQuery,
   useCohortQuery,
+  useGenerateSessionsMutation,
   useGraduateTraineeMutation,
   useImportTraineesMutation,
   useSaveTopicMutation,
@@ -22,6 +23,7 @@ function TrainingCohortDetailPage() {
   const classesQuery = useCohortClassesQuery(id)
   const traineesQuery = useTraineesQuery(id)
   const saveTopic = useSaveTopicMutation(id)
+  const generateSessions = useGenerateSessionsMutation(id)
   const scheduleClass = useScheduleClassMutation(id)
   const graduate = useGraduateTraineeMutation(id)
   const importMutation = useImportTraineesMutation(id)
@@ -36,6 +38,10 @@ function TrainingCohortDetailPage() {
   const [topicTitle, setTopicTitle] = useState('')
   const [topicDesc, setTopicDesc] = useState('')
   const [topicTeacher, setTopicTeacher] = useState('')
+  const [topicStart, setTopicStart] = useState('7:10 AM')
+  const [topicEnd, setTopicEnd] = useState('8:10 AM')
+  const [reqNew, setReqNew] = useState(true)
+  const [reqRef, setReqRef] = useState(false)
 
   const [clsDate, setClsDate] = useState('')
   const [clsStart, setClsStart] = useState('')
@@ -68,8 +74,12 @@ function TrainingCohortDetailPage() {
         title: topicTitle,
         description: topicDesc || undefined,
         teacherId: topicTeacher ? Number(topicTeacher) : null,
+        startTime: topicStart,
+        endTime: topicEnd || undefined,
+        requiredForNew: reqNew,
+        requiredForRefresher: reqRef,
       })
-      showToast('Topic saved', 'success')
+      showToast('Session saved', 'success')
       setWeek('')
       setTopicTitle('')
       setTopicDesc('')
@@ -150,32 +160,68 @@ function TrainingCohortDetailPage() {
           ) : (
             topics.map((t) => (
               <li key={t.id} className="rounded-xl border border-slate-100 px-4 py-3">
-                <p className="text-sm font-semibold text-brand">Week {t.weekNumber}: {t.title}</p>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm font-semibold text-brand">
+                    Week {t.weekNumber} · {t.title}
+                  </p>
+                  <span className="text-xs text-slate-600">
+                    {t.day}{t.startTime ? ` ${t.startTime}${t.endTime ? `–${t.endTime}` : ''}` : ''}
+                  </span>
+                </div>
                 {t.description ? <p className="text-sm text-slate-600">{t.description}</p> : null}
-                <p className="mt-1 text-xs font-medium text-slate-600">
-                  {t.teacher?.fullName ? `Teacher: ${t.teacher.fullName}` : 'No teacher assigned'}
+                <p className="mt-1 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-600">
+                  <span>{t.teacher?.fullName ? `Teacher: ${t.teacher.fullName}` : 'No teacher assigned'}</span>
+                  {t.requiredForNew ? <span className="rounded-full bg-[#eef4ff] px-2 py-0.5 text-brand">new</span> : null}
+                  {t.requiredForRefresher ? <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-800">refresher</span> : null}
                 </p>
               </li>
             ))
           )}
         </ul>
-        <form onSubmit={handleAddTopic} className="mt-5 grid gap-3 sm:grid-cols-[90px_1fr_1fr_1fr_auto]">
+        <form onSubmit={handleAddTopic} className="mt-5 grid gap-3 sm:grid-cols-2">
           <input value={week} onChange={(e) => setWeek(e.target.value)} type="number" min="1" placeholder="Week" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
           <input value={topicTitle} onChange={(e) => setTopicTitle(e.target.value)} placeholder="Topic title" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
-          <input value={topicDesc} onChange={(e) => setTopicDesc(e.target.value)} placeholder="Description (optional)" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
+          <input value={topicStart} onChange={(e) => setTopicStart(e.target.value)} placeholder="Start e.g. 7:10 AM" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
+          <input value={topicEnd} onChange={(e) => setTopicEnd(e.target.value)} placeholder="End e.g. 8:10 AM" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
           <select value={topicTeacher} onChange={(e) => setTopicTeacher(e.target.value)} className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand">
-            <option value="">Teacher for this week</option>
+            <option value="">Teacher for this session</option>
             {teachers.map((t) => (
               <option key={t.id} value={t.id}>{t.name} ({t.role})</option>
             ))}
           </select>
-          <button type="submit" disabled={saveTopic.isPending} className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60">Save</button>
+          <input value={topicDesc} onChange={(e) => setTopicDesc(e.target.value)} placeholder="Description (optional)" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
+          <div className="flex items-center gap-4 sm:col-span-2">
+            <label className="flex items-center gap-2 text-sm text-slate-600">
+              <input type="checkbox" checked={reqNew} onChange={(e) => setReqNew(e.target.checked)} /> Required for new
+            </label>
+            <label className="flex items-center gap-2 text-sm text-slate-600">
+              <input type="checkbox" checked={reqRef} onChange={(e) => setReqRef(e.target.checked)} /> Required for refresher
+            </label>
+            <button type="submit" disabled={saveTopic.isPending} className="ml-auto rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60">Save session</button>
+          </div>
         </form>
       </section>
 
       {/* Classes */}
       <section className="rounded-card border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-brand">Classes</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold text-brand">Sessions</h2>
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                const r = await generateSessions.mutateAsync()
+                showToast(`Generated ${r?.created ?? 0} session(s)`, 'success')
+              } catch {
+                showToast('Could not generate sessions', 'error')
+              }
+            }}
+            disabled={generateSessions.isPending}
+            className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60"
+          >
+            {generateSessions.isPending ? 'Generating...' : 'Generate dates'}
+          </button>
+        </div>
         <ul className="mt-4 space-y-2">
           {(classesQuery.data ?? []).length === 0 ? (
             <li className="text-sm text-slate-600">No classes scheduled.</li>

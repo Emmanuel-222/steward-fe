@@ -36,8 +36,8 @@ function TrainingHomePage() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
                   {data.cohort.name}
                 </p>
-                <p className="mt-1 text-lg font-semibold text-brand">
-                  {data.cohort.teacher ? `Teacher: ${data.cohort.teacher}` : 'Teacher to be assigned'}
+                <p className="mt-1 text-sm font-medium capitalize text-slate-600">
+                  {data.cohort.track} track
                 </p>
               </div>
               <GraduationStatusBadge status={data.graduation} />
@@ -87,6 +87,9 @@ function TrainingHomePage() {
                   </p>
                   {data.nextClass.topic ? (
                     <p className="mt-2 text-sm text-slate-600">Topic: {data.nextClass.topic}</p>
+                  ) : null}
+                  {data.nextClass.teacher ? (
+                    <p className="mt-1 text-sm text-slate-600">Teacher: {data.nextClass.teacher}</p>
                   ) : null}
                 </>
               ) : (

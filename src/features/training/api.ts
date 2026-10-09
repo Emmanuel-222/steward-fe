@@ -4,9 +4,9 @@ import type {
   CohortListItem,
   GraduationStatus,
   TeachingResponse,
-  TrainingClassItem,
   TrainingCohort,
   TrainingMe,
+  TrainingSession,
   TrainingTopic,
   TraineeRow,
 } from './types'
@@ -24,7 +24,7 @@ export async function getTrainingMe() {
 
 export async function getTrainingClasses() {
   const { data } = await api.get('/training/me/classes')
-  return (Array.isArray(data) ? data : []) as TrainingClassItem[]
+  return (Array.isArray(data) ? data : []) as TrainingSession[]
 }
 
 export async function getCohorts() {
@@ -74,29 +74,50 @@ export async function updateCohort({
   return data as TrainingCohort
 }
 
-export async function saveTopic({
-  cohortId,
-  weekNumber,
-  title,
-  description,
-  notes,
-  teacherId,
-}: {
-  cohortId: string | number
+export type SaveSessionPayload = {
   weekNumber: number
+  day?: string
+  startTime: string
+  endTime?: string
   title: string
   description?: string
   notes?: string
   teacherId?: number | null
-}) {
+  requiredForNew?: boolean
+  requiredForRefresher?: boolean
+}
+
+export async function saveTopic({
+  cohortId,
+  weekNumber,
+  day,
+  startTime,
+  endTime,
+  title,
+  description,
+  notes,
+  teacherId,
+  requiredForNew,
+  requiredForRefresher,
+}: SaveSessionPayload & { cohortId: string | number }) {
   const { data } = await api.post(`/training/cohorts/${cohortId}/topics`, {
     weekNumber,
+    day,
+    startTime,
+    endTime,
     title,
     description,
     notes,
     teacherId: teacherId ?? null,
+    requiredForNew,
+    requiredForRefresher,
   })
   return data as TrainingTopic
+}
+
+export async function generateSessions(cohortId: string | number) {
+  const { data } = await api.post(`/training/cohorts/${cohortId}/generate`)
+  return data as { created: number }
 }
 
 export async function getTeaching() {

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createCohort,
+  generateSessions,
   getClassRoster,
   getCohort,
   getCohortClasses,
@@ -15,6 +16,7 @@ import {
   scheduleClass,
   updateCohort,
   type CreateCohortPayload,
+  type SaveSessionPayload,
   type ScheduleClassPayload,
 } from '../api'
 import { markPresent } from '../../attendance/api'
@@ -74,14 +76,19 @@ export function useUpdateCohortMutation() {
 export function useSaveTopicMutation(cohortId: string | number) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (payload: {
-      weekNumber: number
-      title: string
-      description?: string
-      notes?: string
-      teacherId?: number | null
-    }) => saveTopic({ cohortId, ...payload }),
+    mutationFn: (payload: SaveSessionPayload) => saveTopic({ cohortId, ...payload }),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.cohort(cohortId) }),
+  })
+}
+
+export function useGenerateSessionsMutation(cohortId: string | number) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: () => generateSessions(cohortId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: keys.cohort(cohortId) })
+      qc.invalidateQueries({ queryKey: keys.cohortClasses(cohortId) })
+    },
   })
 }
 
