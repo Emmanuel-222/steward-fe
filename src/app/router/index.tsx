@@ -3,6 +3,7 @@ import type { ComponentType } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import RouteFallback from '../../components/ui/RouteFallback'
+import RoleGuard from './RoleGuard'
 
 function page(importer: () => Promise<{ default: ComponentType }>) {
   const Component = lazy(importer)
@@ -53,27 +54,27 @@ export const router = createBrowserRouter([
       },
       {
         path: 'stewards',
-        element: page(() => import('../../pages/StewardsPage')),
+        element: <RoleGuard allow={['admin', 'leader', 'pastor']}>{page(() => import('../../pages/StewardsPage'))}</RoleGuard>,
       },
       {
         path: 'stewards/:id',
-        element: page(() => import('../../pages/StewardDetailPage')),
+        element: <RoleGuard allow={['admin', 'leader', 'pastor']}>{page(() => import('../../pages/StewardDetailPage'))}</RoleGuard>,
       },
       {
         path: 'meetings',
-        element: page(() => import('../../pages/MeetingsPage')),
+        element: <RoleGuard allow={['admin', 'leader']}>{page(() => import('../../pages/MeetingsPage'))}</RoleGuard>,
       },
       {
         path: 'attendance/:meetingId?',
-        element: page(() => import('../../pages/AttendancePage')),
+        element: <RoleGuard allow={['admin', 'leader', 'pastor', 'steward']}>{page(() => import('../../pages/AttendancePage'))}</RoleGuard>,
       },
       {
         path: 'my-excuses',
-        element: page(() => import('../../pages/MyExcusesPage')),
+        element: <RoleGuard allow={['steward']}>{page(() => import('../../pages/MyExcusesPage'))}</RoleGuard>,
       },
       {
         path: 'excuse-requests',
-        element: page(() => import('../../pages/ExcuseRequestsPage')),
+        element: <RoleGuard allow={['admin', 'leader', 'pastor']}>{page(() => import('../../pages/ExcuseRequestsPage'))}</RoleGuard>,
       },
       {
         path: 'profile',
@@ -81,23 +82,23 @@ export const router = createBrowserRouter([
       },
       {
         path: 'classes',
-        element: page(() => import('../../pages/TrainingClassesPage')),
+        element: <RoleGuard allow={['trainee']}>{page(() => import('../../pages/TrainingClassesPage'))}</RoleGuard>,
       },
       {
         path: 'training-attendance',
-        element: page(() => import('../../pages/TrainingAttendancePage')),
+        element: <RoleGuard allow={['trainee']}>{page(() => import('../../pages/TrainingAttendancePage'))}</RoleGuard>,
       },
       {
         path: 'training',
-        element: page(() => import('../../pages/TrainingCohortsPage')),
+        element: <RoleGuard allow={['admin']}>{page(() => import('../../pages/TrainingCohortsPage'))}</RoleGuard>,
       },
       {
         path: 'training/:id',
-        element: page(() => import('../../pages/TrainingCohortDetailPage')),
+        element: <RoleGuard allow={['admin']}>{page(() => import('../../pages/TrainingCohortDetailPage'))}</RoleGuard>,
       },
       {
         path: 'teaching',
-        element: page(() => import('../../pages/TrainingTeachingPage')),
+        element: <RoleGuard allow={['steward', 'leader', 'pastor']}>{page(() => import('../../pages/TrainingTeachingPage'))}</RoleGuard>,
       },
     ],
   },

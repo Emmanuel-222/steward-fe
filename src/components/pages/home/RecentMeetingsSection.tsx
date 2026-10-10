@@ -17,13 +17,15 @@ function RecentMeetingsSection({
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-xl font-semibold text-brand">Recent Meetings</h3>
-        <button
-          type="button"
-          onClick={onViewAll}
-          className="text-left text-sm font-medium text-slate-600 transition hover:text-slate-700 sm:text-right"
-        >
-          View All Records
-        </button>
+        {onViewAll ? (
+          <button
+            type="button"
+            onClick={onViewAll}
+            className="text-left text-sm font-medium text-slate-600 transition hover:text-slate-700 sm:text-right"
+          >
+            View All Records
+          </button>
+        ) : null}
       </div>
 
       <div className="overflow-hidden rounded-card border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
