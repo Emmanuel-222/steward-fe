@@ -84,7 +84,7 @@ function AssignTeacherModal({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search stewards by name, role or department"
-              autoFocus
+              data-autofocus
               className="w-full bg-transparent text-sm text-slate-800 outline-none"
             />
           </label>

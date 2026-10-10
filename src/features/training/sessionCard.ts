@@ -13,6 +13,19 @@ function formatSessionDate(value: string) {
   return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
 }
 
+export function weekdayFromDate(value: string | null | undefined): string | null {
+  if (!value) return null
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number)
+  if (!year || !month || !day) return null
+  const date = new Date(year, month - 1, day)
+  if (Number.isNaN(date.getTime())) return null
+  return date.toLocaleDateString('en-US', { weekday: 'long' })
+}
+
+export function sessionDayLabel(day: string | null | undefined, date: string | null | undefined): string {
+  return weekdayFromDate(date) ?? day ?? ''
+}
+
 export function sessionToMeeting(session: RollupSession): Meeting {
   const weekPrefix = session.week != null ? `Week ${session.week} · ` : ''
   const time =
@@ -25,7 +38,7 @@ export function sessionToMeeting(session: RollupSession): Meeting {
     status: session.status,
     statusTone: statusTone[session.status],
     title: `${weekPrefix}${session.topic ?? 'Training session'}`,
-    type: 'Sunday',
+    type: weekdayFromDate(session.date) ?? 'Training',
     subtitle: session.cohortName,
     date: formatSessionDate(session.date),
     time,

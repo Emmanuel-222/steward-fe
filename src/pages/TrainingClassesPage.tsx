@@ -2,6 +2,7 @@ import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
 import { useTrainingClassesQuery } from '../features/training/hooks/useTraining'
+import { sessionDayLabel } from '../features/training/sessionCard'
 
 const statusTone: Record<string, string> = {
   Present: 'bg-emerald-100 text-emerald-700',
@@ -42,7 +43,7 @@ function TrainingClassesPage() {
                   {c.topic ?? 'Training session'}
                 </p>
                 <p className="text-sm text-slate-600">
-                  {c.day}
+                  {sessionDayLabel(c.day, c.date)}
                   {c.date
                     ? ` · ${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
                     : ''}

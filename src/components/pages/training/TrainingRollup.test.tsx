@@ -67,7 +67,8 @@ describe('TrainingRollup', () => {
     renderRollup(<TrainingRollup trainees={trainees} sessions={sessions} />)
     fireEvent.click(screen.getByRole('button', { name: 'Sessions' }))
     expect(screen.getByText(/Evangelism/)).toBeTruthy()
-    expect(screen.getAllByText('Sunday').length).toBe(2)
+    expect(screen.getByText('Monday')).toBeTruthy()
+    expect(screen.getByText('Friday')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'Upcoming' }))
     expect(screen.queryByText(/Evangelism/)).toBeNull()

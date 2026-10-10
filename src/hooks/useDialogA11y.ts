@@ -28,7 +28,7 @@ export function useDialogA11y<T extends HTMLElement>(onClose: () => void) {
     const focusable = () =>
       Array.from(node.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
 
-    const initial = focusable()[0]
+    const initial = node.querySelector<HTMLElement>('[data-autofocus]') ?? focusable()[0]
     if (initial) initial.focus()
     else node.focus()
 

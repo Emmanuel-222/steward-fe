@@ -17,6 +17,7 @@ import type { AddTraineePayload } from '../features/training/api'
 import type { TrainingTopic } from '../features/training/types'
 import { toRollupTraineesCohort } from '../features/training/adapters'
 import { sessionStatus } from '../features/training/sessionStatus'
+import { sessionDayLabel } from '../features/training/sessionCard'
 import {
   useAddTraineeMutation,
   useAssignTeacherMutation,
@@ -404,7 +405,7 @@ function TrainingCohortDetailPage() {
                           Week {t.weekNumber} · {t.title}
                         </p>
                         <p className="text-sm text-slate-600">
-                          {t.day} {t.startTime}{t.endTime ? `–${t.endTime}` : ''}
+                          {sessionDayLabel(t.day, meeting?.date)} {t.startTime}{t.endTime ? `–${t.endTime}` : ''}
                           {meeting
                             ? ` · ${new Date(meeting.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${meeting.location}`
                             : ' · not dated yet'}
