@@ -84,6 +84,7 @@ export type TrainingTraineeListItem = {
   department: string
   role: string
   phone: string
+  birthday: string | null
   createdAt: string
   cohortId: number
   cohortName: string
@@ -150,6 +151,7 @@ export type RollupTrainee = {
   role?: string
   phone?: string
   dateAdded?: string
+  birthday?: string
 }
 
 export type RollupSession = {

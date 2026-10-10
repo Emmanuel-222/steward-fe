@@ -22,6 +22,15 @@ function formatDateAdded(value: string) {
   return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
 }
 
+function formatBirthday(value: string | null) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const day = String(date.getUTCDate()).padStart(2, '0')
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0')
+  return `${day}/${month}/${date.getUTCFullYear()}`
+}
+
 export function toRollupTraineesGlobal(rows: TrainingTraineeListItem[]): RollupTrainee[] {
   return rows.map((r) => ({
     id: r.userId,
@@ -38,6 +47,7 @@ export function toRollupTraineesGlobal(rows: TrainingTraineeListItem[]): RollupT
     role: r.role ? titleCase(r.role) : 'Trainee',
     phone: r.phone || 'N/A',
     dateAdded: r.createdAt ? formatDateAdded(r.createdAt) : 'N/A',
+    birthday: formatBirthday(r.birthday),
   }))
 }
 

@@ -6,16 +6,24 @@ import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
 import Pagination from '../components/ui/Pagination'
 import TrainingRollup from '../components/pages/training/TrainingRollup'
+import TraineeRowActions from '../components/pages/training/TraineeRowActions'
+import EditTraineeModal, { type EditTraineeValues } from '../components/pages/training/EditTraineeModal'
+import DeleteUserModal from '../components/pages/stewards/DeleteUserModal'
 import { useToast } from '../hooks/useToast'
 import useAuth from '../hooks/useAuth'
 import {
   useCohortsQuery,
   useCreateCohortMutation,
+  useDeleteTraineeMutation,
+  useGraduateTraineeAnyMutation,
   useTrainingSessionsQuery,
   useTrainingTraineesQuery,
+  useUpdateTraineeProfileMutation,
+  useUpdateTraineeTrackMutation,
 } from '../features/training/hooks/useTraining'
 import { toRollupSessionsGlobal, toRollupTraineesGlobal } from '../features/training/adapters'
-import type { CohortListItem } from '../features/training/types'
+import type { CohortListItem, RollupTrainee } from '../features/training/types'
+import type { Steward } from '../features/stewards/types'
 
 const CARD_PAGE_SIZE = 6
 
@@ -35,6 +43,10 @@ function TrainingCohortsPage() {
   const traineesQuery = useTrainingTraineesQuery(isAdmin)
   const sessionsQuery = useTrainingSessionsQuery(isAdmin)
   const createMutation = useCreateCohortMutation()
+  const graduateAny = useGraduateTraineeAnyMutation()
+  const updateProfile = useUpdateTraineeProfileMutation()
+  const updateTrack = useUpdateTraineeTrackMutation()
+  const deleteTraineeMutation = useDeleteTraineeMutation()
   const { showToast } = useToast()
   const [searchParams] = useSearchParams()
   const forceList = searchParams.get('list') === '1'
@@ -45,6 +57,8 @@ function TrainingCohortsPage() {
   const [weekCount, setWeekCount] = useState('12')
   const [maxMissedClasses, setMaxMissedClasses] = useState('3')
   const [page, setPage] = useState(1)
+  const [editingTrainee, setEditingTrainee] = useState<RollupTrainee | null>(null)
+  const [deletingTrainee, setDeletingTrainee] = useState<RollupTrainee | null>(null)
 
   const cohorts = cohortsQuery.data ?? []
 
@@ -86,6 +100,63 @@ function TrainingCohortsPage() {
   const rollupTrainees = toRollupTraineesGlobal(traineesQuery.data ?? [])
   const rollupSessions = toRollupSessionsGlobal(sessionsQuery.data ?? [])
   const rollupError = traineesQuery.isError || sessionsQuery.isError
+
+  const asSteward = (trainee: RollupTrainee): Steward => ({
+    id: String(trainee.id),
+    initials: '',
+    name: trainee.name,
+    email: trainee.email,
+    department: trainee.department ?? '',
+    role: trainee.role ?? 'Trainee',
+    roleTone: '',
+    phone: trainee.phone ?? '',
+    dateAdded: trainee.dateAdded ?? '',
+  })
+
+  const handleViewTrainee = (trainee: RollupTrainee) => {
+    navigate(`/dashboard/stewards/${trainee.id}`)
+  }
+
+  const handleGraduateTrainee = async (trainee: RollupTrainee) => {
+    try {
+      await graduateAny.mutateAsync({ cohortId: trainee.cohortId, userId: trainee.id })
+      showToast(`${trainee.name} graduated and moved to worker`, 'success')
+    } catch {
+      showToast('Could not graduate trainee', 'error')
+    }
+  }
+
+  const handleEditTrainee = async (values: EditTraineeValues) => {
+    if (!editingTrainee) return
+    try {
+      await updateProfile.mutateAsync({
+        userId: editingTrainee.id,
+        payload: { fullName: values.name, phone: values.phone, birthday: values.birthday },
+      })
+      if (values.track !== editingTrainee.track) {
+        await updateTrack.mutateAsync({
+          cohortId: editingTrainee.cohortId,
+          userId: editingTrainee.id,
+          track: values.track,
+        })
+      }
+      showToast('Trainee updated', 'success')
+    } catch (error) {
+      showToast('Could not update trainee', 'error')
+      throw error
+    }
+  }
+
+  const handleDeleteTrainee = async () => {
+    if (!deletingTrainee) return
+    try {
+      await deleteTraineeMutation.mutateAsync(deletingTrainee.id)
+      showToast('Trainee removed', 'success')
+      setDeletingTrainee(null)
+    } catch {
+      showToast('Could not delete trainee', 'error')
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -208,8 +279,33 @@ function TrainingCohortsPage() {
                 sessionsQuery.refetch()
               }}
               onOpenCohort={(cohortId) => navigate(`/dashboard/training/${cohortId}`)}
+              renderTraineeActions={(trainee) => (
+                <TraineeRowActions
+                  trainee={trainee}
+                  onView={handleViewTrainee}
+                  onEdit={setEditingTrainee}
+                  onGraduate={handleGraduateTrainee}
+                  onDelete={setDeletingTrainee}
+                />
+              )}
             />
           ) : null}
+
+          <EditTraineeModal
+            key={editingTrainee?.id ?? 'none'}
+            trainee={editingTrainee}
+            open={Boolean(editingTrainee)}
+            onClose={() => setEditingTrainee(null)}
+            onSubmit={handleEditTrainee}
+            isSubmitting={updateProfile.isPending || updateTrack.isPending}
+          />
+          <DeleteUserModal
+            steward={deletingTrainee ? asSteward(deletingTrainee) : null}
+            open={Boolean(deletingTrainee)}
+            onClose={() => setDeletingTrainee(null)}
+            onConfirm={handleDeleteTrainee}
+            isSubmitting={deleteTraineeMutation.isPending}
+          />
         </>
       )}
     </div>

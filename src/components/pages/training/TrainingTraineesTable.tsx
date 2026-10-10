@@ -1,4 +1,5 @@
 import { GraduationCap } from 'lucide-react'
+import type { ReactNode } from 'react'
 import GraduationStatusBadge from './GraduationStatusBadge'
 import type { RollupTrainee } from '../../../features/training/types'
 
@@ -8,6 +9,7 @@ type TrainingTraineesTableProps = {
   onGraduate?: (trainee: RollupTrainee) => void
   isGraduating?: boolean
   emptyMessage?: string
+  renderActions?: (trainee: RollupTrainee) => ReactNode
 }
 
 const roleTone: Record<string, string> = {
@@ -47,6 +49,7 @@ function TrainingTraineesTable({
   onGraduate,
   isGraduating = false,
   emptyMessage = 'No trainees yet.',
+  renderActions,
 }: TrainingTraineesTableProps) {
   if (trainees.length === 0) {
     return (
@@ -71,6 +74,11 @@ function TrainingTraineesTable({
                 <th className="px-4 py-3">Role</th>
                 <th className="px-4 py-3">Phone</th>
                 <th className="px-4 py-3">Date Added</th>
+                {renderActions ? (
+                  <th className="px-4 py-3">
+                    <span className="sr-only">Actions</span>
+                  </th>
+                ) : null}
               </>
             ) : (
               <>
@@ -112,6 +120,7 @@ function TrainingTraineesTable({
                   </td>
                   <td className="px-4 py-3 text-slate-700">{t.phone ?? 'N/A'}</td>
                   <td className="px-4 py-3 text-slate-700">{t.dateAdded ?? 'N/A'}</td>
+                  {renderActions ? <td className="px-4 py-3 text-right">{renderActions(t)}</td> : null}
                 </>
               ) : (
                 <>

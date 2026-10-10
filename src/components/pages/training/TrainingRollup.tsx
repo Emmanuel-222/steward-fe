@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import MeetingsTabs from '../meetings/MeetingsTabs'
 import MeetingCard from '../meetings/MeetingCard'
 import TrainingTraineesTable from './TrainingTraineesTable'
@@ -17,6 +18,7 @@ type TrainingRollupProps = {
   errorMessage?: string
   onRetry?: () => void
   onOpenCohort?: (cohortId: number) => void
+  renderTraineeActions?: (trainee: RollupTrainee) => ReactNode
 }
 
 function TrainingRollup({
@@ -26,6 +28,7 @@ function TrainingRollup({
   errorMessage,
   onRetry,
   onOpenCohort,
+  renderTraineeActions,
 }: TrainingRollupProps) {
   const [view, setView] = useState<(typeof VIEWS)[number]>('Trainees')
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All')
@@ -50,7 +53,7 @@ function TrainingRollup({
       ) : errorMessage ? (
         <ErrorState message={errorMessage} onRetry={onRetry} />
       ) : view === 'Trainees' ? (
-        <TrainingTraineesTable trainees={trainees} scope="global" />
+        <TrainingTraineesTable trainees={trainees} scope="global" renderActions={renderTraineeActions} />
       ) : filteredSessions.length === 0 ? (
         <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600 shadow-sm">
           No sessions found for {filter.toLowerCase()}.
