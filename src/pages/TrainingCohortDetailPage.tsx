@@ -7,11 +7,13 @@ import Spinner from '../components/ui/Spinner'
 import TraineeImportModal from '../components/pages/training/TraineeImportModal'
 import AddTraineeModal from '../components/pages/training/AddTraineeModal'
 import TrainingTraineesTable from '../components/pages/training/TrainingTraineesTable'
+import SessionStatusBadge from '../components/pages/training/SessionStatusBadge'
 import { useToast } from '../hooks/useToast'
 import useAuth from '../hooks/useAuth'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import type { AddTraineePayload } from '../features/training/api'
 import { toRollupTraineesCohort } from '../features/training/adapters'
+import { sessionStatus } from '../features/training/sessionStatus'
 import {
   useAddTraineeMutation,
   useCohortClassesQuery,
@@ -352,13 +354,15 @@ function TrainingCohortDetailPage() {
                           {t.requiredForRefresher ? <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-800">refresher</span> : null}
                         </p>
                       </div>
-                      <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
-                          meeting ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'
-                        }`}
-                      >
-                        {meeting ? 'Scheduled' : 'Unscheduled'}
-                      </span>
+                      {meeting ? (
+                        <SessionStatusBadge
+                          status={sessionStatus(meeting.date, meeting.startTime, meeting.endTime)}
+                        />
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                          Unscheduled
+                        </span>
+                      )}
                     </div>
                   </li>
                 )
