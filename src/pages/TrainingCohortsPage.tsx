@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
@@ -29,6 +29,7 @@ function cohortTeachers(cohort: CohortListItem) {
 
 function TrainingCohortsPage() {
   const cohortsQuery = useCohortsQuery()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
   const traineesQuery = useTrainingTraineesQuery(isAdmin)
@@ -152,7 +153,7 @@ function TrainingCohortsPage() {
                   <li key={cohort.id}>
                     <Link
                       to={`/dashboard/training/${cohort.id}`}
-                      className="block rounded-card border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand/40 hover:shadow-md"
+                      className="flex h-full flex-col rounded-card border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand/40 hover:shadow-md"
                     >
                       <p className="text-lg font-semibold text-brand">{cohort.name}</p>
                       <p className="mt-1 text-sm text-slate-600">
@@ -206,6 +207,7 @@ function TrainingCohortsPage() {
                 traineesQuery.refetch()
                 sessionsQuery.refetch()
               }}
+              onOpenCohort={(cohortId) => navigate(`/dashboard/training/${cohortId}`)}
             />
           ) : null}
         </>

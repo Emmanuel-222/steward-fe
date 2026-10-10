@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import TrainingRollup from './TrainingRollup'
 import type { RollupSession, RollupTrainee } from '../../../features/training/types'
 
@@ -15,6 +16,10 @@ const trainees: RollupTrainee[] = [
     maxMissedClasses: 3,
     graduation: 'on_track',
     enrollmentStatus: 'enrolled',
+    department: 'Unassigned',
+    role: 'Trainee',
+    phone: '+2348012345678',
+    dateAdded: 'Oct 09, 2026',
   },
 ]
 
@@ -47,16 +52,22 @@ const sessions: RollupSession[] = [
   },
 ]
 
+function renderRollup(ui: React.ReactElement) {
+  return render(<MemoryRouter>{ui}</MemoryRouter>)
+}
+
 describe('TrainingRollup', () => {
-  test('defaults to the trainees view', () => {
-    render(<TrainingRollup trainees={trainees} sessions={sessions} />)
+  test('defaults to the trainees view with identity columns', () => {
+    renderRollup(<TrainingRollup trainees={trainees} sessions={sessions} />)
     expect(screen.getByText('Ada Obi')).toBeTruthy()
+    expect(screen.getByText('Department')).toBeTruthy()
   })
 
-  test('switches to sessions and filters by status', () => {
-    render(<TrainingRollup trainees={trainees} sessions={sessions} />)
+  test('switches to sessions, renders meeting cards, and filters by status', () => {
+    renderRollup(<TrainingRollup trainees={trainees} sessions={sessions} />)
     fireEvent.click(screen.getByRole('button', { name: 'Sessions' }))
     expect(screen.getByText(/Evangelism/)).toBeTruthy()
+    expect(screen.getAllByText('Sunday').length).toBe(2)
 
     fireEvent.click(screen.getByRole('button', { name: 'Upcoming' }))
     expect(screen.queryByText(/Evangelism/)).toBeNull()
@@ -64,12 +75,12 @@ describe('TrainingRollup', () => {
   })
 
   test('shows the error state', () => {
-    render(<TrainingRollup trainees={[]} sessions={[]} errorMessage="Nope" />)
+    renderRollup(<TrainingRollup trainees={[]} sessions={[]} errorMessage="Nope" />)
     expect(screen.getByText('Nope')).toBeTruthy()
   })
 
   test('shows the all-sessions empty message in the sessions view', () => {
-    render(<TrainingRollup trainees={trainees} sessions={[]} />)
+    renderRollup(<TrainingRollup trainees={trainees} sessions={[]} />)
     fireEvent.click(screen.getByRole('button', { name: 'Sessions' }))
     expect(screen.getByText('No sessions found for all.')).toBeTruthy()
   })

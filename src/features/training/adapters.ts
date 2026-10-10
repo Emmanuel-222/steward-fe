@@ -7,6 +7,21 @@ import type {
   TrainingTraineeListItem,
 } from './types'
 
+function titleCase(value: string) {
+  return value
+    .toLowerCase()
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+function formatDateAdded(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return 'N/A'
+  return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+}
+
 export function toRollupTraineesGlobal(rows: TrainingTraineeListItem[]): RollupTrainee[] {
   return rows.map((r) => ({
     id: r.userId,
@@ -19,6 +34,10 @@ export function toRollupTraineesGlobal(rows: TrainingTraineeListItem[]): RollupT
     maxMissedClasses: r.maxMissedClasses,
     graduation: r.graduation,
     enrollmentStatus: r.status,
+    department: r.department ? titleCase(r.department) : 'Unassigned',
+    role: r.role ? titleCase(r.role) : 'Trainee',
+    phone: r.phone || 'N/A',
+    dateAdded: r.createdAt ? formatDateAdded(r.createdAt) : 'N/A',
   }))
 }
 

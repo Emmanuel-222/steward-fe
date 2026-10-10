@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import MeetingsTabs from '../meetings/MeetingsTabs'
+import MeetingCard from '../meetings/MeetingCard'
 import TrainingTraineesTable from './TrainingTraineesTable'
-import TrainingSessionsList from './TrainingSessionsList'
 import ErrorState from '../../ui/ErrorState'
 import { SkeletonTable } from '../../ui/Skeleton'
+import { sessionToMeeting } from '../../../features/training/sessionCard'
 import type { RollupSession, RollupTrainee, SessionStatus } from '../../../features/training/types'
 
 const VIEWS = ['Trainees', 'Sessions'] as const
@@ -15,6 +16,7 @@ type TrainingRollupProps = {
   isLoading?: boolean
   errorMessage?: string
   onRetry?: () => void
+  onOpenCohort?: (cohortId: number) => void
 }
 
 function TrainingRollup({
@@ -23,6 +25,7 @@ function TrainingRollup({
   isLoading = false,
   errorMessage,
   onRetry,
+  onOpenCohort,
 }: TrainingRollupProps) {
   const [view, setView] = useState<(typeof VIEWS)[number]>('Trainees')
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All')
@@ -43,17 +46,26 @@ function TrainingRollup({
       ) : null}
 
       {isLoading ? (
-        <SkeletonTable rows={4} cols={view === 'Trainees' ? 5 : 3} />
+        <SkeletonTable rows={4} cols={view === 'Trainees' ? 6 : 3} />
       ) : errorMessage ? (
         <ErrorState message={errorMessage} onRetry={onRetry} />
       ) : view === 'Trainees' ? (
-        <TrainingTraineesTable trainees={trainees} showCohort />
+        <TrainingTraineesTable trainees={trainees} scope="global" />
+      ) : filteredSessions.length === 0 ? (
+        <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600 shadow-sm">
+          No sessions found for {filter.toLowerCase()}.
+        </div>
       ) : (
-        <TrainingSessionsList
-          sessions={filteredSessions}
-          showCohort
-          emptyMessage={`No sessions found for ${filter.toLowerCase()}.`}
-        />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {filteredSessions.map((session) => (
+            <MeetingCard
+              key={`${session.cohortId}-${session.id}`}
+              meeting={sessionToMeeting(session)}
+              cohortName={session.cohortName}
+              onAction={() => onOpenCohort?.(session.cohortId)}
+            />
+          ))}
+        </div>
       )}
     </section>
   )

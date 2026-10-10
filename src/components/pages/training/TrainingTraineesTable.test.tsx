@@ -25,11 +25,20 @@ describe('TrainingTraineesTable', () => {
     expect(screen.getByText('ada@example.com')).toBeTruthy()
   })
 
-  test('hides the cohort column by default and shows it when asked', () => {
+  test('cohort scope shows training columns; global scope shows identity columns', () => {
     const { rerender } = render(<TrainingTraineesTable trainees={rows} />)
+    expect(screen.getByText('Track')).toBeTruthy()
     expect(screen.queryByText('Cohort')).toBeNull()
-    rerender(<TrainingTraineesTable trainees={rows} showCohort />)
-    expect(screen.getByText('2026')).toBeTruthy()
+
+    rerender(<TrainingTraineesTable trainees={rows} scope="global" />)
+    expect(screen.getByText('Cohort')).toBeTruthy()
+    expect(screen.getByText('Department')).toBeTruthy()
+    expect(screen.queryByText('Track')).toBeNull()
+  })
+
+  test('global scope shows Unassigned when no department is set', () => {
+    render(<TrainingTraineesTable trainees={rows} scope="global" />)
+    expect(screen.getByText('Unassigned')).toBeTruthy()
   })
 
   test('renders the Graduate action only when onGraduate is provided', () => {

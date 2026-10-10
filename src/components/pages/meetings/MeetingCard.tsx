@@ -11,12 +11,13 @@ import useAuth from '../../../hooks/useAuth'
 
 type MeetingCardProps = {
   meeting: Meeting
-  onEdit: (meeting: Meeting) => void
-  onDelete: (meeting: Meeting) => void
+  onEdit?: (meeting: Meeting) => void
+  onDelete?: (meeting: Meeting) => void
   onAction: (meeting: Meeting) => void
+  cohortName?: string
 }
 
-function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) {
+function MeetingCard({ meeting, onEdit, onDelete, onAction, cohortName }: MeetingCardProps) {
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
   const today = new Date().toISOString().split('T')[0]
@@ -42,6 +43,11 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
               {meeting.type}
             </span>
           ) : null}
+          {cohortName ? (
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-600">
+              {cohortName}
+            </span>
+          ) : null}
         </div>
         {isToday ? (
           <span className="shrink-0 rounded-full bg-brand px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
@@ -58,10 +64,12 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
             {meeting.date} · {meeting.time}
           </span>
         </p>
-        <p className="mt-1 flex items-start gap-1.5 text-sm text-slate-600">
-          <MapPinHouse className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          <span className="break-words">{meeting.location}</span>
-        </p>
+        {meeting.location ? (
+          <p className="mt-1 flex items-start gap-1.5 text-sm text-slate-600">
+            <MapPinHouse className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span className="break-words">{meeting.location}</span>
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
@@ -91,7 +99,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onAction }: MeetingCardProps) 
           {meeting.primaryAction}
         </button>
 
-        {isAdmin ? (
+        {isAdmin && onEdit && onDelete ? (
           <>
             <button
               type="button"

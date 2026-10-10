@@ -81,6 +81,10 @@ export type TrainingTraineeListItem = {
   userId: number
   name: string
   email: string
+  department: string
+  role: string
+  phone: string
+  createdAt: string
   cohortId: number
   cohortName: string
   track: string
@@ -142,6 +146,10 @@ export type RollupTrainee = {
   maxMissedClasses: number
   graduation: GraduationStatus
   enrollmentStatus: string
+  department?: string
+  role?: string
+  phone?: string
+  dateAdded?: string
 }
 
 export type RollupSession = {
