@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { CalendarPlus, Download, GraduationCap, Plus, UserPlus } from 'lucide-react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { CalendarPlus, Download, GraduationCap, Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
@@ -8,18 +8,21 @@ import GraduationStatusBadge from '../components/pages/training/GraduationStatus
 import TraineeImportModal from '../components/pages/training/TraineeImportModal'
 import AddTraineeModal from '../components/pages/training/AddTraineeModal'
 import { useToast } from '../hooks/useToast'
+import useAuth from '../hooks/useAuth'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import type { AddTraineePayload } from '../features/training/api'
 import {
   useAddTraineeMutation,
   useCohortClassesQuery,
   useCohortQuery,
+  useDeleteCohortMutation,
   useGenerateSessionsMutation,
   useGraduateTraineeMutation,
   useImportTraineesMutation,
   useSaveTopicMutation,
   useSeedCurriculumMutation,
   useTraineesQuery,
+  useUpdateCohortMutation,
 } from '../features/training/hooks/useTraining'
 
 type Tab = 'schedule' | 'trainees'
@@ -35,6 +38,11 @@ function TrainingCohortDetailPage() {
   const graduate = useGraduateTraineeMutation(id)
   const importMutation = useImportTraineesMutation(id)
   const addTraineeMutation = useAddTraineeMutation(id)
+  const updateCohortMutation = useUpdateCohortMutation()
+  const deleteCohortMutation = useDeleteCohortMutation()
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const isAdmin = user?.role?.toLowerCase() === 'admin'
   const { showToast } = useToast()
   const stewardsQuery = useStewardsQuery('')
   const teachers = (stewardsQuery.data?.items ?? []).filter(
@@ -44,6 +52,10 @@ function TrainingCohortDetailPage() {
   const [tab, setTab] = useState<Tab>('schedule')
   const [showImport, setShowImport] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
+  const [renaming, setRenaming] = useState(false)
+  const [renameValue, setRenameValue] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [deleteName, setDeleteName] = useState('')
 
   const [showSessionForm, setShowSessionForm] = useState(false)
   const [week, setWeek] = useState('')
@@ -164,15 +176,59 @@ function TrainingCohortDetailPage() {
     }
   }
 
+  const handleRename = async () => {
+    const next = renameValue.trim()
+    if (!next) return
+    try {
+      await updateCohortMutation.mutateAsync({ id, payload: { name: next } })
+      showToast('Cohort renamed', 'success')
+      setRenaming(false)
+    } catch {
+      showToast('Could not rename cohort', 'error')
+    }
+  }
+
+  const handleDelete = async () => {
+    if (deleteName !== cohort.name) return
+    try {
+      await deleteCohortMutation.mutateAsync(id)
+      showToast('Cohort deleted', 'success')
+      navigate('/dashboard/training')
+    } catch {
+      showToast('Could not delete cohort', 'error')
+    }
+  }
+
   return (
     <div className="space-y-6">
       <DashboardPageHeader
         title={cohort.name}
         description={`${cohort.weekCount} weeks · allowed misses ${cohort.maxMissedClasses} · ${roster.length} trainee${roster.length === 1 ? '' : 's'}`}
         actions={
-          <Link to="/dashboard/training" className="text-sm font-semibold text-brand hover:underline">
-            Back to cohorts
-          </Link>
+          isAdmin ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setRenameValue(cohort.name)
+                  setRenaming(true)
+                }}
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                <Pencil className="h-4 w-4" /> Rename
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDeleteName('')
+                  setDeleting(true)
+                }}
+                className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-100"
+              >
+                <Trash2 className="h-4 w-4" /> Delete cohort
+              </button>
+            </div>
+          ) : null
         }
       />
 
@@ -399,6 +455,99 @@ function TrainingCohortDetailPage() {
         onSubmit={handleAddTrainee}
         isSubmitting={addTraineeMutation.isPending}
       />
+
+      {renaming ? (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
+          onClick={() => setRenaming(false)}
+        >
+          <div className="flex min-h-full items-center justify-center px-4 py-6">
+            <div
+              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="rename-cohort-title"
+            >
+              <h3 id="rename-cohort-title" className="text-xl font-semibold text-slate-900">
+                Rename cohort
+              </h3>
+              <input
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                autoFocus
+                className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-brand"
+              />
+              <div className="mt-5 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRenaming(false)}
+                  className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRename}
+                  disabled={updateCohortMutation.isPending || !renameValue.trim()}
+                  className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60"
+                >
+                  {updateCohortMutation.isPending ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {deleting ? (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
+          onClick={() => setDeleting(false)}
+        >
+          <div className="flex min-h-full items-center justify-center px-4 py-6">
+            <div
+              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="delete-cohort-title"
+            >
+              <h3 id="delete-cohort-title" className="text-xl font-semibold text-slate-900">
+                Delete cohort
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                This permanently removes <span className="font-semibold text-slate-800">{cohort.name}</span> with
+                its curriculum, sessions and enrollments. Type the cohort name to confirm.
+              </p>
+              <input
+                value={deleteName}
+                onChange={(e) => setDeleteName(e.target.value)}
+                placeholder={cohort.name}
+                autoFocus
+                className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-rose-400"
+              />
+              <div className="mt-5 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeleting(false)}
+                  className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={deleteCohortMutation.isPending || deleteName !== cohort.name}
+                  className="rounded-xl bg-[#d92d20] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#b42318] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {deleteCohortMutation.isPending ? 'Deleting...' : 'Delete cohort'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
