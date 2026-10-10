@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { CalendarPlus, Download, GraduationCap, Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
+import { CalendarPlus, Download, Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
-import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import TraineeImportModal from '../components/pages/training/TraineeImportModal'
 import AddTraineeModal from '../components/pages/training/AddTraineeModal'
+import TrainingTraineesTable from '../components/pages/training/TrainingTraineesTable'
 import { useToast } from '../hooks/useToast'
 import useAuth from '../hooks/useAuth'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import type { AddTraineePayload } from '../features/training/api'
+import { toRollupTraineesCohort } from '../features/training/adapters'
 import {
   useAddTraineeMutation,
   useCohortClassesQuery,
@@ -81,6 +82,7 @@ function TrainingCohortDetailPage() {
   const topics = cohort.topics ?? []
   const classes = classesQuery.data ?? []
   const roster = traineesQuery.data ?? []
+  const rollupRoster = toRollupTraineesCohort(roster, cohort.id, cohort.name)
 
   const scheduledByTopic = new Map<number, { date: string; startTime: string; endTime: string; location: string }>()
   for (const c of classes) {
@@ -389,63 +391,11 @@ function TrainingCohortDetailPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-card border border-slate-200 bg-white shadow-sm">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wider text-slate-600">
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Track</th>
-                  <th className="px-4 py-3">Missed</th>
-                  <th className="px-4 py-3">Standing</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody>
-                {roster.map((t) => (
-                  <tr key={t.userId} className="border-b border-slate-50 last:border-0">
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-slate-800">{t.name}</p>
-                      <p className="text-xs text-slate-600">{t.email}</p>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold capitalize text-slate-700">
-                        {t.track}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 tabular-nums text-slate-700">
-                      {t.missed} / {t.maxMissedClasses}
-                    </td>
-                    <td className="px-4 py-3">
-                      <GraduationStatusBadge status={t.graduation} />
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      {t.enrollmentStatus === 'enrolled' ? (
-                        <button
-                          type="button"
-                          onClick={() => handleGraduate(t.userId, t.name)}
-                          disabled={graduate.isPending || t.graduation === 'will_not_graduate'}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <GraduationCap className="h-3.5 w-3.5" /> Graduate
-                        </button>
-                      ) : (
-                        <span className="text-xs font-semibold uppercase text-slate-600">
-                          {t.enrollmentStatus}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {roster.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-600">
-                      No trainees yet. Add one or import a CSV.
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
+          <TrainingTraineesTable
+            trainees={rollupRoster}
+            onGraduate={(t) => handleGraduate(t.id, t.name)}
+            isGraduating={graduate.isPending}
+          />
         </section>
       )}
 
