@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { CalendarPlus, Download, Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
+import { CalendarPlus, Download, Pencil, Plus, Trash2, UserPlus, X } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
+import LoadingOverlay from '../components/ui/LoadingOverlay'
 import Spinner from '../components/ui/Spinner'
 import TraineeImportModal from '../components/pages/training/TraineeImportModal'
 import AddTraineeModal from '../components/pages/training/AddTraineeModal'
@@ -271,23 +272,39 @@ function TrainingCohortDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowSessionForm((v) => !v)}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                aria-expanded={showSessionForm}
+                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 ${
+                  showSessionForm
+                    ? 'border-brand bg-brand text-white hover:bg-brand-hover'
+                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                }`}
               >
-                <Plus className="h-4 w-4" /> Add session
+                {showSessionForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                {showSessionForm ? 'Close' : 'Add session'}
               </button>
+
               <button
                 type="button"
                 onClick={handleSeed}
                 disabled={seedCurriculum.isPending}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                className="group inline-flex items-center gap-2.5 rounded-xl border border-brand/20 bg-[#f4f8ff] py-1.5 pl-1.5 pr-4 text-sm font-semibold text-brand transition-all duration-200 hover:border-brand/40 hover:bg-[#eaf1ff] active:scale-[0.97] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2"
               >
-                <Download className="h-4 w-4" /> Load 2026 curriculum
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-brand shadow-sm transition-colors duration-200 group-hover:bg-brand group-hover:text-white">
+                  <Download className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-y-0.5" />
+                </span>
+                <span className="flex flex-col items-start leading-tight">
+                  <span>Load 2026 curriculum</span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">
+                    18 sessions
+                  </span>
+                </span>
               </button>
+
               <button
                 type="button"
                 onClick={handleGenerate}
                 disabled={generateSessions.isPending || topics.length === 0}
-                className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-brand-hover active:scale-[0.97] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2"
               >
                 <CalendarPlus className="h-4 w-4" /> Generate dates
               </button>
@@ -297,7 +314,7 @@ function TrainingCohortDetailPage() {
           {showSessionForm ? (
             <form
               onSubmit={handleAddSession}
-              className="grid gap-3 rounded-card border border-slate-200 bg-white p-5 shadow-sm sm:grid-cols-2"
+              className="grid gap-3 rounded-card border border-slate-200 bg-white p-5 shadow-sm animate-slide-down sm:grid-cols-2"
             >
               <input value={week} onChange={(e) => setWeek(e.target.value)} type="number" min="1" placeholder="Week" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
               <input value={topicTitle} onChange={(e) => setTopicTitle(e.target.value)} placeholder="Topic title" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-brand" />
@@ -317,7 +334,7 @@ function TrainingCohortDetailPage() {
                 <label className="flex items-center gap-2 text-sm text-slate-600">
                   <input type="checkbox" checked={reqRef} onChange={(e) => setReqRef(e.target.checked)} /> Required for refresher
                 </label>
-                <button type="submit" disabled={saveTopic.isPending} className="ml-auto rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60">
+                <button type="submit" disabled={saveTopic.isPending} className="ml-auto rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-brand-hover active:scale-[0.97] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2">
                   Save session
                 </button>
               </div>
@@ -325,7 +342,7 @@ function TrainingCohortDetailPage() {
           ) : null}
 
           {topics.length === 0 ? (
-            <div className="rounded-card border border-dashed border-slate-300 bg-[#f8fbff] p-10 text-center">
+            <div className="rounded-card border border-dashed border-slate-300 bg-[#f8fbff] p-10 text-center animate-fade-in">
               <p className="text-sm font-semibold text-brand">No sessions yet</p>
               <p className="mt-1 text-sm text-slate-600">
                 Load the 2026 curriculum to add all 18 sessions, or add them one by one.
@@ -333,10 +350,14 @@ function TrainingCohortDetailPage() {
             </div>
           ) : (
             <ul className="space-y-2">
-              {topics.map((t) => {
+              {topics.map((t, i) => {
                 const meeting = scheduledByTopic.get(t.id)
                 return (
-                  <li key={t.id} className="rounded-card border border-slate-200 bg-white p-4 shadow-sm">
+                  <li
+                    key={t.id}
+                    className="rounded-card border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-brand/30 hover:shadow-md animate-stagger-fade"
+                    style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}
+                  >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="font-semibold text-brand">
@@ -508,6 +529,13 @@ function TrainingCohortDetailPage() {
             </div>
           </div>
         </div>
+      ) : null}
+
+      {seedCurriculum.isPending ? (
+        <LoadingOverlay label="Loading the 2026 curriculum…" />
+      ) : null}
+      {generateSessions.isPending ? (
+        <LoadingOverlay label="Generating session dates…" />
       ) : null}
     </div>
   )
