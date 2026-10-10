@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { Pencil, Plus, Trash2 } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
@@ -14,10 +14,12 @@ import useAuth from '../hooks/useAuth'
 import {
   useCohortsQuery,
   useCreateCohortMutation,
+  useDeleteCohortMutation,
   useDeleteTraineeMutation,
   useGraduateTraineeAnyMutation,
   useTrainingSessionsQuery,
   useTrainingTraineesQuery,
+  useUpdateCohortMutation,
   useUpdateTraineeProfileMutation,
   useUpdateTraineeTrackMutation,
 } from '../features/training/hooks/useTraining'
@@ -43,6 +45,8 @@ function TrainingCohortsPage() {
   const traineesQuery = useTrainingTraineesQuery(isAdmin)
   const sessionsQuery = useTrainingSessionsQuery(isAdmin)
   const createMutation = useCreateCohortMutation()
+  const updateCohortMutation = useUpdateCohortMutation()
+  const deleteCohortMutation = useDeleteCohortMutation()
   const graduateAny = useGraduateTraineeAnyMutation()
   const updateProfile = useUpdateTraineeProfileMutation()
   const updateTrack = useUpdateTraineeTrackMutation()
@@ -59,6 +63,10 @@ function TrainingCohortsPage() {
   const [page, setPage] = useState(1)
   const [editingTrainee, setEditingTrainee] = useState<RollupTrainee | null>(null)
   const [deletingTrainee, setDeletingTrainee] = useState<RollupTrainee | null>(null)
+  const [renamingCohort, setRenamingCohort] = useState<CohortListItem | null>(null)
+  const [renameValue, setRenameValue] = useState('')
+  const [deletingCohort, setDeletingCohort] = useState<CohortListItem | null>(null)
+  const [deleteName, setDeleteName] = useState('')
 
   const cohorts = cohortsQuery.data ?? []
 
@@ -158,6 +166,31 @@ function TrainingCohortsPage() {
     }
   }
 
+  const handleRename = async () => {
+    if (!renamingCohort || !renameValue.trim()) return
+    try {
+      await updateCohortMutation.mutateAsync({
+        id: renamingCohort.id,
+        payload: { name: renameValue.trim() },
+      })
+      showToast('Cohort renamed', 'success')
+      setRenamingCohort(null)
+    } catch {
+      showToast('Could not rename cohort', 'error')
+    }
+  }
+
+  const handleDeleteCohort = async () => {
+    if (!deletingCohort || deleteName !== deletingCohort.name) return
+    try {
+      await deleteCohortMutation.mutateAsync(deletingCohort.id)
+      showToast('Cohort deleted', 'success')
+      setDeletingCohort(null)
+    } catch {
+      showToast('Could not delete cohort', 'error')
+    }
+  }
+
   return (
     <div className="space-y-8">
       <DashboardPageHeader
@@ -221,10 +254,10 @@ function TrainingCohortsPage() {
               pagedCohorts.map((cohort) => {
                 const teachers = cohortTeachers(cohort)
                 return (
-                  <li key={cohort.id}>
+                  <li key={cohort.id} className="relative">
                     <Link
                       to={`/dashboard/training/${cohort.id}`}
-                      className="flex h-full flex-col rounded-card border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand/40 hover:shadow-md"
+                      className={`flex h-full flex-col rounded-card border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand/40 hover:shadow-md ${isAdmin ? 'pr-40' : ''}`}
                     >
                       <p className="text-lg font-semibold text-brand">{cohort.name}</p>
                       <p className="mt-1 text-sm text-slate-600">
@@ -234,6 +267,30 @@ function TrainingCohortsPage() {
                         {cohort.weekCount} weeks · {cohort._count?.enrollments ?? 0} trainees · miss {cohort.maxMissedClasses} fails
                       </p>
                     </Link>
+                    {isAdmin ? (
+                      <div className="absolute right-3 top-3 flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRenameValue(cohort.name)
+                            setRenamingCohort(cohort)
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                        >
+                          <Pencil className="h-3.5 w-3.5" /> Rename
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDeleteName('')
+                            setDeletingCohort(cohort)
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> Delete
+                        </button>
+                      </div>
+                    ) : null}
                   </li>
                 )
               })
@@ -306,6 +363,100 @@ function TrainingCohortsPage() {
             onConfirm={handleDeleteTrainee}
             isSubmitting={deleteTraineeMutation.isPending}
           />
+
+          {renamingCohort ? (
+            <div
+              className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
+              onClick={() => setRenamingCohort(null)}
+            >
+              <div className="flex min-h-full items-center justify-center px-4 py-6">
+                <div
+                  className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
+                  onClick={(event) => event.stopPropagation()}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="rename-cohort-title"
+                >
+                  <h3 id="rename-cohort-title" className="text-xl font-semibold text-slate-900">
+                    Rename cohort
+                  </h3>
+                  <input
+                    value={renameValue}
+                    onChange={(e) => setRenameValue(e.target.value)}
+                    autoFocus
+                    className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-brand"
+                  />
+                  <div className="mt-5 flex items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setRenamingCohort(null)}
+                      className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRename}
+                      disabled={updateCohortMutation.isPending || !renameValue.trim()}
+                      className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60"
+                    >
+                      {updateCohortMutation.isPending ? 'Saving...' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {deletingCohort ? (
+            <div
+              className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
+              onClick={() => setDeletingCohort(null)}
+            >
+              <div className="flex min-h-full items-center justify-center px-4 py-6">
+                <div
+                  className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
+                  onClick={(event) => event.stopPropagation()}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="delete-cohort-title"
+                >
+                  <h3 id="delete-cohort-title" className="text-xl font-semibold text-slate-900">
+                    Delete cohort
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    This permanently removes{' '}
+                    <span className="font-semibold text-slate-800">{deletingCohort.name}</span> with its
+                    curriculum, sessions and enrollments. Type the cohort name to confirm.
+                  </p>
+                  <input
+                    value={deleteName}
+                    onChange={(e) => setDeleteName(e.target.value)}
+                    placeholder={deletingCohort.name}
+                    autoFocus
+                    className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-rose-400"
+                  />
+                  <div className="mt-5 flex items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setDeletingCohort(null)}
+                      className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDeleteCohort}
+                      disabled={deleteCohortMutation.isPending || deleteName !== deletingCohort.name}
+                      className="rounded-xl bg-[#d92d20] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#b42318] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {deleteCohortMutation.isPending ? 'Deleting...' : 'Delete cohort'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </>
       )}
     </div>
