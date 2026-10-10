@@ -130,3 +130,30 @@ export type ClassRoster = {
 }
 
 export type SessionStatus = 'Upcoming' | 'Ongoing' | 'Completed'
+
+export type RollupTrainee = {
+  id: number
+  name: string
+  email: string
+  cohortId: number
+  cohortName: string
+  track: string
+  missed: number
+  maxMissedClasses: number
+  graduation: GraduationStatus
+  enrollmentStatus: string
+}
+
+export type RollupSession = {
+  id: number
+  cohortId: number
+  cohortName: string
+  week: number | null
+  topic: string | null
+  teacher: string | null
+  date: string
+  startTime: string
+  endTime: string
+  location: string
+  status: SessionStatus
+}
