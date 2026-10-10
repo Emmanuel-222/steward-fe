@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Plus, Trash2 } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
@@ -191,6 +191,23 @@ function TrainingCohortsPage() {
               </li>
             )
           })}
+          {isAdmin ? (
+            <li>
+              <button
+                type="button"
+                onClick={() => setShowForm(true)}
+                className="group flex min-h-56 w-full flex-col items-center justify-center rounded-card border border-dashed border-slate-300 bg-[#f8fbff] p-8 text-center transition hover:border-brand hover:bg-white"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eaf1ff] text-brand">
+                  <Plus className="h-5 w-5" />
+                </div>
+                <h3 className="mt-6 text-xl font-semibold text-brand">New cohort</h3>
+                <p className="mt-3 max-w-xs text-sm leading-6 text-slate-600">
+                  Start a new intake of workers in training.
+                </p>
+              </button>
+            </li>
+          ) : null}
         </ul>
       )}
 

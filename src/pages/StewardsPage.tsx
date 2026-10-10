@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { UserPlus } from 'lucide-react'
 import AddUserDropdown from '../components/pages/stewards/AddUserDropdown'
 import AddUserModal from '../components/pages/stewards/AddUserModal'
 import ImportStewardsModal from '../components/pages/stewards/ImportStewardsModal'
@@ -263,19 +264,47 @@ function StewardsPage() {
           />
         </div>
         <div className="animate-stagger-fade" style={{ animationDelay: '100ms' }}>
-          <StewardsTableSection
-          stewards={filteredStewards}
-          onView={handleViewSteward}
-          onEdit={handleEditSteward}
-          onDelete={handleDeleteSteward}
-          isLoading={stewardsQuery.isLoading}
-          errorMessage={
-            stewardsQuery.isError
-              ? 'Unable to load stewards right now.'
-              : undefined
-          }
-          onRetry={() => stewardsQuery.refetch()}
-        />
+          {!stewardsQuery.isLoading &&
+          !stewardsQuery.isError &&
+          filteredStewards.length === 0 &&
+          !searchTerm.trim() &&
+          selectedRole === 'All Roles' ? (
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="rounded-card border border-slate-200 bg-white px-6 py-10 text-center shadow-card">
+                <p className="text-lg font-semibold text-brand">No stewards yet.</p>
+                <p className="mt-2 text-sm text-slate-500">
+                  Add your first steward to start tracking attendance.
+                </p>
+              </div>
+              {isAdmin ? (
+                <button
+                  type="button"
+                  onClick={() => setIsAddUserModalOpen(true)}
+                  className="group flex min-h-44 flex-col items-center justify-center rounded-card border border-dashed border-slate-300 bg-[#f8fbff] p-8 text-center transition hover:border-brand hover:bg-white"
+                >
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eaf1ff] text-brand">
+                    <UserPlus className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-brand">Add New Steward</h3>
+                  <p className="mt-2 max-w-xs text-sm leading-6 text-slate-600">
+                    Enrol a new worker into the registry.
+                  </p>
+                </button>
+              ) : null}
+            </div>
+          ) : (
+            <StewardsTableSection
+              stewards={filteredStewards}
+              onView={handleViewSteward}
+              onEdit={handleEditSteward}
+              onDelete={handleDeleteSteward}
+              isLoading={stewardsQuery.isLoading}
+              errorMessage={
+                stewardsQuery.isError ? 'Unable to load stewards right now.' : undefined
+              }
+              onRetry={() => stewardsQuery.refetch()}
+            />
+          )}
         </div>
         <div className="animate-stagger-fade" style={{ animationDelay: '200ms' }}>
         {pagination && (
