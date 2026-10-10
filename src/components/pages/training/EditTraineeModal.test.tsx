@@ -32,6 +32,11 @@ describe('EditTraineeModal', () => {
     expect(screen.getByDisplayValue('01/02/2000')).toBeTruthy()
   })
 
+  test('shows immediately when it mounts already open (keyed remount)', async () => {
+    render(<EditTraineeModal trainee={trainee} open onClose={() => {}} onSubmit={noop} isSubmitting={false} />)
+    expect(await screen.findByDisplayValue('Ada Obi')).toBeTruthy()
+  })
+
   test('blocks submit when the phone is cleared', async () => {
     const onSubmit = vi.fn(noop)
     const { rerender } = render(
