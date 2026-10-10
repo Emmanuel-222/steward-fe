@@ -254,11 +254,11 @@ function TrainingCohortsPage() {
               pagedCohorts.map((cohort) => {
                 const teachers = cohortTeachers(cohort)
                 return (
-                  <li key={cohort.id} className="relative">
-                    <Link
-                      to={`/dashboard/training/${cohort.id}`}
-                      className={`flex h-full flex-col rounded-card border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand/40 hover:shadow-md ${isAdmin ? 'pr-40' : ''}`}
-                    >
+                  <li
+                    key={cohort.id}
+                    className="flex flex-col overflow-hidden rounded-card border border-slate-200 bg-white shadow-sm transition hover:border-brand/40 hover:shadow-md"
+                  >
+                    <Link to={`/dashboard/training/${cohort.id}`} className="flex flex-1 flex-col p-5">
                       <p className="text-lg font-semibold text-brand">{cohort.name}</p>
                       <p className="mt-1 text-sm text-slate-600">
                         {teachers.length > 0 ? `Teachers: ${teachers.join(', ')}` : 'No teachers assigned yet'}
@@ -268,14 +268,14 @@ function TrainingCohortsPage() {
                       </p>
                     </Link>
                     {isAdmin ? (
-                      <div className="absolute right-3 top-3 flex items-center gap-2">
+                      <div className="flex items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/60 px-4 py-3">
                         <button
                           type="button"
                           onClick={() => {
                             setRenameValue(cohort.name)
                             setRenamingCohort(cohort)
                           }}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
                         >
                           <Pencil className="h-3.5 w-3.5" /> Rename
                         </button>
@@ -285,7 +285,7 @@ function TrainingCohortsPage() {
                             setDeleteName('')
                             setDeletingCohort(cohort)
                           }}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100"
                         >
                           <Trash2 className="h-3.5 w-3.5" /> Delete
                         </button>
