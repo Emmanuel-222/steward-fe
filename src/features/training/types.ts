@@ -128,3 +128,5 @@ export type ClassRoster = {
   week: number | null
   roster: RosterEntry[]
 }
+
+export type SessionStatus = 'Upcoming' | 'Ongoing' | 'Completed'
