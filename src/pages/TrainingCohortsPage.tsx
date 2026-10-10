@@ -6,10 +6,13 @@ import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
 import { useToast } from '../hooks/useToast'
 import useAuth from '../hooks/useAuth'
+import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import {
   useCohortsQuery,
   useCreateCohortMutation,
   useDeleteCohortMutation,
+  useTrainingSessionsQuery,
+  useTrainingTraineesQuery,
   useUpdateCohortMutation,
 } from '../features/training/hooks/useTraining'
 import type { CohortListItem } from '../features/training/types'
@@ -42,6 +45,9 @@ function TrainingCohortsPage() {
 
   const [deleting, setDeleting] = useState<CohortListItem | null>(null)
   const [deleteName, setDeleteName] = useState('')
+  const [tab, setTab] = useState<'cohorts' | 'trainees' | 'sessions'>('cohorts')
+  const traineesQuery = useTrainingTraineesQuery(tab === 'trainees')
+  const sessionsQuery = useTrainingSessionsQuery(tab === 'sessions')
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -104,6 +110,23 @@ function TrainingCohortsPage() {
         }
       />
 
+      <div className="inline-flex rounded-2xl border border-slate-200 bg-white p-1">
+        {(['cohorts', 'trainees', 'sessions'] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setTab(t)}
+            className={`rounded-xl px-5 py-2 text-sm font-semibold capitalize transition ${
+              tab === t ? 'bg-brand text-white' : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'cohorts' ? (
+        <>
       {showForm ? (
         <form
           onSubmit={handleCreate}
@@ -209,6 +232,90 @@ function TrainingCohortsPage() {
             </li>
           ) : null}
         </ul>
+      )}
+        </>
+      ) : tab === 'trainees' ? (
+        <section>
+          {traineesQuery.isLoading ? (
+            <Spinner />
+          ) : traineesQuery.isError ? (
+            <ErrorState message="We couldn't load trainees." onRetry={() => traineesQuery.refetch()} />
+          ) : (traineesQuery.data ?? []).length === 0 ? (
+            <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
+              No trainees yet.
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-card border border-slate-200 bg-white shadow-sm">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wider text-slate-600">
+                    <th className="px-4 py-3">Name</th>
+                    <th className="px-4 py-3">Cohort</th>
+                    <th className="px-4 py-3">Track</th>
+                    <th className="px-4 py-3">Missed</th>
+                    <th className="px-4 py-3">Standing</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(traineesQuery.data ?? []).map((t) => (
+                    <tr key={`${t.cohortId}-${t.userId}`} className="border-b border-slate-50 last:border-0">
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-slate-800">{t.name}</p>
+                        <p className="text-xs text-slate-600">{t.email}</p>
+                      </td>
+                      <td className="px-4 py-3 text-slate-700">{t.cohortName}</td>
+                      <td className="px-4 py-3">
+                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold capitalize text-slate-700">
+                          {t.track}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 tabular-nums text-slate-700">
+                        {t.missed} / {t.maxMissedClasses}
+                      </td>
+                      <td className="px-4 py-3">
+                        <GraduationStatusBadge status={t.graduation} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ) : (
+        <section>
+          {sessionsQuery.isLoading ? (
+            <Spinner />
+          ) : sessionsQuery.isError ? (
+            <ErrorState message="We couldn't load sessions." onRetry={() => sessionsQuery.refetch()} />
+          ) : (sessionsQuery.data ?? []).length === 0 ? (
+            <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
+              No sessions scheduled yet.
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {(sessionsQuery.data ?? []).map((s) => (
+                <li
+                  key={s.classId}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-slate-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="min-w-0">
+                    <p className="font-semibold text-brand">
+                      {s.week ? `Week ${s.week} · ` : ''}
+                      {s.topic ?? 'Training session'}
+                    </p>
+                    <p className="text-sm text-slate-600">
+                      {s.cohortName} ·{' '}
+                      {new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ·{' '}
+                      {s.startTime}–{s.endTime} · {s.location}
+                    </p>
+                    {s.teacher ? <p className="text-xs text-slate-600">Teacher: {s.teacher}</p> : null}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       )}
 
       {/* Rename modal */}

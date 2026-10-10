@@ -12,6 +12,8 @@ import {
   getTrainees,
   getTrainingClasses,
   getTrainingMe,
+  getTrainingSessions,
+  getTrainingTrainees,
   graduateTrainee,
   importTrainees,
   saveTopic,
@@ -44,6 +46,14 @@ export function useTrainingClassesQuery(enabled = true) {
 
 export function useCohortsQuery(enabled = true) {
   return useQuery({ queryKey: keys.cohorts, queryFn: getCohorts, enabled })
+}
+
+export function useTrainingTraineesQuery(enabled = true) {
+  return useQuery({ queryKey: ['training', 'all-trainees'], queryFn: getTrainingTrainees, enabled })
+}
+
+export function useTrainingSessionsQuery(enabled = true) {
+  return useQuery({ queryKey: ['training', 'all-sessions'], queryFn: getTrainingSessions, enabled })
 }
 
 export function useCohortQuery(id: string | number, enabled = true) {

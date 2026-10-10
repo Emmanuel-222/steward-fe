@@ -77,6 +77,32 @@ export type TraineeRow = {
   graduation: GraduationStatus
 }
 
+export type TrainingTraineeListItem = {
+  userId: number
+  name: string
+  email: string
+  cohortId: number
+  cohortName: string
+  track: string
+  status: string
+  missed: number
+  maxMissedClasses: number
+  graduation: GraduationStatus
+}
+
+export type TrainingSessionListItem = {
+  classId: number
+  cohortId: number
+  cohortName: string
+  week: number | null
+  topic: string | null
+  teacher: string | null
+  date: string
+  startTime: string
+  endTime: string
+  location: string
+}
+
 export type TeachingClass = {
   classId: number
   meetingId: number

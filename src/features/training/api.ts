@@ -7,7 +7,9 @@ import type {
   TrainingCohort,
   TrainingMe,
   TrainingSession,
+  TrainingSessionListItem,
   TrainingTopic,
+  TrainingTraineeListItem,
   TraineeRow,
 } from './types'
 
@@ -30,6 +32,16 @@ export async function getTrainingClasses() {
 export async function getCohorts() {
   const { data } = await api.get('/training/cohorts')
   return (Array.isArray(data) ? data : []) as CohortListItem[]
+}
+
+export async function getTrainingTrainees() {
+  const { data } = await api.get('/training/trainees')
+  return (Array.isArray(data) ? data : []) as TrainingTraineeListItem[]
+}
+
+export async function getTrainingSessions() {
+  const { data } = await api.get('/training/sessions')
+  return (Array.isArray(data) ? data : []) as TrainingSessionListItem[]
 }
 
 export async function getCohort(id: string | number) {
