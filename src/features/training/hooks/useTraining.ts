@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   addTrainee,
+  assignTopicTeacher,
   createCohort,
   deleteCohort,
   deleteTrainee,
@@ -209,6 +210,17 @@ export function useDeleteTraineeMutation() {
     mutationFn: (userId: number) => deleteTrainee(userId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['training', 'all-trainees'] })
+      qc.invalidateQueries({ queryKey: keys.cohorts })
+    },
+  })
+}
+
+export function useAssignTeacherMutation(cohortId: string | number) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: assignTopicTeacher,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: keys.cohort(cohortId) })
       qc.invalidateQueries({ queryKey: keys.cohorts })
     },
   })

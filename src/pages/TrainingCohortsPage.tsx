@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
@@ -24,6 +25,7 @@ import {
   useUpdateTraineeTrackMutation,
 } from '../features/training/hooks/useTraining'
 import { toRollupSessionsGlobal, toRollupTraineesGlobal } from '../features/training/adapters'
+import { getCohort } from '../features/training/api'
 import type { CohortListItem, RollupTrainee } from '../features/training/types'
 import type { Steward } from '../features/stewards/types'
 
@@ -39,6 +41,7 @@ function cohortTeachers(cohort: CohortListItem) {
 
 function TrainingCohortsPage() {
   const cohortsQuery = useCohortsQuery()
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
@@ -258,7 +261,16 @@ function TrainingCohortsPage() {
                     key={cohort.id}
                     className="flex flex-col overflow-hidden rounded-card border border-slate-200 bg-white shadow-sm transition hover:border-brand/40 hover:shadow-md"
                   >
-                    <Link to={`/dashboard/training/${cohort.id}`} className="flex flex-1 flex-col p-5">
+                    <Link
+                      to={`/dashboard/training/${cohort.id}`}
+                      onMouseEnter={() =>
+                        queryClient.prefetchQuery({
+                          queryKey: ['training', 'cohort', String(cohort.id)],
+                          queryFn: () => getCohort(cohort.id),
+                        })
+                      }
+                      className="flex flex-1 flex-col p-5"
+                    >
                       <p className="text-lg font-semibold text-brand">{cohort.name}</p>
                       <p className="mt-1 text-sm text-slate-600">
                         {teachers.length > 0 ? `Teachers: ${teachers.join(', ')}` : 'No teachers assigned yet'}

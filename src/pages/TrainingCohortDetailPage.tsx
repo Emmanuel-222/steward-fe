@@ -4,19 +4,22 @@ import { CalendarPlus, Download, Pencil, Plus, Trash2, UserPlus, X } from 'lucid
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import LoadingOverlay from '../components/ui/LoadingOverlay'
-import Spinner from '../components/ui/Spinner'
+import Skeleton, { SkeletonRow } from '../components/ui/Skeleton'
 import TraineeImportModal from '../components/pages/training/TraineeImportModal'
 import AddTraineeModal from '../components/pages/training/AddTraineeModal'
+import AssignTeacherModal from '../components/pages/training/AssignTeacherModal'
 import TrainingTraineesTable from '../components/pages/training/TrainingTraineesTable'
 import SessionStatusBadge from '../components/pages/training/SessionStatusBadge'
 import { useToast } from '../hooks/useToast'
 import useAuth from '../hooks/useAuth'
 import useStewardsQuery from '../features/stewards/hooks/useStewardsQuery'
 import type { AddTraineePayload } from '../features/training/api'
+import type { TrainingTopic } from '../features/training/types'
 import { toRollupTraineesCohort } from '../features/training/adapters'
 import { sessionStatus } from '../features/training/sessionStatus'
 import {
   useAddTraineeMutation,
+  useAssignTeacherMutation,
   useCohortClassesQuery,
   useCohortQuery,
   useDeleteCohortMutation,
@@ -44,6 +47,7 @@ function TrainingCohortDetailPage() {
   const addTraineeMutation = useAddTraineeMutation(id)
   const updateCohortMutation = useUpdateCohortMutation()
   const deleteCohortMutation = useDeleteCohortMutation()
+  const assignTeacher = useAssignTeacherMutation(id)
   const navigate = useNavigate()
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
@@ -70,8 +74,24 @@ function TrainingCohortDetailPage() {
   const [topicEnd, setTopicEnd] = useState('8:10 AM')
   const [reqNew, setReqNew] = useState(true)
   const [reqRef, setReqRef] = useState(false)
+  const [assigningTopic, setAssigningTopic] = useState<TrainingTopic | null>(null)
 
-  if (cohortQuery.isLoading) return <Spinner />
+  if (cohortQuery.isLoading) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="space-y-3">
+          <Skeleton className="h-9 w-64" />
+          <Skeleton className="h-4 w-72" />
+        </div>
+        <Skeleton className="h-11 w-56 rounded-2xl" />
+        <div className="overflow-hidden rounded-card border border-slate-200 bg-white">
+          <SkeletonRow cols={3} />
+          <SkeletonRow cols={3} />
+          <SkeletonRow cols={3} />
+        </div>
+      </div>
+    )
+  }
   if (cohortQuery.isError || !cohortQuery.data) {
     return (
       <div className="space-y-6">
@@ -181,6 +201,18 @@ function TrainingCohortDetailPage() {
     }
   }
 
+  const handleAssignTeacher = async (teacherId: number | null) => {
+    if (!assigningTopic) return
+    try {
+      await assignTeacher.mutateAsync({ topicId: assigningTopic.id, teacherId })
+      showToast(teacherId ? 'Teacher assigned' : 'Teacher cleared', 'success')
+      setAssigningTopic(null)
+    } catch (error) {
+      showToast('Could not update the teacher', 'error')
+      throw error
+    }
+  }
+
   const handleRename = async () => {
     const next = renameValue.trim()
     if (!next) return
@@ -286,7 +318,8 @@ function TrainingCohortDetailPage() {
               <button
                 type="button"
                 onClick={handleSeed}
-                disabled={seedCurriculum.isPending}
+                disabled={seedCurriculum.isPending || topics.length > 0}
+                title={topics.length > 0 ? 'The curriculum is already loaded' : 'Load the standard 2026 curriculum'}
                 className="group inline-flex items-center gap-2.5 rounded-xl border border-brand/20 bg-[#f4f8ff] py-1.5 pl-1.5 pr-4 text-sm font-semibold text-brand transition-all duration-200 hover:border-brand/40 hover:bg-[#eaf1ff] active:scale-[0.97] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2"
               >
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-brand shadow-sm transition-colors duration-200 group-hover:bg-brand group-hover:text-white">
@@ -303,7 +336,14 @@ function TrainingCohortDetailPage() {
               <button
                 type="button"
                 onClick={handleGenerate}
-                disabled={generateSessions.isPending || topics.length === 0}
+                disabled={generateSessions.isPending || topics.length === 0 || scheduledCount === topics.length}
+                title={
+                  topics.length === 0
+                    ? 'Load or add sessions first'
+                    : scheduledCount === topics.length
+                      ? 'Every session already has a date'
+                      : 'Generate a date for each session'
+                }
                 className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-brand-hover active:scale-[0.97] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2"
               >
                 <CalendarPlus className="h-4 w-4" /> Generate dates
@@ -370,7 +410,23 @@ function TrainingCohortDetailPage() {
                             : ' · not dated yet'}
                         </p>
                         <p className="mt-1 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-600">
-                          <span>{t.teacher?.fullName ? `Teacher: ${t.teacher.fullName}` : 'No teacher assigned'}</span>
+                          <span
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 ${
+                              t.teacher ? 'bg-[#eef4ff] text-brand' : 'bg-slate-100 text-slate-500'
+                            }`}
+                          >
+                            {t.teacher?.fullName ? `Teacher: ${t.teacher.fullName}` : 'No teacher assigned'}
+                          </span>
+                          {isAdmin ? (
+                            <button
+                              type="button"
+                              onClick={() => setAssigningTopic(t)}
+                              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600 transition hover:border-brand/40 hover:text-brand active:scale-[0.97]"
+                            >
+                              <UserPlus className="h-3 w-3" />
+                              {t.teacher ? 'Change' : 'Assign teacher'}
+                            </button>
+                          ) : null}
                           {t.requiredForNew ? <span className="rounded-full bg-[#eef4ff] px-2 py-0.5 text-brand">new</span> : null}
                           {t.requiredForRefresher ? <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-800">refresher</span> : null}
                         </p>
@@ -530,6 +586,17 @@ function TrainingCohortDetailPage() {
           </div>
         </div>
       ) : null}
+
+      <AssignTeacherModal
+        key={assigningTopic?.id ?? 'none'}
+        open={Boolean(assigningTopic)}
+        title={assigningTopic ? `Week ${assigningTopic.weekNumber} · ${assigningTopic.title}` : ''}
+        currentTeacherId={assigningTopic?.teacherId ?? null}
+        stewards={teachers}
+        onClose={() => setAssigningTopic(null)}
+        onAssign={handleAssignTeacher}
+        isSubmitting={assignTeacher.isPending}
+      />
 
       {seedCurriculum.isPending ? (
         <LoadingOverlay label="Loading the 2026 curriculum…" />

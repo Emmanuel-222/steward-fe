@@ -218,6 +218,17 @@ export async function deleteTrainee(userId: number) {
   return data
 }
 
+export async function assignTopicTeacher({
+  topicId,
+  teacherId,
+}: {
+  topicId: number
+  teacherId: number | null
+}) {
+  const { data } = await api.patch(`/training/topics/${topicId}/teacher`, { teacherId })
+  return data
+}
+
 export async function importTrainees({ cohortId, file }: { cohortId: string | number; file: File }) {
   const formData = new FormData()
   formData.append('file', file)
