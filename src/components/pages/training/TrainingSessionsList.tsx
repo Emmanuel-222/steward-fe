@@ -29,7 +29,7 @@ function TrainingSessionsList({
         >
           <div className="min-w-0">
             <p className="font-semibold text-brand">
-              {s.week ? `Week ${s.week} · ` : ''}
+              {s.week != null ? `Week ${s.week} · ` : ''}
               {s.topic ?? 'Training session'}
             </p>
             <p className="text-sm text-slate-600">

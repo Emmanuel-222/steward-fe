@@ -39,6 +39,17 @@ describe('TrainingTraineesTable', () => {
     expect(screen.getByText('Graduate')).toBeTruthy()
   })
 
+  test('shows the status text and no Graduate button for a non-enrolled trainee', () => {
+    render(
+      <TrainingTraineesTable
+        trainees={[{ ...rows[0], enrollmentStatus: 'graduated' }]}
+        onGraduate={() => {}}
+      />,
+    )
+    expect(screen.getByText('graduated')).toBeTruthy()
+    expect(screen.queryByText('Graduate')).toBeNull()
+  })
+
   test('shows the empty state', () => {
     render(<TrainingTraineesTable trainees={[]} />)
     expect(screen.getByText('No trainees yet.')).toBeTruthy()

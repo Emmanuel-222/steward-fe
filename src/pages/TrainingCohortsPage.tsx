@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
@@ -29,11 +29,11 @@ function cohortTeachers(cohort: CohortListItem) {
 
 function TrainingCohortsPage() {
   const cohortsQuery = useCohortsQuery()
-  const traineesQuery = useTrainingTraineesQuery()
-  const sessionsQuery = useTrainingSessionsQuery()
-  const createMutation = useCreateCohortMutation()
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
+  const traineesQuery = useTrainingTraineesQuery(isAdmin)
+  const sessionsQuery = useTrainingSessionsQuery(isAdmin)
+  const createMutation = useCreateCohortMutation()
   const { showToast } = useToast()
   const [searchParams] = useSearchParams()
   const forceList = searchParams.get('list') === '1'
@@ -69,14 +69,18 @@ function TrainingCohortsPage() {
     }
   }
 
+  const totalPages = Math.max(1, Math.ceil(cohorts.length / CARD_PAGE_SIZE))
+  const pagedCohorts = cohorts.slice((page - 1) * CARD_PAGE_SIZE, page * CARD_PAGE_SIZE)
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages) // eslint-disable-line react-hooks/set-state-in-effect -- clamp the page when the cohort count shrinks
+  }, [page, totalPages])
+
   // With a single cohort there is nothing to choose — go straight in,
   // unless the user explicitly asked for the list (?list=1).
   if (!cohortsQuery.isLoading && !cohortsQuery.isError && cohorts.length === 1 && !showForm && !forceList) {
     return <Navigate to={`/dashboard/training/${cohorts[0].id}`} replace />
   }
-
-  const totalPages = Math.max(1, Math.ceil(cohorts.length / CARD_PAGE_SIZE))
-  const pagedCohorts = cohorts.slice((page - 1) * CARD_PAGE_SIZE, page * CARD_PAGE_SIZE)
 
   const rollupTrainees = toRollupTraineesGlobal(traineesQuery.data ?? [])
   const rollupSessions = toRollupSessionsGlobal(sessionsQuery.data ?? [])
@@ -192,7 +196,7 @@ function TrainingCohortsPage() {
             />
           ) : null}
 
-          {cohorts.length > 0 ? (
+          {isAdmin && cohorts.length > 0 ? (
             <TrainingRollup
               trainees={rollupTrainees}
               sessions={rollupSessions}

@@ -7,6 +7,7 @@ type TrainingTraineesTableProps = {
   showCohort?: boolean
   onGraduate?: (trainee: RollupTrainee) => void
   isGraduating?: boolean
+  emptyMessage?: string
 }
 
 function initials(name: string) {
@@ -23,11 +24,12 @@ function TrainingTraineesTable({
   showCohort = false,
   onGraduate,
   isGraduating = false,
+  emptyMessage = 'No trainees yet.',
 }: TrainingTraineesTableProps) {
   if (trainees.length === 0) {
     return (
       <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600 shadow-sm">
-        No trainees yet.
+        {emptyMessage}
       </div>
     )
   }
@@ -42,7 +44,11 @@ function TrainingTraineesTable({
             <th className="px-4 py-3">Track</th>
             <th className="px-4 py-3">Missed</th>
             <th className="px-4 py-3">Standing</th>
-            {onGraduate ? <th className="px-4 py-3" /> : null}
+            {onGraduate ? (
+              <th className="px-4 py-3">
+                <span className="sr-only">Actions</span>
+              </th>
+            ) : null}
           </tr>
         </thead>
         <tbody>

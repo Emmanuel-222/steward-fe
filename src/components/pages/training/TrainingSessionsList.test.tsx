@@ -31,6 +31,11 @@ describe('TrainingSessionsList', () => {
     expect(screen.queryByText(/2026 ·/)).toBeNull()
   })
 
+  test('shows the cohort name when asked', () => {
+    render(<TrainingSessionsList sessions={sessions} showCohort />)
+    expect(screen.getByText(/2026 ·/)).toBeTruthy()
+  })
+
   test('shows a custom empty message', () => {
     render(<TrainingSessionsList sessions={[]} emptyMessage="No sessions found for ongoing." />)
     expect(screen.getByText('No sessions found for ongoing.')).toBeTruthy()

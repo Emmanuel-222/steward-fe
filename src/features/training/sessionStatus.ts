@@ -26,6 +26,7 @@ function combine(date: string, time?: string | null): Date | null {
   const meridiem = match[3]?.toUpperCase()
   if (meridiem === 'PM' && hours < 12) hours += 12
   if (meridiem === 'AM' && hours === 12) hours = 0
+  if (hours > 23 || minutes > 59) return null
   d.setHours(hours, minutes, 0, 0)
   return d
 }

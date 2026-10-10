@@ -7,12 +7,6 @@ import type {
   TrainingTraineeListItem,
 } from './types'
 
-export type CohortClassInput = {
-  id: number
-  meeting: { date: string; startTime: string; endTime: string; location: string }
-  topic: { weekNumber: number; title: string; teacher?: { fullName: string } | null } | null
-}
-
 export function toRollupTraineesGlobal(rows: TrainingTraineeListItem[]): RollupTrainee[] {
   return rows.map((r) => ({
     id: r.userId,
@@ -60,25 +54,5 @@ export function toRollupSessionsGlobal(rows: TrainingSessionListItem[]): RollupS
     endTime: r.endTime,
     location: r.location,
     status: sessionStatus(r.date, r.startTime, r.endTime),
-  }))
-}
-
-export function toRollupSessionsCohort(
-  rows: CohortClassInput[],
-  cohortId: number,
-  cohortName: string,
-): RollupSession[] {
-  return rows.map((c) => ({
-    id: c.id,
-    cohortId,
-    cohortName,
-    week: c.topic?.weekNumber ?? null,
-    topic: c.topic?.title ?? null,
-    teacher: c.topic?.teacher?.fullName ?? null,
-    date: c.meeting.date,
-    startTime: c.meeting.startTime,
-    endTime: c.meeting.endTime,
-    location: c.meeting.location,
-    status: sessionStatus(c.meeting.date, c.meeting.startTime, c.meeting.endTime),
   }))
 }

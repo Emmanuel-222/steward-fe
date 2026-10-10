@@ -67,4 +67,10 @@ describe('TrainingRollup', () => {
     render(<TrainingRollup trainees={[]} sessions={[]} errorMessage="Nope" />)
     expect(screen.getByText('Nope')).toBeTruthy()
   })
+
+  test('shows the all-sessions empty message in the sessions view', () => {
+    render(<TrainingRollup trainees={trainees} sessions={[]} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Sessions' }))
+    expect(screen.getByText('No sessions found for all.')).toBeTruthy()
+  })
 })

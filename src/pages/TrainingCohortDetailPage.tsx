@@ -399,6 +399,7 @@ function TrainingCohortDetailPage() {
             trainees={rollupRoster}
             onGraduate={(t) => handleGraduate(t.id, t.name)}
             isGraduating={graduate.isPending}
+            emptyMessage="No trainees yet. Add one or import a CSV."
           />
         </section>
       )}
