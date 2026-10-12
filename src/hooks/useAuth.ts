@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { getAccessToken, setAccessToken } from '../services/tokenStore'
+import { getAccessToken, markLoggedOut, setAccessToken } from '../services/tokenStore'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://steward-api-nlga.onrender.com'
 
@@ -53,6 +53,7 @@ function useAuth() {
     }).catch(() => {})
     setAccessToken(null)
     localStorage.clear()
+    markLoggedOut()
     navigate('/')
   }
 

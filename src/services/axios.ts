@@ -1,5 +1,12 @@
 import axios from 'axios'
-import { clearAccessToken, getAccessToken, setAccessToken } from './tokenStore'
+import {
+  clearAccessToken,
+  clearLoggedOut,
+  getAccessToken,
+  isLoggedOut,
+  markLoggedOut,
+  setAccessToken,
+} from './tokenStore'
 
 const api = axios.create({
   baseURL:
@@ -35,7 +42,14 @@ function processQueue(error: unknown, token: string | null = null) {
   failedQueue = []
 }
 
-export async function refreshAccessToken(): Promise<string | null> {
+function endSession() {
+  clearAccessToken()
+  localStorage.clear()
+  markLoggedOut()
+  window.location.href = '/'
+}
+
+async function performRefresh(): Promise<string | null> {
   try {
     const { data } = await axios.post(
       `${api.defaults.baseURL}/auth/refresh`,
@@ -44,13 +58,44 @@ export async function refreshAccessToken(): Promise<string | null> {
     )
     const result = data.data ?? data
     setAccessToken(result.token)
+    clearLoggedOut()
     if (result.user) {
       localStorage.setItem('user', JSON.stringify(result.user))
     }
     return result.token
-  } catch {
-    return null
+  } catch (error) {
+    // A response means the server rejected the session (401/403/…): it is over.
+    if (axios.isAxiosError(error) && error.response) {
+      return null
+    }
+    // No response (offline, timeout, DNS): transient — keep the session intact.
+    throw error
   }
+}
+
+type LockManagerLike = {
+  request?: <T>(name: string, callback: () => Promise<T>) => Promise<T>
+}
+
+let refreshPromise: Promise<string | null> | null = null
+
+export function refreshAccessToken(): Promise<string | null> {
+  if (refreshPromise) return refreshPromise
+
+  refreshPromise = (async () => {
+    try {
+      // Serialise refreshes across tabs so a token rotation is never raced.
+      const locks = (navigator as unknown as { locks?: LockManagerLike }).locks
+      if (locks?.request) {
+        return await locks.request('steward-auth-refresh', () => performRefresh())
+      }
+      return await performRefresh()
+    } finally {
+      refreshPromise = null
+    }
+  })()
+
+  return refreshPromise
 }
 
 api.interceptors.response.use(
@@ -68,6 +113,10 @@ api.interceptors.response.use(
     }
 
     if (originalRequest.url === '/auth/refresh' || originalRequest.url === '/auth/login') {
+      return Promise.reject(error)
+    }
+
+    if (isLoggedOut()) {
       return Promise.reject(error)
     }
 
@@ -91,11 +140,10 @@ api.interceptors.response.use(
         return api(originalRequest)
       }
       processQueue(new Error('Refresh failed'))
-      clearAccessToken()
-      localStorage.clear()
-      window.location.href = '/'
+      endSession()
       return Promise.reject(error)
     } catch (refreshError) {
+      // Transient failure — surface the error but keep the user signed in.
       processQueue(refreshError)
       return Promise.reject(error)
     } finally {
