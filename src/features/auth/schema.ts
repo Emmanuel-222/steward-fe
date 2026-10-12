@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { DEPARTMENTS } from '../../constants/departments'
 import { PASSWORD_POLICY_ERROR, PASSWORD_POLICY_REGEX } from '../../components/ui/PasswordRequirements'
 
 export const loginSchema = z.object({
@@ -14,10 +13,9 @@ export const signupSchema = z
     firstName: z.string().min(2, 'First name must be at least 2 characters long'),
     lastName: z.string().min(2, 'Last name must be at least 2 characters long'),
     email: z.email('Enter a valid email address'),
-    department: z.string().refine(
-      (val) => (DEPARTMENTS as readonly string[]).includes(val),
-      'Select a valid department',
-    ),
+    phone: z
+      .string()
+      .regex(/^\+234\d{10}$/, 'Enter a valid Nigerian phone number (e.g. +234 801 234 5678)'),
     password: z.string().regex(PASSWORD_POLICY_REGEX, PASSWORD_POLICY_ERROR),
     confirmPassword: z.string(),
   })

@@ -23,7 +23,7 @@ const validSignup = {
   firstName: 'Ada',
   lastName: 'Obi',
   email: 'ada@example.com',
-  department: 'protocol dept.',
+  phone: '+2348012345678',
   password: 'Passw0rd!',
   confirmPassword: 'Passw0rd!',
 }
@@ -49,7 +49,7 @@ describe('signupSchema', () => {
     }
   })
 
-  test('rejects an unknown department', () => {
-    expect(signupSchema.safeParse({ ...validSignup, department: 'nope' }).success).toBe(false)
+  test('rejects an invalid phone number', () => {
+    expect(signupSchema.safeParse({ ...validSignup, phone: '08012345678' }).success).toBe(false)
   })
 })
