@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { LOGIN_PATH } from '../app/router/paths'
 import { ArrowLeft, CheckCircle, Eye, EyeOff, KeyRound, Loader2 } from 'lucide-react'
 import api from '../services/axios'
 
@@ -77,7 +78,7 @@ function ResetPasswordPage() {
                 Your password has been updated. You can now log in with your new password.
               </p>
               <Link
-                to="/"
+                to={LOGIN_PATH}
                 className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-[0_14px_30px_-12px_rgba(15,45,82,0.45)] transition hover:bg-brand/90"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -160,7 +161,7 @@ function ResetPasswordPage() {
               </form>
 
               <div className="mt-6 text-center">
-                <Link to="/" className="text-sm font-medium text-brand hover:underline">
+                <Link to={LOGIN_PATH} className="text-sm font-medium text-brand hover:underline">
                   Back to Login
                 </Link>
               </div>

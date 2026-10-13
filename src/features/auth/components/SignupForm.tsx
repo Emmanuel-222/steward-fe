@@ -3,6 +3,7 @@ import { isAxiosError } from 'axios'
 import { useState } from 'react'
 import { Controller, useWatch, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { LOGIN_PATH } from '../../../app/router/paths'
 import { Eye, EyeOff, MailCheck } from 'lucide-react'
 import useSignupMutation from '../hooks/useSignupMutation'
 import { signupSchema } from '../schema'
@@ -75,7 +76,7 @@ function SignupForm() {
           Click the link to verify your account, then come back to log in.
         </p>
         <Link
-          to="/"
+          to={LOGIN_PATH}
           className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
         >
           Back to Login
@@ -296,7 +297,7 @@ function SignupForm() {
 
       <p className="mt-6 text-center text-sm text-slate-500">
         Already have an account?{' '}
-        <Link to="/" className="font-semibold text-brand hover:text-brand-hover">
+        <Link to={LOGIN_PATH} className="font-semibold text-brand hover:text-brand-hover">
           Log in
         </Link>
       </p>

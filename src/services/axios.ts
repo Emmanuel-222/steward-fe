@@ -7,6 +7,7 @@ import {
   markLoggedOut,
   setAccessToken,
 } from './tokenStore'
+import { LOGIN_PATH } from '../app/router/paths'
 
 const api = axios.create({
   baseURL:
@@ -46,7 +47,7 @@ function endSession() {
   clearAccessToken()
   localStorage.clear()
   markLoggedOut()
-  window.location.href = '/'
+  window.location.href = LOGIN_PATH
 }
 
 async function performRefresh(): Promise<string | null> {

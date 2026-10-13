@@ -1,6 +1,7 @@
 import { KeyRound, Loader2, MailCheck, ShieldCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { LOGIN_PATH } from '../app/router/paths'
 import useAuth from '../hooks/useAuth'
 import { useToast } from '../hooks/useToast'
 import useSendVerificationCode from '../features/auth/hooks/useSendVerificationCode'
@@ -30,7 +31,7 @@ function OnboardingPage() {
     return () => clearTimeout(timer)
   }, [countdown])
 
-  if (!isAuthenticated) return <Navigate to="/" replace />
+  if (!isAuthenticated) return <Navigate to={LOGIN_PATH} replace />
 
   const needsEmailVerify = onboarding?.needsEmailVerify ?? false
 

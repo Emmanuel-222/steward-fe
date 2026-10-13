@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { getAccessToken, markLoggedOut, setAccessToken } from '../services/tokenStore'
+import { LOGIN_PATH } from '../app/router/paths'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://steward-api-nlga.onrender.com'
 
@@ -61,7 +62,7 @@ function useAuth() {
         /* storage unavailable */
       }
     }
-    navigate('/')
+    navigate(LOGIN_PATH)
   }
 
   return {

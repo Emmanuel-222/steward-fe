@@ -19,6 +19,7 @@ import GlobalSearchOverlay from '../../components/global-search/GlobalSearchOver
 import useGlobalSearchHotkey from '../../components/global-search/useGlobalSearchHotkey'
 import useAuth from '../../hooks/useAuth'
 import useIdleLogout, { SESSION_IDLE_MS } from '../../hooks/useIdleLogout'
+import { LOGIN_PATH } from '../router/paths'
 import useMeQuery from '../../features/auth/hooks/useMeQuery'
 import useExcuseRequestsQuery from '../../features/attendance/hooks/useExcuseRequestsQuery'
 import { useTeachingQuery } from '../../features/training/hooks/useTraining'
@@ -84,7 +85,7 @@ function MainLayout() {
   useIdleLogout(SESSION_IDLE_MS, () => logout('idle'), isAuthenticated)
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />
+    return <Navigate to={LOGIN_PATH} replace />
   }
 
   if (isAuthenticated && currentUser?.onboarding?.required) {
@@ -93,7 +94,7 @@ function MainLayout() {
 
   const handleLogout = () => {
     logout()
-    navigate('/', { replace: true })
+    navigate(LOGIN_PATH, { replace: true })
   }
 
   const closeMobileNav = () => setIsMobileNavOpen(false)
