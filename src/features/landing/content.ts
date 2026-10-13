@@ -41,3 +41,10 @@ export const GET_STARTED = {
   body: 'Set up your registry and add your people in an afternoon.',
   cta: 'Get started',
 }
+
+export const FAQS = [
+  { q: 'Do we need to install anything?', a: 'No. It runs in the browser on any phone, tablet or computer.' },
+  { q: 'Can we import our existing records?', a: 'Yes — import your roster from a CSV spreadsheet, or add stewards one at a time.' },
+  { q: 'Who can see the records?', a: 'Access is role-based: admins, leaders, pastors and stewards each see what they need.' },
+  { q: 'Does it work on a phone?', a: 'Yes. Marking a service on a phone is the main path — it is built for that first.' },
+]
