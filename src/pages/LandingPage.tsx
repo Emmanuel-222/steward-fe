@@ -1,6 +1,7 @@
 import LandingNav from '../components/pages/landing/LandingNav'
 import LandingHero from '../components/pages/landing/LandingHero'
 import DemoVideoSection from '../components/pages/landing/DemoVideoSection'
+import { WhatItDoes, HowItWorks, SundayRush, GetStartedBand } from '../components/pages/landing/FeatureSections'
 import LandingFooter from '../components/pages/landing/LandingFooter'
 
 function LandingPage() {
@@ -9,6 +10,10 @@ function LandingPage() {
       <LandingNav />
       <LandingHero />
       <DemoVideoSection />
+      <WhatItDoes />
+      <HowItWorks />
+      <SundayRush />
+      <GetStartedBand />
       <LandingFooter />
     </main>
   )
