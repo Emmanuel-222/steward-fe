@@ -15,6 +15,9 @@ export const HERO = {
 
 export const FOOTER = {
   copyright: '© 2026 Steward Attendance Management.',
+  privacy: 'Privacy',
+  contact: 'Contact',
+  privacyEmail: 'privacy@stewardattendance.com',
 }
 
 export const FEATURES = [

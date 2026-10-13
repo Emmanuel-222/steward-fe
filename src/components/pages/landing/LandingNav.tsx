@@ -17,7 +17,7 @@ function LandingNav() {
           {isAuthenticated ? (
             <Link
               to="/dashboard"
-              className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
+              className="rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-hover"
             >
               {NAV.dashboard}
             </Link>
@@ -25,13 +25,13 @@ function LandingNav() {
             <>
               <Link
                 to={LOGIN_PATH}
-                className="text-sm font-semibold text-slate-600 transition hover:text-brand"
+                className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-600 transition hover:text-brand"
               >
                 {NAV.signIn}
               </Link>
               <Link
                 to="/signup"
-                className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
+                className="rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-hover"
               >
                 {NAV.getStarted}
               </Link>

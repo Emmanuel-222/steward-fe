@@ -28,4 +28,33 @@ describe('route table', () => {
       await screen.findByRole('heading', { name: /welcome back/i }, { timeout: 5000 }),
     ).toBeTruthy()
   })
+
+  test('an unauthenticated visit to /dashboard lands on the login form', async () => {
+    renderAt('/dashboard')
+    expect(
+      await screen.findByRole('heading', { name: /welcome back/i }, { timeout: 5000 }),
+    ).toBeTruthy()
+  })
+
+  test('the login screen shows the inactivity notice after an idle sign-out', async () => {
+    sessionStorage.setItem('steward:signedOutReason', 'idle')
+    try {
+      renderAt('/login')
+      expect(
+        await screen.findByText(
+          /signed out after a period of inactivity/i,
+          {},
+          { timeout: 5000 },
+        ),
+      ).toBeTruthy()
+    } finally {
+      sessionStorage.clear()
+    }
+  })
+
+  test('the forgot-password screen links back to /login', async () => {
+    renderAt('/forgot-password')
+    const link = await screen.findByRole('link', { name: /back to login/i }, { timeout: 5000 })
+    expect(link.getAttribute('href')).toBe('/login')
+  })
 })
