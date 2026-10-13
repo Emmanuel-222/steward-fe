@@ -18,6 +18,7 @@ import AppHeader from '../../components/shared/AppHeader'
 import GlobalSearchOverlay from '../../components/global-search/GlobalSearchOverlay'
 import useGlobalSearchHotkey from '../../components/global-search/useGlobalSearchHotkey'
 import useAuth from '../../hooks/useAuth'
+import useIdleLogout, { SESSION_IDLE_MS } from '../../hooks/useIdleLogout'
 import useMeQuery from '../../features/auth/hooks/useMeQuery'
 import useExcuseRequestsQuery from '../../features/attendance/hooks/useExcuseRequestsQuery'
 import { useTeachingQuery } from '../../features/training/hooks/useTraining'
@@ -78,6 +79,9 @@ function MainLayout() {
     }
     return () => { document.body.style.overflow = '' }
   }, [isMobileNavOpen])
+
+  // Sign the user out after the idle window (a closed/hidden tab counts as idle).
+  useIdleLogout(SESSION_IDLE_MS, () => logout('idle'), isAuthenticated)
 
   if (!isAuthenticated) {
     return <Navigate to="/" replace />

@@ -46,7 +46,7 @@ function useAuth() {
   }
 
   const navigate = useNavigate()
-  const logout = () => {
+  const logout = (reason?: 'idle') => {
     void fetch(`${API_BASE_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include',
@@ -54,6 +54,13 @@ function useAuth() {
     setAccessToken(null)
     localStorage.clear()
     markLoggedOut()
+    if (reason) {
+      try {
+        sessionStorage.setItem('steward:signedOutReason', reason)
+      } catch {
+        /* storage unavailable */
+      }
+    }
     navigate('/')
   }
 
