@@ -7,6 +7,8 @@ import { SignIn } from './scenes/SignIn'
 import { Overview } from './scenes/Overview'
 import { People } from './scenes/People'
 import { Meeting } from './scenes/Meeting'
+import { Mark } from './scenes/Mark'
+import { Close } from './scenes/Close'
 
 loadSpectral()
 loadInter()
@@ -28,6 +30,12 @@ function Demo() {
       </Sequence>
       <Sequence {...sceneRange('meeting')}>
         <Meeting />
+      </Sequence>
+      <Sequence {...sceneRange('mark')}>
+        <Mark />
+      </Sequence>
+      <Sequence {...sceneRange('close')}>
+        <Close />
       </Sequence>
     </>
   )
