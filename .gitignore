@@ -19,6 +19,7 @@ dist-ssr
 skills-lock.json
 docs/
 .superpowers/
+video/out/
 
 # Editor directories and files
 .vscode/*

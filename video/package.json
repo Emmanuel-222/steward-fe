@@ -1,0 +1,25 @@
+{
+  "name": "registrar-demo-video",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts Demo ../public/demo.mp4 --port=3100",
+    "still": "remotion still src/index.ts Demo ../public/demo-poster.jpg --frame=60 --port=3100",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.535",
+    "@remotion/renderer": "4.0.535",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "4.0.535"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.1"
+  }
+}
