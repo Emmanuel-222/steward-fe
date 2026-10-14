@@ -8,6 +8,7 @@ import {
   setAccessToken,
 } from './tokenStore'
 import { LOGIN_PATH } from '../app/router/paths'
+import { isPasswordKey, trimStringsDeep } from '../utils/trimStrings'
 
 const api = axios.create({
   baseURL:
@@ -21,6 +22,15 @@ api.interceptors.request.use((config) => {
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+  }
+
+  // Never let stray leading/trailing whitespace reach the database. Passwords
+  // are opaque and left exactly as typed.
+  if (config.data !== undefined) {
+    config.data = trimStringsDeep(config.data, isPasswordKey)
+  }
+  if (config.params !== undefined) {
+    config.params = trimStringsDeep(config.params, isPasswordKey)
   }
 
   return config
