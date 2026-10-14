@@ -9,6 +9,9 @@ import { People } from './scenes/People'
 import { Meeting } from './scenes/Meeting'
 import { Mark } from './scenes/Mark'
 import { Close } from './scenes/Close'
+import { Excuses } from './scenes/Excuses'
+import { Training } from './scenes/Training'
+import { Outro } from './scenes/Outro'
 
 loadSpectral()
 loadInter()
@@ -36,6 +39,15 @@ function Demo() {
       </Sequence>
       <Sequence {...sceneRange('close')}>
         <Close />
+      </Sequence>
+      <Sequence {...sceneRange('excuses')}>
+        <Excuses />
+      </Sequence>
+      <Sequence {...sceneRange('training')}>
+        <Training />
+      </Sequence>
+      <Sequence {...sceneRange('outro')}>
+        <Outro />
       </Sequence>
     </>
   )
