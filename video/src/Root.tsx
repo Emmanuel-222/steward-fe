@@ -1,7 +1,9 @@
-import { Composition, Sequence } from 'remotion'
+import { Audio, Composition, Sequence, staticFile } from 'remotion'
 import { loadFont as loadSpectral } from '@remotion/google-fonts/Spectral'
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter'
 import { FPS, TOTAL_FRAMES, sceneRange } from './timeline'
+import { CAPTIONS } from './captions'
+import { Caption } from './components/Caption'
 import { Intro } from './scenes/Intro'
 import { SignIn } from './scenes/SignIn'
 import { Overview } from './scenes/Overview'
@@ -16,7 +18,23 @@ import { Outro } from './scenes/Outro'
 loadSpectral()
 loadInter()
 
-function Demo() {
+type DemoProps = {
+  voiceover?: boolean
+}
+
+function Captions() {
+  return (
+    <>
+      {CAPTIONS.map((caption) => (
+        <Sequence key={caption.from} from={caption.from} durationInFrames={caption.durationInFrames}>
+          <Caption>{caption.text}</Caption>
+        </Sequence>
+      ))}
+    </>
+  )
+}
+
+function Demo({ voiceover = false }: DemoProps) {
   return (
     <>
       <Sequence {...sceneRange('intro')}>
@@ -49,6 +67,10 @@ function Demo() {
       <Sequence {...sceneRange('outro')}>
         <Outro />
       </Sequence>
+
+      <Captions />
+
+      {voiceover ? <Audio src={staticFile('audio/voiceover.mp3')} /> : null}
     </>
   )
 }
@@ -58,6 +80,7 @@ export function RemotionRoot() {
     <Composition
       id="Demo"
       component={Demo}
+      defaultProps={{ voiceover: false }}
       durationInFrames={TOTAL_FRAMES}
       fps={FPS}
       width={1920}
