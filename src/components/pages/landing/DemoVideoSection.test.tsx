@@ -1,12 +1,16 @@
 import { describe, expect, test } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import DemoVideoSection from './DemoVideoSection'
 
 describe('DemoVideoSection', () => {
-  test('renders a play control and no broken video element', () => {
+  test('plays the rendered demo with a poster and captions', () => {
     const { container } = render(<DemoVideoSection />)
-    expect(screen.getByRole('button', { name: /play the demo/i })).toBeTruthy()
-    expect(container.querySelector('video')).toBeNull()
+    const video = container.querySelector('video')
+    expect(video?.getAttribute('src')).toBe('/demo.mp4')
+    expect(video?.getAttribute('poster')).toBe('/demo-poster.jpg')
+    expect(video?.hasAttribute('controls')).toBe(true)
+    expect(video?.hasAttribute('autoplay')).toBe(false)
+    expect(container.querySelector('track[kind="captions"]')).toBeTruthy()
   })
 
   test('the section is the #demo anchor target', () => {

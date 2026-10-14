@@ -1,5 +1,3 @@
-import { Play } from 'lucide-react'
-
 function DemoVideoSection() {
   return (
     <section id="demo" className="scroll-mt-24 px-4 pb-20 sm:px-6">
@@ -14,14 +12,17 @@ function DemoVideoSection() {
           </p>
         </div>
 
-        <div className="mt-10 flex aspect-video items-center justify-center rounded-card bg-brand shadow-heavy">
-          <button
-            type="button"
-            aria-label="Play the demo"
-            className="flex h-16 w-16 items-center justify-center rounded-full bg-signature text-brand transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        <div className="mt-10 overflow-hidden rounded-card bg-brand shadow-heavy">
+          <video
+            className="aspect-video w-full"
+            src="/demo.mp4"
+            poster="/demo-poster.jpg"
+            controls
+            preload="none"
+            playsInline
           >
-            <Play className="h-6 w-6 translate-x-0.5 fill-current" />
-          </button>
+            <track kind="captions" src="/demo.vtt" srcLang="en" label="English" default />
+          </video>
         </div>
       </div>
     </section>
