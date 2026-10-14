@@ -92,6 +92,51 @@ export function Training() {
           </div>
         </div>
       ))}
+      <div style={{ marginTop: 30, display: 'flex', gap: 36 }}>
+        <div style={{ flex: 1 }}>
+          <div style={headStyle}>Trainees</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {['Grace Adeyemi', 'Emeka Obi', 'Blessing Eze', 'Daniel Akintola', 'Esther Bello'].map(
+              (name) => (
+                <span
+                  key={name}
+                  style={{
+                    borderRadius: 999,
+                    padding: '8px 16px',
+                    fontSize: 17,
+                    backgroundColor: COLORS.sidebar,
+                    color: COLORS.brand,
+                  }}
+                >
+                  {name}
+                </span>
+              ),
+            )}
+          </div>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <div style={headStyle}>Teaching · Week 1</div>
+          {['Grace Adeyemi', 'Emeka Obi', 'Blessing Eze'].map((name, index) => (
+            <div
+              key={name}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '11px 0',
+                borderTop: `1px solid ${COLORS.line}`,
+                fontSize: 19,
+                color: COLORS.ink,
+              }}
+            >
+              <span>{name}</span>
+              <span style={{ fontWeight: 600, color: index === 1 ? '#9F1239' : '#065F46' }}>
+                {index === 1 ? 'Absent' : 'Present'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </AppFrame>
   )
 }

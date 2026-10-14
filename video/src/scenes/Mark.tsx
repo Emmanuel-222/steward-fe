@@ -57,6 +57,7 @@ export function Mark() {
   const bulkChecked = frame > 6.5 * fps
   const bulkApplied = frame > 8 * fps
   const absentMarked = frame > 10 * fps
+  const rush = frame > 9 * fps
 
   const isPresent = (index: number) =>
     index < individual || (BULK.includes(index) && bulkApplied)
@@ -94,17 +95,31 @@ export function Mark() {
               Sun, 18 Oct 2026 · 8:00 AM
             </div>
           </div>
-          <div
-            style={{
-              borderRadius: 999,
-              padding: '10px 22px',
-              fontSize: 18,
-              fontWeight: 600,
-              backgroundColor: '#DCFCE7',
-              color: '#166534',
-            }}
-          >
-            Ongoing
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div
+              style={{
+                borderRadius: 999,
+                padding: '10px 20px',
+                fontSize: 18,
+                fontWeight: 600,
+                backgroundColor: rush ? '#FEF3C7' : COLORS.sidebar,
+                color: rush ? '#92400E' : COLORS.muted,
+              }}
+            >
+              Rush mode
+            </div>
+            <div
+              style={{
+                borderRadius: 999,
+                padding: '10px 22px',
+                fontSize: 18,
+                fontWeight: 600,
+                backgroundColor: '#DCFCE7',
+                color: '#166534',
+              }}
+            >
+              Ongoing
+            </div>
           </div>
         </div>
 

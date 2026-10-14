@@ -21,7 +21,7 @@ function DemoVideoSection() {
             preload="none"
             playsInline
           >
-            <track kind="captions" src="/demo.vtt" srcLang="en" label="English" default />
+            <track kind="captions" src="/demo.vtt" srcLang="en" label="English" />
           </video>
         </div>
       </div>

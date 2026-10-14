@@ -11,6 +11,7 @@ describe('DemoVideoSection', () => {
     expect(video?.hasAttribute('controls')).toBe(true)
     expect(video?.hasAttribute('autoplay')).toBe(false)
     expect(container.querySelector('track[kind="captions"]')).toBeTruthy()
+    expect(container.querySelector('track[kind="captions"]')?.hasAttribute('default')).toBe(false)
   })
 
   test('the section is the #demo anchor target', () => {
