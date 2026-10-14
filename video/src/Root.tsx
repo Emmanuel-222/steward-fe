@@ -5,6 +5,8 @@ import { FPS, TOTAL_FRAMES, sceneRange } from './timeline'
 import { Intro } from './scenes/Intro'
 import { SignIn } from './scenes/SignIn'
 import { Overview } from './scenes/Overview'
+import { People } from './scenes/People'
+import { Meeting } from './scenes/Meeting'
 
 loadSpectral()
 loadInter()
@@ -20,6 +22,12 @@ function Demo() {
       </Sequence>
       <Sequence {...sceneRange('overview')}>
         <Overview />
+      </Sequence>
+      <Sequence {...sceneRange('people')}>
+        <People />
+      </Sequence>
+      <Sequence {...sceneRange('meeting')}>
+        <Meeting />
       </Sequence>
     </>
   )
