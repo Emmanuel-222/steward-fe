@@ -12,7 +12,7 @@ function NotFoundCard() {
       </p>
       <Link
         className="mt-6 inline-flex rounded-full bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
-        to="/"
+        to="/dashboard"
       >
         Return home
       </Link>

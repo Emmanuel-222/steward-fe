@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import { getAccessToken, setAccessToken } from '../services/tokenStore'
+import { getAccessToken, markLoggedOut, setAccessToken } from '../services/tokenStore'
+import { LOGIN_PATH } from '../app/router/paths'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://steward-api-nlga.onrender.com'
 
@@ -46,14 +47,22 @@ function useAuth() {
   }
 
   const navigate = useNavigate()
-  const logout = () => {
+  const logout = (reason?: 'idle') => {
     void fetch(`${API_BASE_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     }).catch(() => {})
     setAccessToken(null)
     localStorage.clear()
-    navigate('/')
+    markLoggedOut()
+    if (reason) {
+      try {
+        sessionStorage.setItem('steward:signedOutReason', reason)
+      } catch {
+        /* storage unavailable */
+      }
+    }
+    navigate(LOGIN_PATH)
   }
 
   return {

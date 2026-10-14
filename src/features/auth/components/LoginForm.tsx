@@ -38,6 +38,15 @@ function LoginForm() {
   const [serverError, setServerError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [cooldown, setCooldown] = useState(getPersistedCooldown)
+  const [signedOutReason] = useState(() => {
+    try {
+      const reason = sessionStorage.getItem('steward:signedOutReason')
+      if (reason) sessionStorage.removeItem('steward:signedOutReason')
+      return reason ?? ''
+    } catch {
+      return ''
+    }
+  })
   const {
     register,
     handleSubmit,
@@ -125,6 +134,17 @@ function LoginForm() {
       </div>
 
       <form className="mt-8 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+        {signedOutReason === 'idle' ? (
+          <div className="flex gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-500 text-white">
+              <Clock className="h-3 w-3" />
+            </div>
+            <p className="leading-6">
+              You were signed out after a period of inactivity. Please sign in again.
+            </p>
+          </div>
+        ) : null}
+
         {isRateLimited ? (
           <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-600 text-white">

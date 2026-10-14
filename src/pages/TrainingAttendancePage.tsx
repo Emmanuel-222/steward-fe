@@ -5,6 +5,7 @@ import Spinner from '../components/ui/Spinner'
 import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import ExcuseRequestModal from '../components/pages/attendance/ExcuseRequestModal'
 import { useTrainingClassesQuery, useTrainingMeQuery } from '../features/training/hooks/useTraining'
+import { sessionDayLabel } from '../features/training/sessionCard'
 
 function TrainingAttendancePage() {
   const classesQuery = useTrainingClassesQuery()
@@ -53,7 +54,7 @@ function TrainingAttendancePage() {
                   {c.topic ?? 'Training session'}
                 </p>
                 <p className="text-sm text-slate-600">
-                  {c.day}
+                  {sessionDayLabel(c.day, c.date)}
                   {c.date
                     ? ` · ${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
                     : ''}

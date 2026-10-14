@@ -1,14 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { useState } from 'react'
-import { useWatch, useForm } from 'react-hook-form'
+import { Controller, useWatch, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { ChevronDown, Eye, EyeOff, MailCheck } from 'lucide-react'
+import { LOGIN_PATH } from '../../../app/router/paths'
+import { Eye, EyeOff, MailCheck } from 'lucide-react'
 import useSignupMutation from '../hooks/useSignupMutation'
 import { signupSchema } from '../schema'
 import type { SignupFormValues } from '../types'
-import { DEPARTMENTS, DEPARTMENT_LABELS } from '../../../constants/departments'
 import PasswordRequirements from '../../../components/ui/PasswordRequirements'
+import PhoneInput from '../../../components/ui/PhoneInput'
 
 function SignupForm() {
   const signupMutation = useSignupMutation()
@@ -29,7 +30,7 @@ function SignupForm() {
       firstName: '',
       lastName: '',
       email: '',
-      department: '',
+      phone: '',
       password: '',
       confirmPassword: '',
     },
@@ -44,7 +45,7 @@ function SignupForm() {
         firstName: values.firstName,
         lastName: values.lastName,
         email: values.email,
-        department: values.department,
+        phone: values.phone,
         password: values.password,
       }
       await signupMutation.mutateAsync(payload)
@@ -75,7 +76,7 @@ function SignupForm() {
           Click the link to verify your account, then come back to log in.
         </p>
         <Link
-          to="/"
+          to={LOGIN_PATH}
           className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
         >
           Back to Login
@@ -94,7 +95,8 @@ function SignupForm() {
           Create Your Account
         </h2>
         <p className="text-sm text-slate-500">
-          Register as a steward to start marking your attendance.
+          Set up your church&apos;s registry. You&apos;ll be the admin — then add your
+          stewards, leaders and pastors.
         </p>
         <div className="h-px w-12 bg-signature" />
       </div>
@@ -181,27 +183,22 @@ function SignupForm() {
 
         <label className="block space-y-2">
           <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Department
+            Phone number
           </span>
-          <div className="relative">
-            <select
-              className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-10 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-brand"
-              {...register('department')}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select Department
-              </option>
-              {DEPARTMENTS.map((dept) => (
-                <option key={dept} value={dept}>
-                  {DEPARTMENT_LABELS[dept]}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-600" />
-          </div>
-          {errors.department ? (
-            <p className="text-sm text-rose-600">{errors.department.message}</p>
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <PhoneInput
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                aria-label="Phone number"
+              />
+            )}
+          />
+          {errors.phone ? (
+            <p className="text-sm text-rose-600">{errors.phone.message}</p>
           ) : null}
         </label>
 
@@ -300,7 +297,7 @@ function SignupForm() {
 
       <p className="mt-6 text-center text-sm text-slate-500">
         Already have an account?{' '}
-        <Link to="/" className="font-semibold text-brand hover:text-brand-hover">
+        <Link to={LOGIN_PATH} className="font-semibold text-brand hover:text-brand-hover">
           Log in
         </Link>
       </p>

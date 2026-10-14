@@ -2,6 +2,7 @@ import { isAxiosError } from 'axios'
 import { CheckCircle2, Loader2, ShieldAlert, ShieldCheck } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { LOGIN_PATH } from '../app/router/paths'
 import useVerifyEmailMutation from '../features/auth/hooks/useVerifyEmailMutation'
 import { useToast } from '../hooks/useToast'
 
@@ -25,7 +26,7 @@ function VerifyEmailPage() {
       onSuccess: () => {
         setStatus('success')
         showToast('Email verified — you can now log in', 'success')
-        setTimeout(() => navigate('/', { replace: true }), REDIRECT_DELAY_MS)
+        setTimeout(() => navigate(LOGIN_PATH, { replace: true }), REDIRECT_DELAY_MS)
       },
       onError: (error) => {
         setStatus('error')
@@ -80,7 +81,7 @@ function VerifyEmailPage() {
             </h1>
             <p className="mt-2 text-sm text-slate-500">{errorMessage}</p>
             <Link
-              to="/"
+              to={LOGIN_PATH}
               className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
             >
               <ShieldCheck className="h-4 w-4" />

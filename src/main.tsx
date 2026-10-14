@@ -4,20 +4,25 @@ import './index.css'
 import App from './App.tsx'
 import AppProviders from './app/providers/AppProviders.tsx'
 import { refreshAccessToken } from './services/axios'
-import { getAccessToken } from './services/tokenStore'
+import { getAccessToken, isLoggedOut } from './services/tokenStore'
 
 async function ensureSession() {
+  if (isLoggedOut()) return
   if (!getAccessToken()) {
     await refreshAccessToken()
   }
 }
 
-ensureSession().finally(() => {
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <AppProviders>
-        <App />
-      </AppProviders>
-    </StrictMode>,
-  )
-})
+ensureSession()
+  .catch(() => {
+    /* transient refresh failure — render signed-out and let the app retry */
+  })
+  .finally(() => {
+    createRoot(document.getElementById('root')!).render(
+      <StrictMode>
+        <AppProviders>
+          <App />
+        </AppProviders>
+      </StrictMode>,
+    )
+  })

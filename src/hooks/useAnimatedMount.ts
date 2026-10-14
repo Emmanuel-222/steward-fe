@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 type Phase = 'enter' | 'exit' | null
 
 export function useAnimatedMount(isOpen: boolean, exitDuration = 200) {
-  const [mounted, setMounted] = useState(false)
-  const [phase, setPhase] = useState<Phase>(null)
+  const [mounted, setMounted] = useState(isOpen)
+  const [phase, setPhase] = useState<Phase>(isOpen ? 'enter' : null)
   const prevIsOpen = useRef(isOpen)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 

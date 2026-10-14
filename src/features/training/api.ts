@@ -184,6 +184,51 @@ export async function graduateTrainee({
   return data
 }
 
+export async function updateTraineeTrack({
+  cohortId,
+  userId,
+  track,
+}: {
+  cohortId: string | number
+  userId: number
+  track: 'new' | 'refresher'
+}) {
+  const { data } = await api.patch(`/training/cohorts/${cohortId}/trainees/${userId}`, { track })
+  return data
+}
+
+export async function updateTraineeProfile({
+  userId,
+  payload,
+}: {
+  userId: number
+  payload: { fullName: string; phone: string; birthday: string }
+}) {
+  const body = {
+    fullName: payload.fullName,
+    phone: payload.phone,
+    ...(payload.birthday ? { birthday: payload.birthday } : {}),
+  }
+  const { data } = await api.patch(`/users/${userId}`, body)
+  return data
+}
+
+export async function deleteTrainee(userId: number) {
+  const { data } = await api.delete(`/users/${userId}`)
+  return data
+}
+
+export async function assignTopicTeacher({
+  topicId,
+  teacherId,
+}: {
+  topicId: number
+  teacherId: number | null
+}) {
+  const { data } = await api.patch(`/training/topics/${topicId}/teacher`, { teacherId })
+  return data
+}
+
 export async function importTrainees({ cohortId, file }: { cohortId: string | number; file: File }) {
   const formData = new FormData()
   formData.append('file', file)

@@ -18,30 +18,34 @@ import AppHeader from '../../components/shared/AppHeader'
 import GlobalSearchOverlay from '../../components/global-search/GlobalSearchOverlay'
 import useGlobalSearchHotkey from '../../components/global-search/useGlobalSearchHotkey'
 import useAuth from '../../hooks/useAuth'
+import useIdleLogout, { SESSION_IDLE_MS } from '../../hooks/useIdleLogout'
+import { LOGIN_PATH } from '../router/paths'
 import useMeQuery from '../../features/auth/hooks/useMeQuery'
 import useExcuseRequestsQuery from '../../features/attendance/hooks/useExcuseRequestsQuery'
 import { useTeachingQuery } from '../../features/training/hooks/useTraining'
 
-const adminNavItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
-  { label: 'Stewards', to: '/dashboard/stewards', icon: Users },
-  { label: 'Meetings', to: '/dashboard/meetings', icon: CalendarDays },
-  { label: 'Training', to: '/dashboard/training', icon: GraduationCap },
-  { label: 'Excuses', to: '/dashboard/excuse-requests', icon: MessageSquare },
-  { label: 'Attendance', to: '/dashboard/attendance', icon: ClipboardList },
-]
+type NavItem = { label: string; to: string; icon: typeof LayoutDashboard; end?: boolean }
 
-const stewardNavItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true },
-  { label: 'My Attendance', to: '/dashboard/attendance', icon: ClipboardList },
-  { label: 'My Excuses', to: '/dashboard/my-excuses', icon: FileText },
-]
+const dashboard = { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, end: true }
+const stewards = { label: 'Stewards', to: '/dashboard/stewards', icon: Users }
+const meetings = { label: 'Meetings', to: '/dashboard/meetings', icon: CalendarDays }
+const training = { label: 'Training', to: '/dashboard/training', icon: GraduationCap }
+const excuses = { label: 'Excuses', to: '/dashboard/excuse-requests', icon: MessageSquare }
+const attendance = { label: 'Attendance', to: '/dashboard/attendance', icon: ClipboardList }
+const myAttendance = { label: 'My Attendance', to: '/dashboard/attendance', icon: ClipboardList }
+const myExcuses = { label: 'My Excuses', to: '/dashboard/my-excuses', icon: FileText }
+const schoolHome = { label: 'School Home', to: '/dashboard', icon: LayoutDashboard, end: true }
+const myClasses = { label: 'My Classes', to: '/dashboard/classes', icon: CalendarDays, end: false }
+const trainingAttendance = { label: 'My Attendance', to: '/dashboard/training-attendance', icon: ClipboardList, end: false }
+const teachingItem = { label: 'Teaching', to: '/dashboard/teaching', icon: GraduationCap }
 
-const traineeNavItems = [
-  { label: 'School Home', to: '/dashboard', icon: LayoutDashboard, end: true },
-  { label: 'My Classes', to: '/dashboard/classes', icon: CalendarDays, end: false },
-  { label: 'My Attendance', to: '/dashboard/training-attendance', icon: ClipboardList, end: false },
-]
+const navByRole: Record<string, NavItem[]> = {
+  admin: [dashboard, stewards, meetings, training, excuses, attendance],
+  leader: [dashboard, stewards, meetings, excuses, attendance],
+  pastor: [dashboard, stewards, excuses, attendance],
+  steward: [dashboard, myAttendance, myExcuses],
+  trainee: [schoolHome, myClasses, trainingAttendance],
+}
 
 function MainLayout() {
   const navigate = useNavigate()
@@ -77,8 +81,11 @@ function MainLayout() {
     return () => { document.body.style.overflow = '' }
   }, [isMobileNavOpen])
 
+  // Sign the user out after the idle window (a closed/hidden tab counts as idle).
+  useIdleLogout(SESSION_IDLE_MS, () => logout('idle'), isAuthenticated)
+
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />
+    return <Navigate to={LOGIN_PATH} replace />
   }
 
   if (isAuthenticated && currentUser?.onboarding?.required) {
@@ -87,7 +94,7 @@ function MainLayout() {
 
   const handleLogout = () => {
     logout()
-    navigate('/', { replace: true })
+    navigate(LOGIN_PATH, { replace: true })
   }
 
   const closeMobileNav = () => setIsMobileNavOpen(false)
@@ -118,20 +125,10 @@ function MainLayout() {
 
       <nav className="flex-1 space-y-1 px-4 py-6">
         {(() => {
-          const role = currentUser?.role?.toLowerCase()
-          const isSteward = role === 'steward'
-          const isTrainee = role === 'trainee'
-          const isAuthorized = role === 'admin' || role === 'leader' || role === 'pastor'
-          const base = isTrainee ? traineeNavItems : isSteward ? stewardNavItems : adminNavItems
-          let items = isTrainee || isSteward
-            ? base
-            : base.filter(({ label }) =>
-                label === 'Stewards' || label === 'Meetings' || label === 'Excuses' || label === 'Training'
-                  ? isAuthorized
-                  : true,
-              )
-          if (showTeaching && !isTrainee) {
-            items = [...items, { label: 'Teaching', to: '/dashboard/teaching', icon: GraduationCap }]
+          const role = currentUser?.role?.toLowerCase() ?? ''
+          let items = navByRole[role] ?? navByRole.steward
+          if (showTeaching && role !== 'trainee') {
+            items = [...items, teachingItem]
           }
           return items
         })().map(({ label, to, icon: Icon, end }) => {

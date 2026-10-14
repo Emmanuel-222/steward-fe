@@ -81,6 +81,11 @@ export type TrainingTraineeListItem = {
   userId: number
   name: string
   email: string
+  department: string
+  role: string
+  phone: string
+  birthday: string | null
+  createdAt: string
   cohortId: number
   cohortName: string
   track: string
@@ -127,4 +132,38 @@ export type ClassRoster = {
   topic: string | null
   week: number | null
   roster: RosterEntry[]
+}
+
+export type SessionStatus = 'Upcoming' | 'Ongoing' | 'Completed'
+
+export type RollupTrainee = {
+  id: number
+  name: string
+  email: string
+  cohortId: number
+  cohortName: string
+  track: string
+  missed: number
+  maxMissedClasses: number
+  graduation: GraduationStatus
+  enrollmentStatus: string
+  department?: string
+  role?: string
+  phone?: string
+  dateAdded?: string
+  birthday?: string
+}
+
+export type RollupSession = {
+  id: number
+  cohortId: number
+  cohortName: string
+  week: number | null
+  topic: string | null
+  teacher: string | null
+  date: string
+  startTime: string
+  endTime: string
+  location: string
+  status: SessionStatus
 }

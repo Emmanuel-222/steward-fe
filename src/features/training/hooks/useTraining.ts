@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   addTrainee,
+  assignTopicTeacher,
   createCohort,
   deleteCohort,
+  deleteTrainee,
   generateSessions,
   getClassRoster,
   getCohort,
@@ -20,6 +22,8 @@ import {
   scheduleClass,
   seedCurriculum,
   updateCohort,
+  updateTraineeProfile,
+  updateTraineeTrack,
   type AddTraineePayload,
   type CreateCohortPayload,
   type SaveSessionPayload,
@@ -161,6 +165,62 @@ export function useGraduateTraineeMutation(cohortId: string | number) {
     mutationFn: (userId: number) => graduateTrainee({ cohortId, userId }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: keys.trainees(cohortId) })
+      qc.invalidateQueries({ queryKey: keys.cohorts })
+    },
+  })
+}
+
+export function useGraduateTraineeAnyMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ cohortId, userId }: { cohortId: number; userId: number }) =>
+      graduateTrainee({ cohortId, userId }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['training', 'all-trainees'] })
+      qc.invalidateQueries({ queryKey: keys.cohorts })
+    },
+  })
+}
+
+export function useUpdateTraineeTrackMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: updateTraineeTrack,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['training', 'all-trainees'] })
+      qc.invalidateQueries({ queryKey: keys.cohorts })
+    },
+  })
+}
+
+export function useUpdateTraineeProfileMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: updateTraineeProfile,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['training', 'all-trainees'] })
+      qc.invalidateQueries({ queryKey: keys.cohorts })
+    },
+  })
+}
+
+export function useDeleteTraineeMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (userId: number) => deleteTrainee(userId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['training', 'all-trainees'] })
+      qc.invalidateQueries({ queryKey: keys.cohorts })
+    },
+  })
+}
+
+export function useAssignTeacherMutation(cohortId: string | number) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: assignTopicTeacher,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: keys.cohort(cohortId) })
       qc.invalidateQueries({ queryKey: keys.cohorts })
     },
   })

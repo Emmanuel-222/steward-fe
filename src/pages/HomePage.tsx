@@ -32,7 +32,8 @@ const statusBadge = {
 function HomePage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const isSteward = user?.role?.toLowerCase() === 'steward'
+  const role = user?.role?.toLowerCase() ?? ''
+  const isSteward = role === 'steward'
   const [excuseModalMeeting, setExcuseModalMeeting] = useState<{ id: string; title: string } | null>(null)
   const stewardsQuery = useStewardsQuery('')
   const meetingsQuery = useMeetingsQuery()
@@ -133,19 +134,22 @@ function HomePage() {
       label: 'Mark Attendance',
       icon: ClipboardCheck,
       emphasized: true,
+      allow: ['admin', 'leader', 'pastor'],
       onClick: () => navigate('/dashboard/attendance'),
     },
     {
       label: 'Add New Steward',
       icon: UserPlus,
+      allow: ['admin', 'leader', 'pastor'],
       onClick: () => navigate('/dashboard/stewards'),
     },
     {
       label: 'Create Meeting',
       icon: CirclePlus,
+      allow: ['admin', 'leader'],
       onClick: () => navigate('/dashboard/meetings'),
     },
-  ]
+  ].filter((action) => action.allow.includes(role))
 
   const stewardQuickActions = [
     {
@@ -297,7 +301,7 @@ function HomePage() {
           <RecentMeetingsSection 
             meetings={recentMeetings} 
             isLoading={meetingsQuery.isLoading}
-            onViewAll={() => navigate('/dashboard/meetings')}
+            onViewAll={role === 'admin' || role === 'leader' ? () => navigate('/dashboard/meetings') : undefined}
           />
           <RegistryActionsSection actions={adminQuickActions} />
         </section>

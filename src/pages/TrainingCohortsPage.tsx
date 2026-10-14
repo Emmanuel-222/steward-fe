@@ -1,21 +1,35 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 import DashboardPageHeader from '../components/shared/DashboardPageHeader'
 import ErrorState from '../components/ui/ErrorState'
 import Spinner from '../components/ui/Spinner'
+import Pagination from '../components/ui/Pagination'
+import TrainingRollup from '../components/pages/training/TrainingRollup'
+import TraineeRowActions from '../components/pages/training/TraineeRowActions'
+import EditTraineeModal, { type EditTraineeValues } from '../components/pages/training/EditTraineeModal'
+import DeleteUserModal from '../components/pages/stewards/DeleteUserModal'
 import { useToast } from '../hooks/useToast'
 import useAuth from '../hooks/useAuth'
-import GraduationStatusBadge from '../components/pages/training/GraduationStatusBadge'
 import {
   useCohortsQuery,
   useCreateCohortMutation,
   useDeleteCohortMutation,
+  useDeleteTraineeMutation,
+  useGraduateTraineeAnyMutation,
   useTrainingSessionsQuery,
   useTrainingTraineesQuery,
   useUpdateCohortMutation,
+  useUpdateTraineeProfileMutation,
+  useUpdateTraineeTrackMutation,
 } from '../features/training/hooks/useTraining'
-import type { CohortListItem } from '../features/training/types'
+import { toRollupSessionsGlobal, toRollupTraineesGlobal } from '../features/training/adapters'
+import { getCohort } from '../features/training/api'
+import type { CohortListItem, RollupTrainee } from '../features/training/types'
+import type { Steward } from '../features/stewards/types'
+
+const CARD_PAGE_SIZE = 6
 
 function cohortTeachers(cohort: CohortListItem) {
   const names = new Set<string>()
@@ -27,27 +41,37 @@ function cohortTeachers(cohort: CohortListItem) {
 
 function TrainingCohortsPage() {
   const cohortsQuery = useCohortsQuery()
-  const createMutation = useCreateCohortMutation()
-  const updateMutation = useUpdateCohortMutation()
-  const deleteMutation = useDeleteCohortMutation()
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const isAdmin = user?.role?.toLowerCase() === 'admin'
+  const traineesQuery = useTrainingTraineesQuery(isAdmin)
+  const sessionsQuery = useTrainingSessionsQuery(isAdmin)
+  const createMutation = useCreateCohortMutation()
+  const updateCohortMutation = useUpdateCohortMutation()
+  const deleteCohortMutation = useDeleteCohortMutation()
+  const graduateAny = useGraduateTraineeAnyMutation()
+  const updateProfile = useUpdateTraineeProfileMutation()
+  const updateTrack = useUpdateTraineeTrackMutation()
+  const deleteTraineeMutation = useDeleteTraineeMutation()
   const { showToast } = useToast()
+  const [searchParams] = useSearchParams()
+  const forceList = searchParams.get('list') === '1'
 
   const [showForm, setShowForm] = useState(false)
   const [name, setName] = useState('')
   const [startDate, setStartDate] = useState('')
   const [weekCount, setWeekCount] = useState('12')
   const [maxMissedClasses, setMaxMissedClasses] = useState('3')
-
-  const [renaming, setRenaming] = useState<CohortListItem | null>(null)
+  const [page, setPage] = useState(1)
+  const [editingTrainee, setEditingTrainee] = useState<RollupTrainee | null>(null)
+  const [deletingTrainee, setDeletingTrainee] = useState<RollupTrainee | null>(null)
+  const [renamingCohort, setRenamingCohort] = useState<CohortListItem | null>(null)
   const [renameValue, setRenameValue] = useState('')
-
-  const [deleting, setDeleting] = useState<CohortListItem | null>(null)
+  const [deletingCohort, setDeletingCohort] = useState<CohortListItem | null>(null)
   const [deleteName, setDeleteName] = useState('')
-  const [tab, setTab] = useState<'cohorts' | 'trainees' | 'sessions'>('cohorts')
-  const traineesQuery = useTrainingTraineesQuery(tab === 'trainees')
-  const sessionsQuery = useTrainingSessionsQuery(tab === 'sessions')
+
+  const cohorts = cohortsQuery.data ?? []
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,26 +95,102 @@ function TrainingCohortsPage() {
     }
   }
 
-  const handleRename = async () => {
-    if (!renaming || !renameValue.trim()) return
+  const totalPages = Math.max(1, Math.ceil(cohorts.length / CARD_PAGE_SIZE))
+  const pagedCohorts = cohorts.slice((page - 1) * CARD_PAGE_SIZE, page * CARD_PAGE_SIZE)
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages) // eslint-disable-line react-hooks/set-state-in-effect -- clamp the page when the cohort count shrinks
+  }, [page, totalPages])
+
+  // With a single cohort there is nothing to choose — go straight in,
+  // unless the user explicitly asked for the list (?list=1).
+  if (!cohortsQuery.isLoading && !cohortsQuery.isError && cohorts.length === 1 && !showForm && !forceList) {
+    return <Navigate to={`/dashboard/training/${cohorts[0].id}`} replace />
+  }
+
+  const rollupTrainees = toRollupTraineesGlobal(traineesQuery.data ?? [])
+  const rollupSessions = toRollupSessionsGlobal(sessionsQuery.data ?? [])
+  const rollupError = traineesQuery.isError || sessionsQuery.isError
+
+  const asSteward = (trainee: RollupTrainee): Steward => ({
+    id: String(trainee.id),
+    initials: '',
+    name: trainee.name,
+    email: trainee.email,
+    department: trainee.department ?? '',
+    role: trainee.role ?? 'Trainee',
+    roleTone: '',
+    phone: trainee.phone ?? '',
+    dateAdded: trainee.dateAdded ?? '',
+  })
+
+  const handleViewTrainee = (trainee: RollupTrainee) => {
+    navigate(`/dashboard/stewards/${trainee.id}`)
+  }
+
+  const handleGraduateTrainee = async (trainee: RollupTrainee) => {
     try {
-      await updateMutation.mutateAsync({ id: renaming.id, payload: { name: renameValue.trim() } })
+      await graduateAny.mutateAsync({ cohortId: trainee.cohortId, userId: trainee.id })
+      showToast(`${trainee.name} graduated and moved to worker`, 'success')
+    } catch {
+      showToast('Could not graduate trainee', 'error')
+    }
+  }
+
+  const handleEditTrainee = async (values: EditTraineeValues) => {
+    if (!editingTrainee) return
+    try {
+      await updateProfile.mutateAsync({
+        userId: editingTrainee.id,
+        payload: { fullName: values.name, phone: values.phone, birthday: values.birthday },
+      })
+      if (values.track !== editingTrainee.track) {
+        await updateTrack.mutateAsync({
+          cohortId: editingTrainee.cohortId,
+          userId: editingTrainee.id,
+          track: values.track,
+        })
+      }
+      showToast('Trainee updated', 'success')
+    } catch (error) {
+      showToast('Could not update trainee', 'error')
+      throw error
+    }
+  }
+
+  const handleDeleteTrainee = async () => {
+    if (!deletingTrainee) return
+    try {
+      await deleteTraineeMutation.mutateAsync(deletingTrainee.id)
+      showToast('Trainee removed', 'success')
+      setDeletingTrainee(null)
+    } catch {
+      showToast('Could not delete trainee', 'error')
+    }
+  }
+
+  const handleRename = async () => {
+    if (!renamingCohort || !renameValue.trim()) return
+    try {
+      await updateCohortMutation.mutateAsync({
+        id: renamingCohort.id,
+        payload: { name: renameValue.trim() },
+      })
       showToast('Cohort renamed', 'success')
-      setRenaming(null)
+      setRenamingCohort(null)
     } catch {
       showToast('Could not rename cohort', 'error')
     }
   }
 
-  const handleDelete = async () => {
-    if (!deleting || deleteName !== deleting.name) return
+  const handleDeleteCohort = async () => {
+    if (!deletingCohort || deleteName !== deletingCohort.name) return
     try {
-      await deleteMutation.mutateAsync(deleting.id)
+      await deleteCohortMutation.mutateAsync(deletingCohort.id)
       showToast('Cohort deleted', 'success')
-      setDeleting(null)
+      setDeletingCohort(null)
     } catch {
       showToast('Could not delete cohort', 'error')
-      setDeleting(null)
     }
   }
 
@@ -110,23 +210,6 @@ function TrainingCohortsPage() {
         }
       />
 
-      <div className="inline-flex rounded-2xl border border-slate-200 bg-white p-1">
-        {(['cohorts', 'trainees', 'sessions'] as const).map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={`rounded-xl px-5 py-2 text-sm font-semibold capitalize transition ${
-              tab === t ? 'bg-brand text-white' : 'text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
-      {tab === 'cohorts' ? (
-        <>
       {showForm ? (
         <form
           onSubmit={handleCreate}
@@ -160,258 +243,234 @@ function TrainingCohortsPage() {
         <Spinner />
       ) : cohortsQuery.isError ? (
         <ErrorState message="We couldn't load cohorts." onRetry={() => cohortsQuery.refetch()} />
-      ) : (cohortsQuery.data ?? []).length === 0 ? (
-        <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
-          No cohorts yet. Create one to start enrolling trainees.
-        </div>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {(cohortsQuery.data ?? []).map((cohort) => {
-            const teachers = cohortTeachers(cohort)
-            return (
-              <li key={cohort.id} className="relative">
-                <Link
-                  to={`/dashboard/training/${cohort.id}`}
-                  className={`block rounded-card border border-slate-200 bg-white p-5 shadow-sm transition hover:border-brand/40 hover:shadow-md ${isAdmin ? 'pr-24' : ''}`}
-                >
-                  <p className="text-lg font-semibold text-brand">{cohort.name}</p>
-                  <p className="mt-1 text-sm text-slate-600">
-                    {teachers.length > 0 ? `Teachers: ${teachers.join(', ')}` : 'No teachers assigned yet'}
-                  </p>
-                  <p className="mt-2 text-xs font-medium uppercase tracking-wider text-slate-600">
-                    {cohort.weekCount} weeks · {cohort._count?.enrollments ?? 0} trainees · miss {cohort.maxMissedClasses} fails
-                  </p>
-                </Link>
-
-                {isAdmin ? (
-                  <div className="absolute right-3 top-3 flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setRenaming(cohort)
-                        setRenameValue(cohort.name)
-                      }}
-                      aria-label={`Rename ${cohort.name}`}
-                      title="Rename cohort"
-                      className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-brand"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDeleting(cohort)
-                        setDeleteName('')
-                      }}
-                      aria-label={`Delete ${cohort.name}`}
-                      title="Delete cohort"
-                      className="rounded-lg p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                ) : null}
-              </li>
-            )
-          })}
-          {isAdmin ? (
-            <li>
-              <button
-                type="button"
-                onClick={() => setShowForm(true)}
-                className="group flex min-h-56 w-full flex-col items-center justify-center rounded-card border border-dashed border-slate-300 bg-[#f8fbff] p-8 text-center transition hover:border-brand hover:bg-white"
-              >
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eaf1ff] text-brand">
-                  <Plus className="h-5 w-5" />
+        <>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {cohorts.length === 0 ? (
+              <li>
+                <div className="flex min-h-56 flex-col items-center justify-center rounded-card border border-slate-200 bg-white p-8 text-center shadow-sm">
+                  <p className="text-lg font-semibold text-brand">No cohorts yet.</p>
+                  <p className="mt-2 text-sm text-slate-600">Create one to start enrolling trainees.</p>
                 </div>
-                <h3 className="mt-6 text-xl font-semibold text-brand">New cohort</h3>
-                <p className="mt-3 max-w-xs text-sm leading-6 text-slate-600">
-                  Start a new intake of workers in training.
-                </p>
-              </button>
-            </li>
-          ) : null}
-        </ul>
-      )}
-        </>
-      ) : tab === 'trainees' ? (
-        <section>
-          {traineesQuery.isLoading ? (
-            <Spinner />
-          ) : traineesQuery.isError ? (
-            <ErrorState message="We couldn't load trainees." onRetry={() => traineesQuery.refetch()} />
-          ) : (traineesQuery.data ?? []).length === 0 ? (
-            <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
-              No trainees yet.
-            </div>
-          ) : (
-            <div className="overflow-x-auto rounded-card border border-slate-200 bg-white shadow-sm">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wider text-slate-600">
-                    <th className="px-4 py-3">Name</th>
-                    <th className="px-4 py-3">Cohort</th>
-                    <th className="px-4 py-3">Track</th>
-                    <th className="px-4 py-3">Missed</th>
-                    <th className="px-4 py-3">Standing</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(traineesQuery.data ?? []).map((t) => (
-                    <tr key={`${t.cohortId}-${t.userId}`} className="border-b border-slate-50 last:border-0">
-                      <td className="px-4 py-3">
-                        <p className="font-medium text-slate-800">{t.name}</p>
-                        <p className="text-xs text-slate-600">{t.email}</p>
-                      </td>
-                      <td className="px-4 py-3 text-slate-700">{t.cohortName}</td>
-                      <td className="px-4 py-3">
-                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold capitalize text-slate-700">
-                          {t.track}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 tabular-nums text-slate-700">
-                        {t.missed} / {t.maxMissedClasses}
-                      </td>
-                      <td className="px-4 py-3">
-                        <GraduationStatusBadge status={t.graduation} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      ) : (
-        <section>
-          {sessionsQuery.isLoading ? (
-            <Spinner />
-          ) : sessionsQuery.isError ? (
-            <ErrorState message="We couldn't load sessions." onRetry={() => sessionsQuery.refetch()} />
-          ) : (sessionsQuery.data ?? []).length === 0 ? (
-            <div className="rounded-card border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
-              No sessions scheduled yet.
-            </div>
-          ) : (
-            <ul className="space-y-2">
-              {(sessionsQuery.data ?? []).map((s) => (
-                <li
-                  key={s.classId}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-slate-200 bg-white p-4 shadow-sm"
+              </li>
+            ) : (
+              pagedCohorts.map((cohort) => {
+                const teachers = cohortTeachers(cohort)
+                return (
+                  <li
+                    key={cohort.id}
+                    className="flex flex-col overflow-hidden rounded-card border border-slate-200 bg-white shadow-sm transition hover:border-brand/40 hover:shadow-md"
+                  >
+                    <Link
+                      to={`/dashboard/training/${cohort.id}`}
+                      onMouseEnter={() =>
+                        queryClient.prefetchQuery({
+                          queryKey: ['training', 'cohort', String(cohort.id)],
+                          queryFn: () => getCohort(cohort.id),
+                        })
+                      }
+                      className="flex flex-1 flex-col p-5"
+                    >
+                      <p className="text-lg font-semibold text-brand">{cohort.name}</p>
+                      <p className="mt-1 text-sm text-slate-600">
+                        {teachers.length > 0 ? `Teachers: ${teachers.join(', ')}` : 'No teachers assigned yet'}
+                      </p>
+                      <p className="mt-2 text-xs font-medium uppercase tracking-wider text-slate-600">
+                        {cohort.weekCount} weeks · {cohort._count?.enrollments ?? 0} trainees · miss {cohort.maxMissedClasses} fails
+                      </p>
+                    </Link>
+                    {isAdmin ? (
+                      <div className="flex items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/60 px-4 py-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRenameValue(cohort.name)
+                            setRenamingCohort(cohort)
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                        >
+                          <Pencil className="h-3.5 w-3.5" /> Rename
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDeleteName('')
+                            setDeletingCohort(cohort)
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> Delete
+                        </button>
+                      </div>
+                    ) : null}
+                  </li>
+                )
+              })
+            )}
+
+            {isAdmin ? (
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(true)}
+                  className="group flex min-h-56 w-full flex-col items-center justify-center rounded-card border border-dashed border-slate-300 bg-[#f8fbff] p-8 text-center transition hover:border-brand hover:bg-white"
                 >
-                  <div className="min-w-0">
-                    <p className="font-semibold text-brand">
-                      {s.week ? `Week ${s.week} · ` : ''}
-                      {s.topic ?? 'Training session'}
-                    </p>
-                    <p className="text-sm text-slate-600">
-                      {s.cohortName} ·{' '}
-                      {new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ·{' '}
-                      {s.startTime}–{s.endTime} · {s.location}
-                    </p>
-                    {s.teacher ? <p className="text-xs text-slate-600">Teacher: {s.teacher}</p> : null}
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eaf1ff] text-brand">
+                    <Plus className="h-5 w-5" />
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+                  <h3 className="mt-6 text-xl font-semibold text-brand">New cohort</h3>
+                  <p className="mt-3 max-w-xs text-sm leading-6 text-slate-600">
+                    Start a new intake of workers in training.
+                  </p>
+                </button>
+              </li>
+            ) : null}
+          </ul>
+
+          {cohorts.length > CARD_PAGE_SIZE ? (
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              total={cohorts.length}
+              pageSize={CARD_PAGE_SIZE}
+              onPageChange={setPage}
+            />
+          ) : null}
+
+          {isAdmin && cohorts.length > 0 ? (
+            <TrainingRollup
+              trainees={rollupTrainees}
+              sessions={rollupSessions}
+              isLoading={traineesQuery.isLoading || sessionsQuery.isLoading}
+              errorMessage={rollupError ? "We couldn't load the cohort overview." : undefined}
+              onRetry={() => {
+                traineesQuery.refetch()
+                sessionsQuery.refetch()
+              }}
+              onOpenCohort={(cohortId) => navigate(`/dashboard/training/${cohortId}`)}
+              renderTraineeActions={(trainee) => (
+                <TraineeRowActions
+                  trainee={trainee}
+                  onView={handleViewTrainee}
+                  onEdit={setEditingTrainee}
+                  onGraduate={handleGraduateTrainee}
+                  onDelete={setDeletingTrainee}
+                />
+              )}
+            />
+          ) : null}
+
+          <EditTraineeModal
+            key={editingTrainee?.id ?? 'none'}
+            trainee={editingTrainee}
+            open={Boolean(editingTrainee)}
+            onClose={() => setEditingTrainee(null)}
+            onSubmit={handleEditTrainee}
+            isSubmitting={updateProfile.isPending || updateTrack.isPending}
+          />
+          <DeleteUserModal
+            steward={deletingTrainee ? asSteward(deletingTrainee) : null}
+            open={Boolean(deletingTrainee)}
+            onClose={() => setDeletingTrainee(null)}
+            onConfirm={handleDeleteTrainee}
+            isSubmitting={deleteTraineeMutation.isPending}
+          />
+
+          {renamingCohort ? (
+            <div
+              className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
+              onClick={() => setRenamingCohort(null)}
+            >
+              <div className="flex min-h-full items-center justify-center px-4 py-6">
+                <div
+                  className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
+                  onClick={(event) => event.stopPropagation()}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="rename-cohort-title"
+                >
+                  <h3 id="rename-cohort-title" className="text-xl font-semibold text-slate-900">
+                    Rename cohort
+                  </h3>
+                  <input
+                    value={renameValue}
+                    onChange={(e) => setRenameValue(e.target.value)}
+                    autoFocus
+                    className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-brand"
+                  />
+                  <div className="mt-5 flex items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setRenamingCohort(null)}
+                      className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRename}
+                      disabled={updateCohortMutation.isPending || !renameValue.trim()}
+                      className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60"
+                    >
+                      {updateCohortMutation.isPending ? 'Saving...' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {deletingCohort ? (
+            <div
+              className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
+              onClick={() => setDeletingCohort(null)}
+            >
+              <div className="flex min-h-full items-center justify-center px-4 py-6">
+                <div
+                  className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
+                  onClick={(event) => event.stopPropagation()}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="delete-cohort-title"
+                >
+                  <h3 id="delete-cohort-title" className="text-xl font-semibold text-slate-900">
+                    Delete cohort
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    This permanently removes{' '}
+                    <span className="font-semibold text-slate-800">{deletingCohort.name}</span> with its
+                    curriculum, sessions and enrollments. Type the cohort name to confirm.
+                  </p>
+                  <input
+                    value={deleteName}
+                    onChange={(e) => setDeleteName(e.target.value)}
+                    placeholder={deletingCohort.name}
+                    autoFocus
+                    className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-rose-400"
+                  />
+                  <div className="mt-5 flex items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setDeletingCohort(null)}
+                      className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDeleteCohort}
+                      disabled={deleteCohortMutation.isPending || deleteName !== deletingCohort.name}
+                      className="rounded-xl bg-[#d92d20] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#b42318] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {deleteCohortMutation.isPending ? 'Deleting...' : 'Delete cohort'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </>
       )}
-
-      {/* Rename modal */}
-      {renaming ? (
-        <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
-          onClick={() => setRenaming(null)}
-        >
-          <div className="flex min-h-full items-center justify-center px-4 py-6">
-            <div
-              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
-              onClick={(event) => event.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="rename-cohort-title"
-            >
-              <h3 id="rename-cohort-title" className="text-xl font-semibold text-slate-900">
-                Rename cohort
-              </h3>
-              <input
-                value={renameValue}
-                onChange={(e) => setRenameValue(e.target.value)}
-                autoFocus
-                className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-brand"
-              />
-              <div className="mt-5 flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRenaming(null)}
-                  className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRename}
-                  disabled={updateMutation.isPending || !renameValue.trim()}
-                  className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-hover disabled:opacity-60"
-                >
-                  {updateMutation.isPending ? 'Saving...' : 'Save'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {/* Delete modal — type the name to confirm */}
-      {deleting ? (
-        <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/35 backdrop-blur-[2px]"
-          onClick={() => setDeleting(null)}
-        >
-          <div className="flex min-h-full items-center justify-center px-4 py-6">
-            <div
-              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_28px_80px_rgba(15,23,42,0.24)]"
-              onClick={(event) => event.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="delete-cohort-title"
-            >
-              <h3 id="delete-cohort-title" className="text-xl font-semibold text-slate-900">
-                Delete cohort
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                This permanently removes <span className="font-semibold text-slate-800">{deleting.name}</span>{' '}
-                with its curriculum, sessions and enrollments. Type the cohort name to confirm.
-              </p>
-              <input
-                value={deleteName}
-                onChange={(e) => setDeleteName(e.target.value)}
-                placeholder={deleting.name}
-                autoFocus
-                className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-rose-400"
-              />
-              <div className="mt-5 flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setDeleting(null)}
-                  className="rounded-xl bg-[#eef3ff] px-4 py-2.5 text-sm font-semibold text-[#4f6b9a] transition hover:bg-[#e4ebfb]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending || deleteName !== deleting.name}
-                  className="rounded-xl bg-[#d92d20] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#b42318] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {deleteMutation.isPending ? 'Deleting...' : 'Delete cohort'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </div>
   )
 }
