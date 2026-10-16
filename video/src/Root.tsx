@@ -80,7 +80,7 @@ export function RemotionRoot() {
     <Composition
       id="Demo"
       component={Demo}
-      defaultProps={{ voiceover: false }}
+      defaultProps={{ voiceover: true }}
       durationInFrames={TOTAL_FRAMES}
       fps={FPS}
       width={1920}
