@@ -1,27 +1,30 @@
-import { Play } from 'lucide-react'
+type DemoVideoSectionProps = { className?: string; style?: React.CSSProperties }
 
-function DemoVideoSection() {
+function DemoVideoSection({ className, style }: DemoVideoSectionProps) {
   return (
-    <section id="demo" className="scroll-mt-24 px-4 pb-20 sm:px-6">
-      <div className="mx-auto max-w-4xl">
+    <section id="demo" className={`scroll-mt-24 px-4 pb-24 sm:px-6 ${className ?? ''}`} style={style}>
+      <div className="mx-auto max-w-5xl">
         <div className="text-center">
-          <h2 className="font-serif text-3xl font-semibold tracking-tight text-brand">
+          <h2 className="font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
             See it work
           </h2>
-          <div className="mx-auto mt-5 h-0.5 w-9 bg-signature" />
-          <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-slate-600">
-            A walkthrough from adding your people to closing a Sunday service.
+          <div className="mx-auto mt-8 h-1 w-16 bg-gold" />
+          <p className="mx-auto mt-10 max-w-lg text-lg leading-relaxed text-slate">
+            A 19-second look at a Sunday service — from the live registry to a clean close.
           </p>
         </div>
 
-        <div className="mt-10 flex aspect-video items-center justify-center rounded-card bg-brand shadow-heavy">
-          <button
-            type="button"
-            aria-label="Play the demo"
-            className="flex h-16 w-16 items-center justify-center rounded-full bg-signature text-brand transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        <div className="mt-16 overflow-hidden rounded-section border border-line bg-paper shadow-section">
+          <video
+            className="aspect-video w-full block"
+            src="/brag.mp4"
+            poster="/brag-poster.jpg"
+            controls
+            preload="none"
+            playsInline
           >
-            <Play className="h-6 w-6 translate-x-0.5 fill-current" />
-          </button>
+            <track kind="captions" src="/brag.vtt" srcLang="en" label="English" />
+          </video>
         </div>
       </div>
     </section>

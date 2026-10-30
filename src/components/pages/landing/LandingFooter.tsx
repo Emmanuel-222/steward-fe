@@ -2,17 +2,22 @@ import { Link } from 'react-router-dom'
 import { LOGIN_PATH } from '../../../app/router/paths'
 import { FOOTER, NAV } from '../../../features/landing/content'
 
-const linkClass = 'inline-flex min-h-11 items-center transition hover:text-brand'
+const linkClass = 'inline-flex min-h-11 items-center transition hover:text-ink'
 
-function LandingFooter() {
+type LandingFooterProps = { className?: string; style?: React.CSSProperties }
+
+function LandingFooter({ className, style }: LandingFooterProps) {
   return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 px-4 py-10 sm:flex-row sm:px-6">
-        <span className="font-serif text-lg font-semibold tracking-tight text-brand">
+    <footer className={`border-t border-line bg-paper ${className ?? ''}`} style={style}>
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-8 px-4 py-12 sm:flex-row sm:px-6">
+        <Link
+          to="/"
+          className="font-serif text-lg font-semibold tracking-tight text-ink"
+        >
           {NAV.brand}
-        </span>
+        </Link>
 
-        <nav className="flex flex-wrap items-center justify-center gap-x-5 text-sm font-medium text-slate-600">
+        <nav className="flex flex-wrap items-center justify-center gap-x-8 text-sm font-medium text-slate">
           <Link to={LOGIN_PATH} className={linkClass}>
             {NAV.signIn}
           </Link>
@@ -27,7 +32,7 @@ function LandingFooter() {
           </a>
         </nav>
 
-        <p className="text-xs text-slate-500">{FOOTER.copyright}</p>
+        <p className="text-xs text-slate">{FOOTER.copyright}</p>
       </div>
     </footer>
   )

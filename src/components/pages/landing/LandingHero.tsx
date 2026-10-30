@@ -1,39 +1,39 @@
 import { Link } from 'react-router-dom'
 import { HERO } from '../../../features/landing/content'
 
-function LandingHero() {
-  return (
-    <section className="px-4 pb-16 pt-20 sm:px-6 sm:pt-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-brand">
-          {HERO.eyebrow}
-        </p>
+type LandingHeroProps = { className?: string; style?: React.CSSProperties }
 
-        <h1 className="mt-5 font-serif text-4xl font-semibold leading-[1.15] tracking-tight text-brand sm:text-5xl">
+function LandingHero({ className, style }: LandingHeroProps) {
+  return (
+    <section className={`relative px-4 pt-24 sm:px-6 sm:pt-32 ${className ?? ''}`} style={style}>
+      <div className="mx-auto max-w-5xl text-center">
+        <h1 className="font-serif text-5xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-6xl">
           {HERO.title}
         </h1>
 
-        <div className="mx-auto mt-6 h-0.5 w-11 bg-signature" />
+        <div className="mx-auto mt-8 h-1 w-20 bg-gold" />
 
-        <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-slate-600">
+        <p className="mx-auto mt-10 max-w-2xl text-lg leading-relaxed text-slate">
           {HERO.subtitle}
         </p>
 
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-14 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link
             to="/signup"
-            className="w-full rounded-xl bg-brand px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-hover sm:w-auto"
+            className="rounded-control bg-gold px-7 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-hover active:scale-95 sm:px-8"
           >
             {HERO.primaryCta}
           </Link>
           <a
             href="#demo"
-            className="w-full rounded-xl border border-brand px-6 py-3.5 text-sm font-semibold text-brand transition hover:bg-brand/5 sm:w-auto"
+            className="rounded-control border border-ink px-7 py-3.5 text-sm font-semibold text-ink transition hover:bg-ink/5 active:scale-95 sm:px-8"
           >
             {HERO.secondaryCta}
           </a>
         </div>
       </div>
+
+      <div className="absolute -top-32 -right-20 w-64 h-64 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
     </section>
   )
 }

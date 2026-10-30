@@ -10,16 +10,16 @@ function LandingPage() {
   useDocumentTitle('The Registrar — Church attendance & steward records')
 
   return (
-    <main className="min-h-screen bg-page-bg">
+    <main className="min-h-screen bg-parchment">
       <LandingNav />
-      <LandingHero />
-      <DemoVideoSection />
-      <WhatItDoes />
-      <HowItWorks />
-      <SundayRush />
-      <GetStartedBand />
-      <LandingFaq />
-      <LandingFooter />
+      <LandingHero className="animate-page-load" />
+      <DemoVideoSection className="animate-reveal-up" style={{ animationDelay: '100ms' }} />
+      <WhatItDoes className="animate-reveal-up" style={{ animationDelay: '200ms' }} />
+      <HowItWorks className="animate-reveal-up" style={{ animationDelay: '300ms' }} />
+      <SundayRush className="animate-reveal-up" style={{ animationDelay: '400ms' }} />
+      <GetStartedBand className="animate-reveal-up" style={{ animationDelay: '500ms' }} />
+      <LandingFaq className="animate-reveal-up" style={{ animationDelay: '600ms' }} />
+      <LandingFooter className="animate-reveal-up" style={{ animationDelay: '700ms' }} />
     </main>
   )
 }
